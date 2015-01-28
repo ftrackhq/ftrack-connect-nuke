@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AssetManager</class>
+ <widget class="QWidget" name="AssetManager">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>549</width>
+    <height>419</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QComboBox" name="AssetManagerComboBox">
+       <property name="maximumSize">
+        <size>
+         <width>120</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="versionDownButton">
+       <property name="minimumSize">
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>20</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>-</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="versionUpButton">
+       <property name="minimumSize">
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>20</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>+</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="latestButton">
+       <property name="minimumSize">
+        <size>
+         <width>60</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Latest</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="selectAllButton">
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Select All</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="menuButton">
+       <property name="maximumSize">
+        <size>
+         <width>70</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Extra</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="whiteSpaceLabel">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="refreshButton">
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Refresh</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="AssertManagerTableWidget">
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="AssetManager.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>refreshButton</sender>
+   <signal>clicked()</signal>
+   <receiver>AssetManager</receiver>
+   <slot>refreshAssetManager()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>538</x>
+     <y>32</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>212</x>
+     <y>4</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>AssetManagerComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>AssetManager</receiver>
+   <slot>filterAssets(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>76</x>
+     <y>16</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>85</x>
+     <y>4</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>versionDownButton</sender>
+   <signal>clicked()</signal>
+   <receiver>AssetManager</receiver>
+   <slot>versionDownSelected()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>144</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>69</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>versionUpButton</sender>
+   <signal>clicked()</signal>
+   <receiver>AssetManager</receiver>
+   <slot>versionUpSelected()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>165</x>
+     <y>25</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>192</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>latestButton</sender>
+   <signal>clicked()</signal>
+   <receiver>AssetManager</receiver>
+   <slot>versionLatestSelected()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>207</x>
+     <y>22</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>selectAllButton</sender>
+   <signal>clicked()</signal>
+   <receiver>AssetManager</receiver>
+   <slot>selectAll()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>289</x>
+     <y>27</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>379</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>refreshAssetManager()</slot>
+  <slot>filterAssets(int)</slot>
+  <slot>selectObject(QString)</slot>
+  <slot>versionDownSelected()</slot>
+  <slot>versionUpSelected()</slot>
+  <slot>versionLatestSelected()</slot>
+  <slot>selectAll()</slot>
+ </slots>
+</ui>
