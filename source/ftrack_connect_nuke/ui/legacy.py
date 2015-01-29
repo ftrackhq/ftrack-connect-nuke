@@ -8,6 +8,7 @@ from ftrack_connect_nuke.ftrackplugin import ftrackConnector
 from ftrack_connect_nuke.ftrackplugin.ftrackConnector import nukeassets
 
 ftrackplugin.ftrackConnector.Connector.init_dialogs(ftrackDialogs, ftrackDialogs.availableDialogs)
+import nukescripts
 import FnAssetAPI
 import ftrack_connect_nuke
 import nuke
@@ -266,6 +267,8 @@ def publishAssetKnob():
         last = tableWidget.item(row, 6).text()
         nodeName = tableWidget.item(row, 3).text()
         meta = getMetaData(nodeName)
+
+
         if tableWidget.item(row, 4).toolTip() == 'T':
             content.append((filePath, compName, first, last, nodeName, meta))
         else:
@@ -544,7 +547,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                 componentItem.setText(comp[1])
                 componentItem.setToolTip(comp[1])
                 tableWidget.setItem(rowCntr, 2, componentItem)
-    
+                
                 try:
                     fileCurrentFrame = nukescripts.replaceHashes(comp[0]) % int(float(comp[2]))
                 except:

@@ -6,7 +6,6 @@ import functools
 import FnAssetAPI
 from FnAssetAPI.ui.toolkit import QtGui
 from ftrack_connect_foundry.ui import delegate
-from legacy import *
 
 
 class Delegate(delegate.Delegate):
