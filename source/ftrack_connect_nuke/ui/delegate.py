@@ -6,7 +6,7 @@ import functools
 import FnAssetAPI
 from FnAssetAPI.ui.toolkit import QtGui
 from ftrack_connect_foundry.ui import delegate
-import legacy
+from legacy import *
 
 
 class Delegate(delegate.Delegate):
@@ -16,33 +16,10 @@ class Delegate(delegate.Delegate):
         self.moduleName =  ".".join(__name__.split(".")[:-1])
 
     def populate_ftrack(self):
+
         import nuke
-        FnAssetAPI.logging.info(self.moduleName)
-        # add callbacks 
-        nuke.addOnScriptLoad(legacy.refAssetManager)
-        nuke.addOnScriptLoad(legacy.checkForNewAssets)
+        from legacy import *
 
-
-        # populate the toolbar
-        toolbar = nuke.toolbar("Nodes")
-        ftrackNodesMenu = toolbar.addMenu("ftrack", icon="logobox.png")
-        ftrackNodesMenu.addCommand('ftrackPublish', '%s.legacy.createFtrackPublish()' % self.moduleName)
-
-        # populate the ftrack menu
-        ftrack_menu = nuke.menu("Nuke").findItem("ftrack")
-        if not ftrack_menu:
-            return       
-
-        ftrack_menu.addCommand('Create Publish Node', '%s.legacy.createFtrackPublish()' % self.moduleName)
-
-
-        # nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='Write')
-        # nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='WriteGeo')
-        # nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='Read')
-
-
-        # nuke.addKnobChanged(legacy.ftrackPublishKnobChanged, nodeClass="Group")
-        # nuke.addOnCreate(legacy.ftrackPublishHieroInit)
 
 
     def populateUI(self, uiElement, specification, context):

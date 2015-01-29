@@ -2,12 +2,14 @@ import os
 import ftrack
 from ftrack_connect_nuke.ftrackplugin import ftrackDialogs
 from ftrack_connect_nuke import ftrackplugin
-ftrackplugin.ftrackConnector.Connector.init_dialogs(ftrackDialogs, ftrackDialogs.availableDialogs)
 from ftrack_connect_nuke.ftrackplugin.ftrackConnector import HelpFunctions
 from ftrack_connect_nuke.ftrackplugin.ftrackConnector import FTComponent
 from ftrack_connect_nuke.ftrackplugin import ftrackConnector
 from ftrack_connect_nuke.ftrackplugin.ftrackConnector import nukeassets
 
+ftrackplugin.ftrackConnector.Connector.init_dialogs(ftrackDialogs, ftrackDialogs.availableDialogs)
+import FnAssetAPI
+import ftrack_connect_nuke
 import nuke
 import shutil
 
@@ -32,6 +34,8 @@ from PySide import QtGui, QtCore
 # Discover location plugins and connect topic hub.
 ftrack.setup()
 
+current_module = ".".join(__name__.split(".")[:-1])+'.legacy'
+FnAssetAPI.logging.info(current_module)
 
 class ProgressDialog(QtGui.QDialog):
     def __init__(self):
@@ -49,7 +53,7 @@ def refAssetManager():
     panelComInstance = ftrackConnector.panelcom.PanelComInstance.instance()
     panelComInstance.refreshListeners()
 
-# nuke.addOnScriptLoad(refAssetManager)
+nuke.addOnScriptLoad(refAssetManager)
 
 
 def checkForNewAssets():
@@ -78,7 +82,7 @@ def checkForNewAssets():
     if message != '':
         nuke.message(message)
 
-# nuke.addOnScriptLoad(checkForNewAssets)
+nuke.addOnScriptLoad(checkForNewAssets)
 
 
 class TableKnob():
@@ -181,7 +185,7 @@ def addPublishKnobsToGroupNode(g):
     tab = nuke.Tab_Knob('ftrackpub', 'ftrack Publish')
     g.addKnob(tab)
 
-    headerKnob = nuke.PyCustom_Knob("fheader", "", "HeaderKnob()")
+    headerKnob = nuke.PyCustom_Knob("fheader", "", "%s.HeaderKnob()" % current_module)
     headerKnob.setFlag(nuke.STARTLINE)
     g.addKnob(headerKnob)
     
@@ -189,7 +193,7 @@ def addPublishKnobsToGroupNode(g):
     g.addKnob(whitespaceKnob)
     
     if 'assetmgr_nuke' in globals():
-        browseKnob = nuke.PyCustom_Knob("fpubto", "Publish to:", "BrowseKnob()")
+        browseKnob = nuke.PyCustom_Knob("fpubto", "Publish to:", "%s.BrowseKnob()" % current_module)
         browseKnob.setFlag(nuke.STARTLINE)
         g.addKnob(browseKnob)
     else:
@@ -213,7 +217,7 @@ def addPublishKnobsToGroupNode(g):
     typeKnob.setFlag(nuke.STARTLINE)
     g.addKnob(typeKnob)
 
-    tableKnob = nuke.PyCustom_Knob("ftable", "Components:", "TableKnob()")
+    tableKnob = nuke.PyCustom_Knob("ftable", "Components:", "%s.TableKnob()" % current_module)
     tableKnob.setFlag(nuke.STARTLINE)
     g.addKnob(tableKnob)
 
@@ -228,11 +232,11 @@ def addPublishKnobsToGroupNode(g):
     commentKnob = nuke.Multiline_Eval_String_Knob('fcomment', 'Comment:', '')
     g.addKnob(commentKnob)
 
-    refreshKnob = nuke.PyScript_Knob('refreshknob', 'Refresh', 'ftrackPublishKnobChanged(forceRefresh=True)')
+    refreshKnob = nuke.PyScript_Knob('refreshknob', 'Refresh', '%s.ftrackPublishKnobChanged(forceRefresh=True)' %  current_module)
     refreshKnob.setFlag(nuke.STARTLINE)
     g.addKnob(refreshKnob)
 
-    publishKnob = nuke.PyScript_Knob('pknob', 'Publish!', 'publishAssetKnob()')
+    publishKnob = nuke.PyScript_Knob('pknob', 'Publish!', '%s.publishAssetKnob()' %  current_module)
     g.addKnob(publishKnob)
     publishKnob.setEnabled(False)
 
@@ -620,13 +624,13 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                 g['fassetnameexisting'].setValues(assetEnums)
 
 
-# nukeMenu = nuke.menu("Nuke")
-# ftrackMenu = nukeMenu.addMenu("&ftrack")
-# ftrackMenu.addCommand('Create Publish Node', 'createFtrackPublish()')
+nukeMenu = nuke.menu("Nuke")
+ftrackMenu = nukeMenu.addMenu("&ftrack")
+ftrackMenu.addCommand('Create Publish Node', lambda: createFtrackPublish())
 
-# toolbar = nuke.toolbar("Nodes")
-# ftrackNodesMenu = toolbar.addMenu("ftrack", icon="logobox.png")
-# ftrackNodesMenu.addCommand('ftrackPublish', 'createFtrackPublish()')
+toolbar = nuke.toolbar("Nodes")
+ftrackNodesMenu = toolbar.addMenu("ftrack", icon="logobox.png")
+ftrackNodesMenu.addCommand('ftrackPublish', lambda: createFtrackPublish())
 
 
 def addFtrackComponentField(n=None):
@@ -657,7 +661,5 @@ def ftrackPublishHieroInit():
 nuke.addOnUserCreate(addFtrackComponentField, nodeClass='Write')
 nuke.addOnUserCreate(addFtrackComponentField, nodeClass='WriteGeo')
 nuke.addOnUserCreate(addFtrackComponentField, nodeClass='Read')
-
-
 nuke.addKnobChanged(ftrackPublishKnobChanged, nodeClass="Group")
 nuke.addOnCreate(ftrackPublishHieroInit)
