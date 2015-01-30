@@ -1,10 +1,13 @@
 import os
 import shutil
 import ftrack
+import clique
+import glob
+import tempfile
+
 from PySide import QtGui, QtCore
 
 import FnAssetAPI
-from FnAssetAPI import specifications
 
 import nuke
 import nukescripts
@@ -17,14 +20,13 @@ from ftrack_connect_nuke.ftrackplugin.ftrackConnector import FTComponent
 from ftrack_connect_nuke.ftrackplugin import ftrackConnector
 from ftrack_connect_nuke.ftrackplugin.ftrackConnector import nukeassets
 
+from knobs import TableKnob, BrowseKnob, HeaderKnob
+
 ftrack.setup()
 
 current_module = ".".join(__name__.split(".")[:-1])+'.legacy'
-FnAssetAPI.logging.info(current_module)
-
 
 ftrackplugin.ftrackConnector.Connector.init_dialogs(ftrackDialogs, ftrackDialogs.availableDialogs)
-
 
 class ProgressDialog(QtGui.QDialog):
     def __init__(self):
@@ -40,7 +42,6 @@ class ProgressDialog(QtGui.QDialog):
 def refAssetManager():
     panelComInstance = ftrackConnector.panelcom.PanelComInstance.instance()
     panelComInstance.refreshListeners()
-
 
 
 def checkForNewAssets():
@@ -67,98 +68,6 @@ def checkForNewAssets():
 
     if message != '':
         nuke.message(message)
-
-
-
-class TableKnob():
-    def makeUI(self):
-        self.tableWidget = QtGui.QTableWidget()
-        self.tableWidget.verticalHeader().setDefaultSectionSize(ftrack_connect_nuke.ftrackplugin.ftrackConnector.Dialog.TABLEROWHEIGHT)
-        self.tableWidget.setColumnCount(7)
-        self.tableWidget.setHorizontalHeaderLabels(['', 'Filename', 'Component', 'NodeName', '', '', ''])
-        self.tableWidget.verticalHeader().setVisible(False)
-        self.tableWidget.setColumnWidth(0, 25)
-        self.tableWidget.setColumnWidth(2, 100)
-        self.tableWidget.setColumnWidth(3, 100)
-        self.tableWidget.setColumnWidth(4, 25)
-        self.tableWidget.setColumnHidden(0, True)
-        self.tableWidget.setColumnHidden(5, True)
-        self.tableWidget.setColumnHidden(6, True)
-        self.tableWidget.horizontalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
-        self.tableWidget.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)
-        self.tableWidget.setTextElideMode(QtCore.Qt.ElideLeft)
-        self.tableWidget.setMinimumHeight(200)
-
-        self.tableWidget.updateValue = self.updateValue
-
-        return self.tableWidget
-
-    def updateValue(self):
-        pass
-
-
-class FtrackPublishLocale(specifications.LocaleSpecification):
-    _type = "ftrack.publish"
-
-
-class BrowseKnob():
-    def makeUI(self):
-        self.mainWidget = QtGui.QWidget()
-        self.mainWidget.setContentsMargins(0, 0, 0, 0)
-        self.hlayout = QtGui.QHBoxLayout()
-        self.hlayout.setContentsMargins(0, 0, 0, 0)
-        self.mainWidget.setLayout(self.hlayout)
-        
-        task = ftrack.Task(os.environ['FTRACK_TASKID'])
-        self._lineEdit = QtGui.QLineEdit()
-        self._lineEdit.setText(HelpFunctions.getPath(task, slash=True))
-        self.hlayout.addWidget(self._lineEdit)
-    
-        self._browse = QtGui.QPushButton("Browse")
-        self.hlayout.addWidget(self._browse)
-        
-        QtCore.QObject.connect(self._browse, QtCore.SIGNAL('clicked()'), self.openBrowser)
-        
-        self.targetTask = task.getEntityRef()
-                
-        return self.mainWidget
-    
-    def updateValue(self):
-        pass
-    
-    def openBrowser(self):
-        from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
-        from ftrack_connect_nuke.ftrackplugin import ftrackConnector
-        session = FnAssetAPI.SessionManager.currentSession()
-        context = session.createContext()
-        context.access = context.kWrite
-        context.locale = FtrackPublishLocale()
-        spec = specifications.ImageSpecification()
-        spec.referenceHint = ftrack.Task(os.environ['FTRACK_TASKID']).getEntityRef()
-        browser = TabbedBrowserDialog.buildForSession(spec, context)
-        browser.setWindowTitle(FnAssetAPI.l("Publish to"))
-        browser.setAcceptButtonTitle("Set")
-        if not browser.exec_():
-            return ''
-        
-        self.targetTask = browser.getSelection()[0]
-        obj = ftrackConnector.Connector.objectById(self.targetTask)
-        self._lineEdit.setText(HelpFunctions.getPath(obj, slash=True))
-        #selection = browser.getSelection()
-        
-
-class HeaderKnob():
-    def makeUI(self):
-        from ftrack_connect_nuke.ftrackplugin.ftrackWidgets import HeaderWidget
-        self.headerWidget = HeaderWidget.HeaderWidget(parent=None)
-        self.headerWidget.setTitle('Publish')
-
-        self.headerWidget.updateValue = self.updateValue
-
-        return self.headerWidget
-
-    def updateValue(self):
-        pass
 
 
 def addPublishKnobsToGroupNode(g):
@@ -227,7 +136,6 @@ def createFtrackPublish():
     inputNode = nuke.createNode("Input", inpanel=False)
     g.end()
     nodeName = 'ftrackPublish'
-    from ftrack_connect_nuke.ftrackplugin import ftrackConnector
     nodeName = ftrackConnector.Connector.getUniqueSceneName(nodeName)
     g['name'].setValue(nodeName)
     addPublishKnobsToGroupNode(g)
@@ -268,7 +176,6 @@ def publishAssetKnob():
 
     comment = n['fcomment'].value()
     
-    from ftrack_connect_nuke.ftrackplugin import ftrackConnector
     if os.getenv('FTRACK_MODE','') == 'Shot':
         currentTask = None
         shot = ftrackConnector.Connector.objectById(os.environ['FTRACK_SHOTID'])
@@ -342,7 +249,6 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
                     mainPath = temporaryPath
                 else:
                     if nuke.Root().name() == 'Root':
-                        import tempfile
                         tmp_script = tempfile.NamedTemporaryFile(suffix='.nk')
                         curScript = nuke.toNode("root").name()
                         nuke.scriptSaveAs(tmp_script.name)
@@ -395,7 +301,6 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
         g = nuke.thisNode()
 
     if 'ftable' in g.knobs():
-        from ftrack_connect_nuke.ftrackplugin import ftrackConnector
         nodeAssetType = ''
         if nuke.thisKnob().name() in ['inputChange', 'fscript'] or forceRefresh == True:
             thisNodeName = g['name'].value()
@@ -438,8 +343,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                                 first = str(int(nuke.root().knob("first_frame").value()))
                                 last = str(int(nuke.root().knob("last_frame").value()))
                         elif inNode.Class() == 'Write':
-                            import clique
-                            import glob
+
 
                             # use the timeline to define the amount of frames
                             first = str(int(nuke.root().knob("first_frame").value()))
@@ -604,7 +508,6 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                 assets = ftrackConnector.Connector.objectById(os.environ['FTRACK_SHOTID']).getAssets(assetTypes=[nodeAssetType])
                 assetEnums = assetEnums + [x.getName() for x in assets]
                 g['fassetnameexisting'].setValues(assetEnums)
-
 
 
 def addFtrackComponentField(n=None):

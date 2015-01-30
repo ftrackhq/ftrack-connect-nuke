@@ -19,6 +19,7 @@ class Delegate(delegate.Delegate):
         import nuke
         import legacy
 
+        # Populate the ui
         nukeMenu = nuke.menu("Nuke")
         ftrackMenu = nukeMenu.addMenu("&ftrack")
         ftrackMenu.addCommand('Create Publish Node', lambda: legacy.createFtrackPublish())
@@ -27,11 +28,9 @@ class Delegate(delegate.Delegate):
         ftrackNodesMenu = toolbar.addMenu("ftrack", icon="logobox.png")
         ftrackNodesMenu.addCommand('ftrackPublish', lambda: legacy.createFtrackPublish())
 
-
+        # Set calbacks
         nuke.addOnScriptLoad(legacy.refAssetManager)
         nuke.addOnScriptLoad(legacy.checkForNewAssets)
-
-
         nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='Write')
         nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='WriteGeo')
         nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='Read')
