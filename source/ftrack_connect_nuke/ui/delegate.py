@@ -17,7 +17,26 @@ class Delegate(delegate.Delegate):
     def populate_ftrack(self):
 
         import nuke
-        from legacy import *
+        import legacy
+
+        nukeMenu = nuke.menu("Nuke")
+        ftrackMenu = nukeMenu.addMenu("&ftrack")
+        ftrackMenu.addCommand('Create Publish Node', lambda: legacy.createFtrackPublish())
+
+        toolbar = nuke.toolbar("Nodes")
+        ftrackNodesMenu = toolbar.addMenu("ftrack", icon="logobox.png")
+        ftrackNodesMenu.addCommand('ftrackPublish', lambda: legacy.createFtrackPublish())
+
+
+        nuke.addOnScriptLoad(legacy.refAssetManager)
+        nuke.addOnScriptLoad(legacy.checkForNewAssets)
+
+
+        nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='Write')
+        nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='WriteGeo')
+        nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='Read')
+        nuke.addKnobChanged(legacy.ftrackPublishKnobChanged, nodeClass="Group")
+        nuke.addOnCreate(legacy.ftrackPublishHieroInit)
 
 
 
@@ -28,9 +47,3 @@ class Delegate(delegate.Delegate):
 
         if host and host.getIdentifier() == 'uk.co.foundry.nuke': 
             self.populate_ftrack()
-
-
-            # fileMenu.addCommand("Save Comp", "os.environ",index=startingIndex)
-            # versionUpMethod = "%s.utils._script_version_all_up()" % moduleName
-            # versionUpTitle = "Save New &Version"
-            # item = fileMenu.addCommand(versionUpTitle, versionUpMethod)

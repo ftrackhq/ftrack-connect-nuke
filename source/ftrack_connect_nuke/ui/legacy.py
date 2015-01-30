@@ -1,5 +1,15 @@
 import os
+import shutil
 import ftrack
+from PySide import QtGui, QtCore
+
+import FnAssetAPI
+from FnAssetAPI import specifications
+
+import nuke
+import nukescripts
+
+import ftrack_connect_nuke
 from ftrack_connect_nuke.ftrackplugin import ftrackDialogs
 from ftrack_connect_nuke import ftrackplugin
 from ftrack_connect_nuke.ftrackplugin.ftrackConnector import HelpFunctions
@@ -7,36 +17,14 @@ from ftrack_connect_nuke.ftrackplugin.ftrackConnector import FTComponent
 from ftrack_connect_nuke.ftrackplugin import ftrackConnector
 from ftrack_connect_nuke.ftrackplugin.ftrackConnector import nukeassets
 
-ftrackplugin.ftrackConnector.Connector.init_dialogs(ftrackDialogs, ftrackDialogs.availableDialogs)
-import nukescripts
-import FnAssetAPI
-import ftrack_connect_nuke
-import nuke
-import shutil
-
-from PySide import QtGui, QtCore
-# try:
-#     import FnAssetAPI
-#     currentManager = FnAssetAPI.SessionManager.currentSession().currentManager()
-#     initManager = True
-#     if currentManager:
-#         currentIdentifier = currentManager.getIdentifier()
-#         print currentIdentifier
-#         if currentIdentifier == "com.ftrack":
-#             initManager = False
-    
-#     if initManager == True:
-#         FnAssetAPI.SessionManager.currentSession().useManager("com.ftrack")
-# except:
-#     var = traceback.format_exc()
-#     print var
-#     #pass
-
-# Discover location plugins and connect topic hub.
 ftrack.setup()
 
 current_module = ".".join(__name__.split(".")[:-1])+'.legacy'
 FnAssetAPI.logging.info(current_module)
+
+
+ftrackplugin.ftrackConnector.Connector.init_dialogs(ftrackDialogs, ftrackDialogs.availableDialogs)
+
 
 class ProgressDialog(QtGui.QDialog):
     def __init__(self):
@@ -50,15 +38,12 @@ class ProgressDialog(QtGui.QDialog):
 
 
 def refAssetManager():
-    from ftrack_connect_nuke.ftrackplugin import ftrackConnector
     panelComInstance = ftrackConnector.panelcom.PanelComInstance.instance()
     panelComInstance.refreshListeners()
 
-nuke.addOnScriptLoad(refAssetManager)
 
 
 def checkForNewAssets():
-    from ftrack_connect_nuke.ftrackplugin import ftrackConnector
     allAssets = ftrackConnector.Connector.getAssets()
     message = ''
     for ftNode in allAssets:
@@ -83,7 +68,6 @@ def checkForNewAssets():
     if message != '':
         nuke.message(message)
 
-nuke.addOnScriptLoad(checkForNewAssets)
 
 
 class TableKnob():
@@ -112,13 +96,9 @@ class TableKnob():
     def updateValue(self):
         pass
 
-try:
-    from FnAssetAPI import specifications
 
-    class FtrackPublishLocale(specifications.LocaleSpecification):
-        _type = "ftrack.publish"
-except:
-    pass
+class FtrackPublishLocale(specifications.LocaleSpecification):
+    _type = "ftrack.publish"
 
 
 class BrowseKnob():
@@ -182,7 +162,6 @@ class HeaderKnob():
 
 
 def addPublishKnobsToGroupNode(g):
-    from ftrack_connect_nuke.ftrackplugin import ftrackConnector
     tab = nuke.Tab_Knob('ftrackpub', 'ftrack Publish')
     g.addKnob(tab)
 
@@ -627,14 +606,6 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                 g['fassetnameexisting'].setValues(assetEnums)
 
 
-nukeMenu = nuke.menu("Nuke")
-ftrackMenu = nukeMenu.addMenu("&ftrack")
-ftrackMenu.addCommand('Create Publish Node', lambda: createFtrackPublish())
-
-toolbar = nuke.toolbar("Nodes")
-ftrackNodesMenu = toolbar.addMenu("ftrack", icon="logobox.png")
-ftrackNodesMenu.addCommand('ftrackPublish', lambda: createFtrackPublish())
-
 
 def addFtrackComponentField(n=None):
     if not n:
@@ -657,12 +628,4 @@ def ftrackPublishHieroInit():
         if g.knob('fpubinit').value() == "False":
             g.removeKnob(g.knob('fpubinit'))
             g.removeKnob(g.knob('User'))
-            #g.knob('fpubinit').setValue("True")
             addPublishKnobsToGroupNode(g)
-
-
-nuke.addOnUserCreate(addFtrackComponentField, nodeClass='Write')
-nuke.addOnUserCreate(addFtrackComponentField, nodeClass='WriteGeo')
-nuke.addOnUserCreate(addFtrackComponentField, nodeClass='Read')
-nuke.addKnobChanged(ftrackPublishKnobChanged, nodeClass="Group")
-nuke.addOnCreate(ftrackPublishHieroInit)
