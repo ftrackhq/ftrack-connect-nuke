@@ -35,6 +35,11 @@ class Dialog(maincon.Dialog):
     # Attach QT Gui to application
     def show(self):
         window = self.initGui()
+
+        import rpdb
+        debugger = rpdb.Rpdb(port=12345)
+        debugger.set_trace()
+
         if self.type == 'panel':
             panels.registerWidgetAsPanel('ftrack_connect_nuke.ftrackplugin.ftrackDialogs.' + window.__name__, self.dockName, 'ftrackDialogs.' + self.__class__.__name__)
         elif self.type == 'popup':
@@ -159,36 +164,6 @@ class Connector(maincon.Connector):
             return publishedComponents, message
         else:
             return [], 'assetType not supported'
-
-    @staticmethod
-    def init_dialogs(ftrackDialogs, availableDialogs=[]):
-        nukeMenu = nuke.menu("Nuke")
-        ftrackMenu = nukeMenu.addMenu("&ftrack")
-        categories = dict()
-
-        for dialog in availableDialogs:
-            classObject = getattr(ftrackDialogs, dialog)
-            accepts = classObject.accepts()
-            category = classObject.category()
-            connectorName = Connector.getConnectorName()
-            if not accepts or connectorName in accepts:
-                d = classObject()
-                d.show()
-
-                if category not in categories:
-                    categories[category] = list()
-
-                nukeMenuCommand = 'pane = nuke.getPaneFor("Properties.1")' + '\n'
-                nukeMenuCommand += 'panel = nukescripts.restorePanel("ftrackDialogs.' + classObject.__name__ + '")' + '\n'
-                nukeMenuCommand += 'panel.addToPane(pane)' + '\n'
-
-                categories[category].append((dialog.replace('Dialog', '').replace('ftrack', ''), nukeMenuCommand))
-
-        for category, menulist in sorted(categories.items()):
-            for app in sorted(menulist, key=lambda entry: entry[1]):
-                ftrackMenu.addCommand(app[0], app[1])
-
-            ftrackMenu.addSeparator()
 
     @staticmethod
     def getConnectorName():

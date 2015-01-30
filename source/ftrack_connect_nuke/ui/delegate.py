@@ -18,11 +18,33 @@ class Delegate(delegate.Delegate):
 
         import nuke
         import legacy
+        from nukescripts import panels
+        from ftrack_connect_nuke.ftrackplugin.ftrackDialogs import ftrackAssetManagerDialog, ftrackImportAssetDialog
 
         # Populate the ui
         nukeMenu = nuke.menu("Nuke")
         ftrackMenu = nukeMenu.addMenu("&ftrack")
         ftrackMenu.addCommand('Create Publish Node', lambda: legacy.createFtrackPublish())
+
+
+        # Create the import asset dialog entry in the menu
+        panels.registerWidgetAsPanel(
+            'ftrack_connect_nuke.ftrackplugin.ftrackDialogs.ftrackImportAssetDialog.ftrackImportAssetQt', 'ftrackImportAsset', 'ftrackDialogs.ftrackImportAssetDialog'
+        )
+        ftrackMenu.addCommand(
+            'ImportAsset',
+            'pane = nuke.getPaneFor("Properties.1");panel = nukescripts.restorePanel("ftrackDialogs.ftrackImportAssetDialog");panel.addToPane(pane)'
+        )
+        
+        # Create the import asset dialog entry in the menu
+        panels.registerWidgetAsPanel(
+            'ftrack_connect_nuke.ftrackplugin.ftrackDialogs.ftrackAssetManagerDialog.ftrackAssetManagerQt', 'ftrackAssetManager', 'ftrackDialogs.ftrackAssetManagerDialog'
+        )
+        ftrackMenu.addCommand(
+            'AssetManager',
+            'pane = nuke.getPaneFor("Properties.1");panel = nukescripts.restorePanel("ftrackDialogs.ftrackAssetManagerDialog");panel.addToPane(pane)'
+        )
+
 
         toolbar = nuke.toolbar("Nodes")
         ftrackNodesMenu = toolbar.addMenu("ftrack", icon="logobox.png")

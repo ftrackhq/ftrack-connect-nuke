@@ -13,7 +13,6 @@ import nuke
 import nukescripts
 
 import ftrack_connect_nuke
-from ftrack_connect_nuke.ftrackplugin import ftrackDialogs
 from ftrack_connect_nuke import ftrackplugin
 from ftrack_connect_nuke.ftrackConnector import HelpFunctions
 from ftrack_connect_nuke.ftrackConnector.maincon import FTComponent, FTAssetObject
@@ -25,8 +24,6 @@ from knobs import TableKnob, BrowseKnob, HeaderKnob
 ftrack.setup()
 
 current_module = ".".join(__name__.split(".")[:-1])+'.legacy'
-
-ftrackplugin.ftrackConnector.Connector.init_dialogs(ftrackDialogs, ftrackDialogs.availableDialogs)
 
 class ProgressDialog(QtGui.QDialog):
     def __init__(self):
