@@ -1,8 +1,7 @@
 from PySide import QtCore, QtGui, QtWebKit
 from WebView import Ui_WebView
-import ftrack
 from ftrack_connect_nuke.ftrackplugin import PersistentCookieJar
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
+from ftrack_connect_nuke import ftrackConnector
 
 
 class WebPage(QtWebKit.QWebPage):

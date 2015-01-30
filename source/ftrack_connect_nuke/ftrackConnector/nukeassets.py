@@ -8,8 +8,8 @@ import panelcom
 import os
 import traceback
 
-from nukecon import FTAssetHandlerInstance
-from nukecon import HelpFunctions
+from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetHandlerInstance
+from ftrack_connect_nuke.ftrackConnector.maincon import HelpFunctions
 from maincon import FTAssetObject
 from maincon import FTAssetType
 from maincon import FTComponent

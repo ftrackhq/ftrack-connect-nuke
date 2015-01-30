@@ -3,7 +3,7 @@ from PySide import QtCore, QtGui
 from BrowseTasksSmall import Ui_BrowseTasksSmall
 from BrowseTasksWidget import BrowseTasksWidget
 import ftrack
-from ftrack_connect_nuke.ftrackplugin.ftrackConnector import HelpFunctions
+from ftrack_connect_nuke.ftrackConnector import HelpFunctions
 
 
 class BrowseTasksSmallWidget(QtGui.QWidget):

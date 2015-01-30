@@ -1,6 +1,4 @@
 import os
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
-from ftrack_connect_nuke.ftrackplugin.ftrackConnector import HelpFunctions
 
 from PySide import QtCore, QtGui
 from FileTable import Ui_FileTable

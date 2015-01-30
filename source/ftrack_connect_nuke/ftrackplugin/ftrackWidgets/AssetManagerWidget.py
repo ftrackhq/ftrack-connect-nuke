@@ -2,8 +2,8 @@ from PySide import QtCore, QtGui
 
 from AssetManager import Ui_AssetManager
 
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
-from ftrack_connect_nuke.ftrackplugin.ftrackConnector.maincon import FTAssetObject
+from ftrack_connect_nuke import ftrackConnector
+from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetObject
 
 import ftrack
 

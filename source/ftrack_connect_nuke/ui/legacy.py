@@ -15,10 +15,10 @@ import nukescripts
 import ftrack_connect_nuke
 from ftrack_connect_nuke.ftrackplugin import ftrackDialogs
 from ftrack_connect_nuke import ftrackplugin
-from ftrack_connect_nuke.ftrackplugin.ftrackConnector import HelpFunctions
-from ftrack_connect_nuke.ftrackplugin.ftrackConnector.maincon import FTComponent, FTAssetObject
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
-from ftrack_connect_nuke.ftrackplugin.ftrackConnector import nukeassets
+from ftrack_connect_nuke.ftrackConnector import HelpFunctions
+from ftrack_connect_nuke.ftrackConnector.maincon import FTComponent, FTAssetObject
+from ftrack_connect_nuke import ftrackConnector
+from ftrack_connect_nuke.ftrackConnector import nukeassets
 
 from knobs import TableKnob, BrowseKnob, HeaderKnob
 

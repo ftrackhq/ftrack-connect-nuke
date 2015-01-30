@@ -3,7 +3,7 @@ import sys
 from PySide import QtCore, QtGui
 import ftrack
 
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
+from ftrack_connect_nuke import ftrackConnector
 
 
 class ListAssetsTableWidget(QtGui.QWidget):

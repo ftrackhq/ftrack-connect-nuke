@@ -1,11 +1,11 @@
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
+from ftrack_connect_nuke import ftrackConnector
 from PySide import QtCore, QtGui
 
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.BrowseTasksSmallWidget import BrowseTasksSmallWidget
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.ExportAssetOptionsWidget import ExportAssetOptionsWidget
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.ExportOptionsWidget import ExportOptionsWidget
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.HeaderWidget import HeaderWidget
-from ftrack_connect_nuke.ftrackplugin.ftrackConnector.maincon import FTAssetObject
+from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetObject
 
 import ftrack
 import os

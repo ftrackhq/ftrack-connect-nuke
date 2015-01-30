@@ -2,7 +2,7 @@ from PySide import QtCore, QtGui
 from ExportAssetOptions import Ui_ExportAssetOptions
 import ftrack
 import os
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
+from ftrack_connect_nuke import ftrackConnector
 
 
 class ExportAssetOptionsWidget(QtGui.QWidget):

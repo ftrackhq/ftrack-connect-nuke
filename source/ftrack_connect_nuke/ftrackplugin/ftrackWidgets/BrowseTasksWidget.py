@@ -2,10 +2,7 @@ import os
 from PySide import QtCore, QtGui
 from BrowseTasks import Ui_BrowseTasks
 import ftrack
-try:
-    from ftrack_connect_nuke.ftrackplugin.ftrackConnector import HelpFunctions
-except:
-    pass
+from ftrack_connect_nuke.ftrackConnector import HelpFunctions
 
 
 class BrowseTasksItem(QtGui.QStandardItem):

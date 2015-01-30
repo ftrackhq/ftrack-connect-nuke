@@ -10,13 +10,6 @@ import maincon
 from maincon import FTAssetHandlerInstance
 from maincon import HelpFunctions
 import nukeassets
-# from maincon import FTAssetObject
-# from maincon import FTAssetType
-# from maincon import FTComponent
-#
-# import ftrack
-# import ftrack_connect_nuke.ftrackplugin.worker
-# from PySide import QtGui
 
 import assetmgr_nuke
 

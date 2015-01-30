@@ -1,7 +1,7 @@
 from PySide import QtCore, QtGui
 from ImportOptions import Ui_ImportOptions
 from StackedOptionsWidget import StackedOptionsWidget
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
+from ftrack_connect_nuke import ftrackConnector
 
 
 class ImportOptionsWidget(QtGui.QWidget):

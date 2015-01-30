@@ -1,4 +1,4 @@
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
+from ftrack_connect_nuke import ftrackConnector
 from PySide import QtCore, QtGui
 
 
@@ -8,7 +8,7 @@ from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.AssetVersionDetailsWidget im
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.componentTableWidget import ComponentTableWidget
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.ImportOptionsWidget import ImportOptionsWidget
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.HeaderWidget import HeaderWidget
-from ftrack_connect_nuke.ftrackplugin.ftrackConnector.maincon import FTAssetObject
+from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetObject
 
 class ftrackImportAssetQt(QtGui.QDialog):
     importSignal = QtCore.Signal()

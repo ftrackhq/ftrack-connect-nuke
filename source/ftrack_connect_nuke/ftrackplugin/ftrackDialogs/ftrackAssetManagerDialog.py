@@ -1,4 +1,4 @@
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
+from ftrack_connect_nuke import ftrackConnector
 from PySide import QtGui
 
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.AssetManagerWidget import AssetManagerWidget

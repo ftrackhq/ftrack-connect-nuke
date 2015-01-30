@@ -5,7 +5,7 @@ import glob
 import traceback
 cpath = os.path.dirname(os.path.abspath(__file__))
 availableDialogs = []
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
+from ftrack_connect_nuke import ftrackConnector
 
 conname = ftrackConnector.Connector.getConnectorName()
 if not ftrackConnector.Connector.batch():

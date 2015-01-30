@@ -2,7 +2,7 @@ import os
 from PySide import QtGui, QtCore
 from Tasks import Ui_Tasks
 import ftrack
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
+from ftrack_connect_nuke import ftrackConnector
 
 
 class TasksWidget(QtGui.QWidget):

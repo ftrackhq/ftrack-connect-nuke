@@ -1,4 +1,4 @@
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
+from ftrack_connect_nuke import ftrackConnector
 import os
 import ftrack
 from PySide import QtGui

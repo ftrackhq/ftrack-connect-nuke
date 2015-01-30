@@ -1,6 +1,6 @@
 from PySide import QtGui
 from PySide import QtXml
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
+from ftrack_connect_nuke import ftrackConnector
 
 
 class StackedOptionsWidget(QtGui.QStackedWidget):

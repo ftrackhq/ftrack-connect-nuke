@@ -4,7 +4,7 @@ import os
 
 from PySide import QtCore, QtGui
 import ftrack
-from ftrack_connect_nuke.ftrackplugin import ftrackConnector
+from ftrack_connect_nuke import ftrackConnector
 
 from ..worker import Worker
 
