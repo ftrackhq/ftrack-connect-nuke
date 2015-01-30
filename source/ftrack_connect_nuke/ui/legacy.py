@@ -16,7 +16,7 @@ import ftrack_connect_nuke
 from ftrack_connect_nuke.ftrackplugin import ftrackDialogs
 from ftrack_connect_nuke import ftrackplugin
 from ftrack_connect_nuke.ftrackplugin.ftrackConnector import HelpFunctions
-from ftrack_connect_nuke.ftrackplugin.ftrackConnector import FTComponent
+from ftrack_connect_nuke.ftrackplugin.ftrackConnector.maincon import FTComponent, FTAssetObject
 from ftrack_connect_nuke.ftrackplugin import ftrackConnector
 from ftrack_connect_nuke.ftrackplugin.ftrackConnector import nukeassets
 
@@ -260,7 +260,7 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
                 publishedComponents.append(FTComponent(componentname='nukescript', path=mainPath))
 
             if publishedComponents:
-                pubObj = ftrackConnector.FTAssetObject(
+                pubObj = FTAssetObject(
                     assetVersionId=assetVersion.getId()
                 )
                 ftrackConnector.Connector.publishAssetFiles(

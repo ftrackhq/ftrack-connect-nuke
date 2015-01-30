@@ -8,20 +8,18 @@ import traceback
 import os
 import maincon
 from maincon import FTAssetHandlerInstance
-from maincon import FTAssetObject
 from maincon import HelpFunctions
-from maincon import FTAssetType
-from maincon import FTComponent
-
-import ftrack
 import nukeassets
-import ftrack_connect_nuke.ftrackplugin.worker
-from PySide import QtGui
+# from maincon import FTAssetObject
+# from maincon import FTAssetType
+# from maincon import FTComponent
+#
+# import ftrack
+# import ftrack_connect_nuke.ftrackplugin.worker
+# from PySide import QtGui
 
-try:
-    import assetmgr_nuke
-except:
-    pass
+import assetmgr_nuke
+
 
 import urlparse
 

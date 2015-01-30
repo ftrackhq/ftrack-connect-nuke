@@ -8,7 +8,7 @@ from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.AssetVersionDetailsWidget im
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.componentTableWidget import ComponentTableWidget
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.ImportOptionsWidget import ImportOptionsWidget
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.HeaderWidget import HeaderWidget
-
+from ftrack_connect_nuke.ftrackplugin.ftrackConnector.maincon import FTAssetObject
 
 class ftrackImportAssetQt(QtGui.QDialog):
     importSignal = QtCore.Signal()
@@ -147,7 +147,7 @@ class ftrackImportAssetQt(QtGui.QDialog):
             self.componentTableWidget.columns.index('Path')
         ).text()
         
-        importObj = ftrackConnector.FTAssetObject(
+        importObj = FTAssetObject(
             componentId=component.getId(),
             filePath=accessPath,
             componentName=component.getName(),

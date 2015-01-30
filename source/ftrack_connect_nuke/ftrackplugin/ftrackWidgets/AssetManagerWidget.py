@@ -3,6 +3,8 @@ from PySide import QtCore, QtGui
 from AssetManager import Ui_AssetManager
 
 from ftrack_connect_nuke.ftrackplugin import ftrackConnector
+from ftrack_connect_nuke.ftrackplugin.ftrackConnector.maincon import FTAssetObject
+
 import ftrack
 
 
@@ -362,7 +364,7 @@ class AssetManagerWidget(QtGui.QWidget):
         newComponent = location.getComponent(newComponent.getId())
 
         path = newComponent.getFilesystemPath()
-        importObj = ftrackConnector.FTAssetObject(
+        importObj = FTAssetObject(
             filePath=path,
             componentName=componentName,
             componentId=newComponent.getId(),

@@ -10,14 +10,11 @@ import traceback
 
 from nukecon import FTAssetHandlerInstance
 from nukecon import HelpFunctions
-from nukecon import FTAssetType
-from nukecon import FTComponent
+from maincon import FTAssetObject
+from maincon import FTAssetType
+from maincon import FTComponent
 
-try:
-    import assetmgr_nuke
-except:
-    pass
-
+import assetmgr_nuke
 import ftrack_connect_nuke.ftrackplugin.worker
 
 
