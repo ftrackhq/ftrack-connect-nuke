@@ -1,11 +1,11 @@
 from PySide import QtGui, QtCore
 from FnAssetAPI import specifications
 
+import ftrack_connect_nuke
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets import HeaderWidget
 from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
 from ftrack_connect_nuke.ftrackplugin import ftrackConnector
 
-import ftrack_connect_nuke
 
 class TableKnob():
     def makeUI(self):
@@ -64,8 +64,6 @@ class BrowseKnob():
         pass
     
     def openBrowser(self):
-        # from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
-        # from ftrack_connect_nuke.ftrackplugin import ftrackConnector
         session = FnAssetAPI.SessionManager.currentSession()
         context = session.createContext()
         context.access = context.kWrite
@@ -85,7 +83,6 @@ class BrowseKnob():
 
 class HeaderKnob():
     def makeUI(self):
-        # from ftrack_connect_nuke.ftrackplugin.ftrackWidgets import HeaderWidget
         self.headerWidget = HeaderWidget.HeaderWidget(parent=None)
         self.headerWidget.setTitle('Publish')
 
