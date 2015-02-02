@@ -36,13 +36,9 @@ class Dialog(maincon.Dialog):
     def show(self):
         window = self.initGui()
 
-        import rpdb
-        debugger = rpdb.Rpdb(port=12345)
-        debugger.set_trace()
-
-        if self.type == 'panel':
-            panels.registerWidgetAsPanel('ftrack_connect_nuke.ftrackplugin.ftrackDialogs.' + window.__name__, self.dockName, 'ftrackDialogs.' + self.__class__.__name__)
-        elif self.type == 'popup':
+        # if self.type == 'panel':
+        #     panels.registerWidgetAsPanel('ftrack_connect_nuke.ftrackplugin.ftrackDialogs.' + window.__name__, self.dockName, 'ftrackDialogs.' + self.__class__.__name__)
+        if self.type == 'popup':
             showWindow = window()
             showWindow.show()
 
