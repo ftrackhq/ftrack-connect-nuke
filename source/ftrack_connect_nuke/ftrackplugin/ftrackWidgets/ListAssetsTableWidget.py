@@ -3,7 +3,7 @@ import sys
 from PySide import QtCore, QtGui
 import ftrack
 
-from ftrack_connect_nuke import ftrackConnector
+from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetHandlerInstance
 
 
 class ListAssetsTableWidget(QtGui.QWidget):
@@ -94,7 +94,7 @@ class ListAssetsTableWidget(QtGui.QWidget):
         assetTypeItem = QtGui.QStandardItem('Show All')
         self.assetTypeSelectorModel.appendRow(assetTypeItem)
 
-        assetHandler = ftrackConnector.FTAssetHandlerInstance.instance()
+        assetHandler = FTAssetHandlerInstance.instance()
         assetTypesStr = sorted(assetHandler.getAssetTypes())
 
         for assetTypeStr in assetTypesStr:
@@ -132,7 +132,7 @@ class ListAssetsTableWidget(QtGui.QWidget):
         self.latestFtrackId = ftrackId
         
         try:
-            assetHandler = ftrackConnector.FTAssetHandlerInstance.instance()
+            assetHandler = FTAssetHandlerInstance.instance()
             task = ftrack.Task(ftrackId)
             assets = task.getAssets(assetTypes=assetHandler.getAssetTypes())
             assets = sorted(assets, key=lambda a: a.getName().lower())

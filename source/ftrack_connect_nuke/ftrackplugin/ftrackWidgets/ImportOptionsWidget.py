@@ -1,7 +1,7 @@
 from PySide import QtCore, QtGui
 from ImportOptions import Ui_ImportOptions
 from StackedOptionsWidget import StackedOptionsWidget
-from ftrack_connect_nuke import ftrackConnector
+from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetHandlerInstance
 
 
 class ImportOptionsWidget(QtGui.QWidget):
@@ -35,7 +35,7 @@ class ImportOptionsWidget(QtGui.QWidget):
                 """
 
         xmlExtraAssetTypes = ""
-        assetHandler = ftrackConnector.FTAssetHandlerInstance.instance()
+        assetHandler = FTAssetHandlerInstance.instance()
         assetTypesStr = sorted(assetHandler.getAssetTypes())
         for assetTypeStr in assetTypesStr:
             assetClass = assetHandler.getAssetClass(assetTypeStr)

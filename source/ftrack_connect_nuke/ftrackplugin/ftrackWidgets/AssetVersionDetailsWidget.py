@@ -4,7 +4,8 @@ import os
 from PySide import QtCore, QtGui
 
 import ftrack
-from ftrack_connect_nuke import ftrackConnector
+from ftrack_connect_nuke.ftrackConnector.maincon import HelpFunctions
+from ftrack_connect_nuke.ftrackConnector.nukecon import Connector
 
 
 class AssetVersionDetailsWidget(QtGui.QWidget):
@@ -70,7 +71,7 @@ class AssetVersionDetailsWidget(QtGui.QWidget):
             self.propertyTableWidget.resizeRowsToContents
         )
         
-        ftrackConnector.Connector.executeInThread(
+        Connector.executeInThread(
             self._updateThumbnail, [self.thumbnailWidget, self.placholderThumbnail])
         
     def setAssetVersion(self, assetVersionId):
@@ -99,7 +100,7 @@ class AssetVersionDetailsWidget(QtGui.QWidget):
         if thumbnail is None:
             thumbnail = self.placholderThumbnail
         
-        ftrackConnector.Connector.executeInThread(
+        Connector.executeInThread(
             self._updateThumbnail, [self.thumbnailWidget, thumbnail]
         )
         
@@ -119,7 +120,7 @@ class AssetVersionDetailsWidget(QtGui.QWidget):
         '''Retrieve *url* and return data as a pixmap.'''
         pixmap = self.thumbnailCache.get(url)
         if pixmap is None:
-            data = ftrackConnector.HelpFunctions.getFileFromUrl(url)
+            data = HelpFunctions.getFileFromUrl(url)
             pixmap = QtGui.QPixmap()
             pixmap.loadFromData(data)
             self.thumbnailCache[url] = pixmap

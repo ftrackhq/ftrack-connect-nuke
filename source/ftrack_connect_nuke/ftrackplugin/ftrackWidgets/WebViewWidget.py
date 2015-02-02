@@ -1,7 +1,7 @@
 from PySide import QtCore, QtGui, QtWebKit
 from WebView import Ui_WebView
 from ftrack_connect_nuke.ftrackplugin import PersistentCookieJar
-from ftrack_connect_nuke import ftrackConnector
+from ftrack_connect_nuke.ftrackConnector.maincon import HelpFunctions
 
 
 class WebPage(QtWebKit.QWebPage):
@@ -16,15 +16,11 @@ class WebViewWidget(QtGui.QWidget):
         self.ui.setupUi(self)
 
         self.webPage = WebPage()
-        #QtCore.QObject.connect(self.webPage.networkAccessManager(), \
-        #                       QtCore.SIGNAL("sslErrors (QNetworkReply *, const QList<QSslError> &)"), \
-        #                       self.sslErrorHandler)
-
         self.persCookieJar = PersistentCookieJar.PersistentCookieJar(self)
         self.persCookieJar.load()
 
         self.webPage.networkAccessManager().setCookieJar(self.persCookieJar)
-        proxy = ftrackConnector.HelpFunctions.getFtrackQNetworkProxy()
+        proxy = HelpFunctions.getFtrackQNetworkProxy()
         if proxy:
             self.webPage.networkAccessManager().setProxy(proxy)
 

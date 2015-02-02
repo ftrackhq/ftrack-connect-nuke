@@ -14,8 +14,7 @@ import nukescripts
 
 import ftrack_connect_nuke
 from ftrack_connect_nuke import ftrackplugin
-from ftrack_connect_nuke.ftrackConnector import HelpFunctions
-from ftrack_connect_nuke.ftrackConnector.maincon import FTComponent, FTAssetObject
+from ftrack_connect_nuke.ftrackConnector.maincon import FTComponent, FTAssetObject, HelpFunctions
 from ftrack_connect_nuke import ftrackConnector
 from ftrack_connect_nuke.ftrackConnector import nukeassets
 
