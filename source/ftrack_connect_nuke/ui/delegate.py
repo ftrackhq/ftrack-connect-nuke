@@ -24,6 +24,8 @@ class Delegate(delegate.Delegate):
         # Populate the ui
         nukeMenu = nuke.menu("Nuke")
         ftrackMenu = nukeMenu.addMenu("&ftrack")
+
+        # add ftrack publish node to the menu
         ftrackMenu.addCommand('Create Publish Node', lambda: legacy.createFtrackPublish())
 
 
@@ -40,7 +42,7 @@ class Delegate(delegate.Delegate):
             'panel.addToPane(pane)'
         )
         
-        # Create the import asset dialog entry in the menu
+        # Create the asset manager dialog entry in the menu
         panels.registerWidgetAsPanel(
             'ftrack_connect_nuke.ftrackplugin.ftrackDialogs.ftrackAssetManagerDialog.ftrackAssetManagerQt', 
             'ftrackAssetManager', 
@@ -53,7 +55,7 @@ class Delegate(delegate.Delegate):
             'panel.addToPane(pane)'
         )
 
-
+        # Add ftrack publish node
         toolbar = nuke.toolbar("Nodes")
         ftrackNodesMenu = toolbar.addMenu("ftrack", icon="logobox.png")
         ftrackNodesMenu.addCommand('ftrackPublish', lambda: legacy.createFtrackPublish())
