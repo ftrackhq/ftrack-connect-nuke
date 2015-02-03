@@ -5,7 +5,7 @@ from PySide import QtCore, QtGui
 
 import ftrack
 from ftrack_connect_nuke.ftrackConnector.maincon import HelpFunctions
-from ftrack_connect_nuke.ftrackConnector.nukecon import Connector
+from ftrack_connect_nuke.ftrackConnector import Connector
 
 
 class AssetVersionDetailsWidget(QtGui.QWidget):
