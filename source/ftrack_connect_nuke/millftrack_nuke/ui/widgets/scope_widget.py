@@ -3,7 +3,7 @@
 
 from PySide import QtGui, QtCore
 
-from ...logger import FT_logger
+from FnAssetAPI import logging
 from ...ftrack_io.task import N_TaskFactory
 
 

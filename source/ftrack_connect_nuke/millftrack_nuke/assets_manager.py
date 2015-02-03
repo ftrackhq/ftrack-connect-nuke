@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from logger import FT_logger
+from FnAssetAPI import logging
 
 from ftrack_io.asset import N_AssetFactory
 
@@ -35,7 +35,7 @@ class AssetsManager(object):
       from ftrack_io.assets.scene_io import SceneIO
       scene_version = N_AssetFactory.get_version_from_id(version_id, SceneIO)
     except:
-      FT_logger.error("This asset doesn't exist [%s]" % version_id)
+      logging.error("This asset doesn't exist [%s]" % version_id)
     else:
       return scene_version
 
@@ -185,7 +185,7 @@ class AssetsManager(object):
       from ftrack_io.assets.scene_io import SceneIO
       scene_version = N_AssetFactory.get_version_from_id(version_id, SceneIO)
     except:
-      FT_logger.error("This asset doesn't exist [%s]" % version_id, "FTrack")
+      logging.error("This asset doesn't exist [%s]" % version_id, "FTrack")
       return
 
     from ftrack_io.assets.gizmo_io import GizmoIO
@@ -232,13 +232,13 @@ class AssetsManager(object):
       raise Exception("Script edition cancelled")
 
   def lock_scene_asset(self, scene_version=None):
-    FT_logger.debug(scene_version)
+    logging.debug(scene_version)
     if scene_version == None:
       scene_version = AssetsManager.get_current_scene()
       if scene_version == None:
         return
 
-    FT_logger.debug(scene_version)
+    logging.debug(scene_version)
 
     scene_version.asset.lock_asset(True)
     self.asset_locker.lock_asset(scene_version.asset.id, True)
@@ -286,7 +286,7 @@ class AssetsManager(object):
       msg = "Impossible to drop this asset, the asset IO class{0} \
 isn't recognised".format(asset_name)
       nuke.message(msg)
-      FT_logger.error(msg)
+      logging.error(msg)
 
     try:
       version = N_AssetFactory.get_version_from_id(asset_version_id, asset_class)
@@ -294,7 +294,7 @@ isn't recognised".format(asset_name)
     except Exception as err:
       msg = "Impossible to drop this asset: [{0}]".format(err)
       nuke.message(msg)
-      FT_logger.error(msg)
+      logging.error(msg)
 
     return True
 
@@ -309,13 +309,13 @@ class AssetLocker(object):
     home = os.getenv('HOME')
     if home == None or not os.path.isdir(home):
       error = "The environment variable 'HOME' is incorrect.. [%s]" % str(home)
-      FT_logger.error(error)
+      logging.error(error)
       return
 
     nuke_perso = os.path.join(home, '.nuke')
     if not os.access(nuke_perso, os.W_OK):
       error = "Impossible to access '%s', please contact RnD." % nuke_perso
-      FT_logger.error(error)
+      logging.error(error)
       return
 
     return nuke_perso
@@ -333,7 +333,7 @@ class AssetLocker(object):
       locker_file_path = os.path.join(self.nuke_perso, locker_file)
       if not os.access(locker_file_path, os.W_OK):
         error = "Impossible to access '%s', please contact RnD." % locker_file
-        FT_logger.error(error)
+        logging.error(error)
 
       else:
         try:
@@ -342,7 +342,7 @@ class AssetLocker(object):
           f.close()
         except Exception as err:
           error = "Impossible to open '%s' [%s]" % (locker_file, str(err))
-          FT_logger.error(error)
+          logging.error(error)
           continue
 
         if ( re.search("^[a-zA-Z0-9-]+$", locked_id) == None
@@ -372,7 +372,7 @@ class AssetLocker(object):
         f.close()
       except Exception as err:
         error = "Impossible to open '%s' [%s]" % (locker_file_path, str(err))
-        FT_logger.error(error)
+        logging.error(error)
       os.chmod(locker_file_path, 0777)
 
     else:
@@ -383,7 +383,7 @@ class AssetLocker(object):
         os.remove( locker_dict[asset_id] )
       except:
         error = "Impossible to remove '%s' [%s]" % (locker_dict[asset_id], str(err))
-        FT_logger.error(error)
+        logging.error(error)
 
   def check_locked_scenes(self):
     locker_dict = self._get_locked_dict()
@@ -396,7 +396,7 @@ class AssetLocker(object):
       for scene_id in panel.ids_to_remove:
         if os.access(locker_dict[scene_id], os.W_OK):
           os.remove(locker_dict[scene_id])
-          FT_logger.info("unlocked %s" % scene_id)
+          logging.info("unlocked %s" % scene_id)
       panel.unlock_selected_assets()
 
 
@@ -411,20 +411,20 @@ class RecentScenes(object):
     home = os.getenv('HOME')
     if home == None or not os.path.isdir(home):
       error = "The environment variable 'HOME' is incorrect.. [%s]" % str(home)
-      FT_logger.error(error)
+      logging.error(error)
       return
 
     nuke_folder_perso = os.path.join(home, '.nuke')
     config_file = os.path.join(nuke_folder_perso, 'ftrack_recent_scenes')
     if not os.access(nuke_folder_perso, os.W_OK):
       error = "Impossible to access '%s', please contact RnD." % nuke_folder_perso
-      FT_logger.error(error)
+      logging.error(error)
       return
 
     if ( os.path.isfile(config_file)
          and not os.access(config_file, os.W_OK) ):
       error = "Impossible to access '%s', please contact RnD." % config_file
-      FT_logger.error(error)
+      logging.error(error)
       return
 
     return config_file
@@ -433,7 +433,7 @@ class RecentScenes(object):
     recents_list = self._get_list()
     if recents_list == None:
       error = "Impossible to add this asset to the 'Recent scenes' list. Please contact RnD."
-      FT_logger.error(error)
+      logging.error(error)
       return
 
     version_nb = " v%02d" % scene_version.version_number
@@ -452,7 +452,7 @@ class RecentScenes(object):
     recents_list = self._get_list()
     if recents_list == None:
       error = "Impossible to get the 'Recent scenes' list. Please contact RnD."
-      FT_logger.error(error)
+      logging.error(error)
       return
 
     for asset_id, asset_name in recents_list:
@@ -493,7 +493,7 @@ class RecentScenes(object):
   def _write_list(self, recents_list):
     if self.config_file == None:
       error = "Impossible to add this asset to the 'Recent scenes' list. Please contact RnD."
-      FT_logger.error(error)
+      logging.error(error)
       return
 
     recent_scenes_lines = []

@@ -6,7 +6,7 @@ import re, os
 
 from ..images import image_dir
 
-from ...logger import FT_logger
+from FnAssetAPI import logging
 
 
 class ScriptEditorWidget(QtGui.QWidget):

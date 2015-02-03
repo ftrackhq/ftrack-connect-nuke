@@ -3,8 +3,7 @@
 
 from PySide import QtCore
 
-from logger import FT_logger
-
+from FnAssetAPI import logging
 
 class WorkerSignal(QtCore.QObject):
   finished = QtCore.Signal(bool, str)
@@ -17,12 +16,11 @@ class Worker(QtCore.QRunnable):
     self._kwargs = kwargs
     self.signal = WorkerSignal()
 
-#  @FT_logger.profiler
   def run(self, *args):
     try:
       self._callback(*self._args, **self._kwargs)
     except Exception as err:
-      FT_logger.debug(str(err), color="red")
+      logging.debug(str(err))
       self.signal.finished.emit(False, str(err))
     else:
       self.signal.finished.emit(True, "")

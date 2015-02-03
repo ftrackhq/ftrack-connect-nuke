@@ -3,6 +3,7 @@
 
 from PySide import QtGui, QtCore
 import re
+from FnAssetAPI import logging
 
 from generic.base_dialog import BaseIODialog
 from widgets.nodes_graph_widget import NodesGraphWidget
@@ -10,40 +11,38 @@ from widgets.message_widget import MessageWidget
 from widgets.comment_widget import CommentWidget
 from widgets.assets_tree import AssetsTree
 
-from ..ftrack_io.assets.group_io import GroupIO
-from ..ftrack_io.assets.scene_io import SceneIO
+# from ..ftrack_io.assets.group_io import GroupIO
+# from ..ftrack_io.assets.scene_io import SceneIO
 
-from ..ftrack_io.asset import N_AssetFactory
-from ..ftrack_io.task import N_TaskFactory
+# from ..ftrack_io.asset import N_AssetFactory
+# from ..ftrack_io.task import N_TaskFactory
 
-from ..ftrack_io.asset import AssetIOError
-
-from ..logger import FT_logger
+# from ..ftrack_io.asset import AssetIOError
 
 
 class GroupPublisherDialog(BaseIODialog):
   def __init__(self, nodes, version_id):
-    FT_logger.debug('version id: %s' % version_id)
+    logging.debug('version id: %s' % version_id)
 
     super(GroupPublisherDialog, self).__init__(QtGui.QApplication.activeWindow())
     self.setFTrackTitle("Publish a group of nodes...")
 
     self._nodes = nodes
 
-    self._group_connector = GroupIO.connectors()[0]
+    # self._group_connector = GroupIO.connectors()[0]
 
     # Dict used when several group assets are found in the nodes
     self._group_included_dict = dict()
 
     self.setupUI()
 
-    # Check current asset (None if no version_id found)
-    try:
-      self._current_scene = N_AssetFactory.get_asset_from_version_id(version_id, SceneIO)
-    except AssetIOError as err:
-      self.set_error(str(err))
+    # # Check current asset (None if no version_id found)
+    # try:
+    #   self._current_scene = N_AssetFactory.get_asset_from_version_id(version_id, SceneIO)
+    # except AssetIOError as err:
+    #   self.set_error(str(err))
 
-    self.initiate_tasks()
+    # self.initiate_tasks()
 
     self._nodes_graph.import_nodes(nodes)
     self._nodes_graph.nodes_loaded.connect(self._validate_group)
@@ -82,8 +81,8 @@ class GroupPublisherDialog(BaseIODialog):
     task_label.setStyleSheet(css_label)
     task_frame_layout.addWidget(task_label)
     self._group_tree = AssetsTree(self)
-    asset_colors = { self._group_connector.name : self._group_connector.color }
-    self._group_tree.add_assets_colors(asset_colors)
+    # asset_colors = { self._group_connector.name : self._group_connector.color }
+    # self._group_tree.add_assets_colors(asset_colors)
     self._group_tree.set_selection_mode(False)
     task_frame_layout.addWidget(self._group_tree)
 

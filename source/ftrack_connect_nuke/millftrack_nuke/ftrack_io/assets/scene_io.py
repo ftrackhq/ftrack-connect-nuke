@@ -12,7 +12,7 @@ import datetime
 import json
 
 from ...controller import Controller
-from ...logger import FT_logger
+from FnAssetAPI import logging
 from ... import utilities
 
 import nuke
@@ -117,13 +117,13 @@ class SceneVersionIO(AssetVersionIO):
       date = datetime.datetime(date_list[0], date_list[1], date_list[2],
                                date_list[3], date_list[4], date_list[5])
     except Exception as err:
-      FT_logger.error("The editor metadata is incorrect [{0}]".format(err))
+      logging.error("The editor metadata is incorrect [{0}]".format(err))
       return None
 
     try:
       user = User(user_id)
     except FTrackError:
-      FT_logger.error("The user id does not exist [{0}]".format(user_id))
+      logging.error("The user id does not exist [{0}]".format(user_id))
       return None
 
     return (user, utilities.date_with_tz(date))

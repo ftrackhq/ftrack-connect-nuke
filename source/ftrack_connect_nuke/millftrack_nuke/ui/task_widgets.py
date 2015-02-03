@@ -19,7 +19,7 @@ from ..ftrack_io.asset import AssetIOError
 
 from ..ftrack_io.assets.scene_io import SceneIO
 
-from ..logger import FT_logger
+from FnAssetAPI import logging
 
 import nuke
 
@@ -61,12 +61,11 @@ class TaskManagerWidget(BaseDockableWidget):
     if knob_name in nuke.root().knobs().keys():
       return nuke.root()[knob_name].value()
 
-  @FT_logger.profiler
   def refresh(self):
     self.initiate_error_box()
 
     version_id = self._get_meta("ftrack_version_id")
-    FT_logger.debug(version_id)
+    logging.debug(version_id)
     if version_id == None:
       msg = "This script is not an asset and does not belong to any tasks. "
       msg += "Please publish it in order to manage the corresponding task. "
@@ -149,9 +148,8 @@ class TaskWidget(QtGui.QWidget):
     for widget in self._tasks_dict.values():
       widget.set_selection_mode(bool_value)
 
-  @FT_logger.profiler
   def set_task(self, task, current_scene=None):
-    FT_logger.debug("name: %s" % task.name, color="blue")
+    logging.debug("name: %s" % task.name)
     if task.parents not in self._tasks_dict.keys():
       single_task_widget = SingleTaskWidget(task, current_scene, self)
       single_task_widget.assets_widget.assets_tree.asset_version_selected.connect(self._emit_asset_version_selected)
@@ -309,7 +307,6 @@ class SingleTaskWidget(QtGui.QFrame):
     self._t_status = self._task.status
     self._t_due_date = self._task.end_date
 
-  @FT_logger.profiler
   def initiate_task(self):
     if self._task == None:
       return
@@ -351,7 +348,7 @@ class SingleTaskWidget(QtGui.QFrame):
 
 
 class SceneAssetsWidget(QtGui.QWidget):
-  @FT_logger.profiler
+
   def __init__(self, parent=None):
     super(SceneAssetsWidget, self).__init__(parent)
 
@@ -413,9 +410,8 @@ class SceneAssetsWidget(QtGui.QWidget):
 
     main_layout.addWidget(self.assets_tree)
 
-  @FT_logger.profiler
   def initiate_task(self, task, current_scene=None):
-    FT_logger.debug("name: %s" % task.name, color="blue")
+    logging.debug("name: %s" % task.name, color="blue")
     self._task = task
 
     if current_scene != None:

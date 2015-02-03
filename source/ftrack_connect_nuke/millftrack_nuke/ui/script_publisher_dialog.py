@@ -16,7 +16,7 @@ from widgets.snapshots_widget import SnapshotsWidget
 from widgets.comment_widget import CommentWidget
 from task_widgets import TaskWidget
 
-from ..logger import FT_logger
+from FnAssetAPI import logging
 
 
 class ScriptPublisherDialog(BaseIODialog):
@@ -217,18 +217,16 @@ class ScriptPublisherDialog(BaseIODialog):
 
     super(ScriptPublisherDialog, self).set_tasks()
 
-  @FT_logger.profiler
   def update_task(self, *args):
     task = self.current_task
     if task != None:
-      FT_logger.debug("current: %s" % task.name)
+      logging.debug("current: %s" % task.name)
       self._task_widget.set_task(task, self._current_scene)
       self.update_asset()
 
     self._validate(soft_validation=True)
     self._comment_widget.setFocus()
 
-  @FT_logger.profiler
   def update_asset(self):
     task = self.current_task
     asset_type = self._asset_connectors_cbbox.currentText()
@@ -239,9 +237,8 @@ class ScriptPublisherDialog(BaseIODialog):
     version = task.asset_version_number(self.asset_name, self.connector.asset_type)
     self._asset_version.setText("%03d" % version)
 
-  @FT_logger.profiler
   def _validate(self, soft_validation=False):
-    FT_logger.debug("soft_validation: %s" % soft_validation)
+    logging.debug("soft_validation: %s" % soft_validation)
 
     self._asset_connectors_cbbox.setEnabled(True)
     self.initiate_error_box()

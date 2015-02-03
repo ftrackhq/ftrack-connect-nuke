@@ -7,7 +7,7 @@ import os, re
 from pytz import timezone
 import datetime
 
-from logger import FT_logger
+from FnAssetAPI import logging
 
 MY_LOCATION = os.environ.get("MILL_JOB_LOCATION", 'LONDON')
 
@@ -38,14 +38,14 @@ def dir_temp():
   dir_temp = os.getenv("NUKE_TEMP_DIR", os.path.join(os.sep,"var","tmp","nuke"))
   if not os.path.isdir(dir_temp):
     os.mkdir(dir_temp)
-  FT_logger.debug(dir_temp)
+  logging.debug(dir_temp)
   return dir_temp
 
 
 def get_url_file(url, overwrite=False):
   ''' Copy an url file into the nuke tmp if necessary
   '''
-  FT_logger.debug(url)
+  logging.debug(url)
   file_name = url.rsplit("/",1)[-1]
   if re.search("^[a-zA-Z0-9\._-]+\?[a-zA-Z0-9\._-]+\=[a-zA-Z0-9\._-]+(\&[a-zA-Z0-9\._-]+\=[a-zA-Z0-9\._-]+)*$", file_name):
     file_name = "_".join(re.findall("(?<=\=)[a-zA-Z0-9\._-]+", file_name.split("?",1)[-1]))
@@ -73,7 +73,7 @@ def get_url_file(url, overwrite=False):
   output = open(file_path, 'wb')
   output.write(html)
   output.close()
-  FT_logger.debug(file_path)
+  logging.debug(file_path)
   return file_path
 
 
@@ -85,6 +85,6 @@ def get_pixmap_file(name_file, pixmap, overwrite=False):
     return file_path
 
   pixmap.save(file_path, format="PNG", quality=100)
-  FT_logger.debug(file_path)
+  logging.debug(file_path)
   return file_path
 

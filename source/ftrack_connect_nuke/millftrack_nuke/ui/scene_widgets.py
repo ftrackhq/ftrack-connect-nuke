@@ -16,7 +16,8 @@ from ..ftrack_io.assets.scene_io import SceneIO
 
 from images import image_dir
 
-from ..logger import FT_logger
+from FnAssetAPI import logging
+
 from .. import utilities
 
 import nuke
@@ -121,7 +122,6 @@ class SceneVersionWidget(QtGui.QWidget):
     self._stackLayout.setCurrentWidget(self._empty_asset_version)
     self._loading_asset_version.stop_anim()
 
-  @FT_logger.profiler
   def set_scene_version(self, scene_version):
     if scene_version.is_being_cached:
       return
@@ -439,7 +439,6 @@ class SingleSceneVersionWidget(QtGui.QWidget):
                                              QtGui.QSizePolicy.Expanding )
     asset_frame_layout.addItem(spacer_global)
 
-  @FT_logger.profiler
   def initiate_scene_version(self):
     if self.scene_version == None:
       return
@@ -533,7 +532,7 @@ class SingleSceneVersionWidget(QtGui.QWidget):
     locker.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
     locker.setOpenExternalLinks(True)
     locker.setToolTip("<html><img src="+ image +"/></html>")
-    FT_logger.debug("name: %s" % image)
+    logging.debug("name: %s" % image)
 
     self._infos_layout.insertRow(0, locker_lbl, locker)
 
@@ -556,14 +555,13 @@ class SingleSceneVersionWidget(QtGui.QWidget):
   def initiate_scene_warning(self):
     self._scene_warning_box.setVisible(False)
 
-  @FT_logger.profiler
   def _validate(self):
     errors = []
     warnings = []
 
     try:
       scene_path = self.scene_version.path()
-      FT_logger.debug(scene_path)
+      logging.debug(scene_path)
 
     except AssetIOError as err:
       errors.append(str(err))

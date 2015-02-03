@@ -3,7 +3,7 @@
 
 from PySide import QtGui, QtCore
 
-import utilities
+# import utilities
 
 from ...ftrack_io.asset import N_AssetFactory, AssetIOError
 from ...ftrack_io.assets.group_io import GroupIO
@@ -12,7 +12,7 @@ from ..images import image_dir
 
 import os
 
-from ...logger import FT_logger
+from FnAssetAPI import logging
 from ...controller import Controller
 
 
@@ -113,8 +113,8 @@ class NodesGraphWidget(QtGui.QGraphicsView):
 
   def save_thumbnail(self):
     pixmap = QtGui.QPixmap.grabWidget(self.nodes_viewer)
-    return utilities.get_pixmap_file( "Group_nodes", pixmap,
-                                      overwrite=True )
+    # return utilities.get_pixmap_file( "Group_nodes", pixmap,
+    #                                   overwrite=True )
 
   def is_loaded(self):
     return self._is_loaded
@@ -176,7 +176,7 @@ class NodeCached(object):
         self.is_group = True
 
     except AssetIOError as err:
-      FT_logger.error(err)
+      logging.error(err)
 
     if self.is_group:
       try:
@@ -187,7 +187,7 @@ class NodeCached(object):
           self.color_linked_asset.setNamedColor(previous_asset.connector.color)
 
       except AssetIOError as err:
-        FT_logger.error(err)
+        logging.error(err)
 
 
 class NodesGraphEditButtons(QtGui.QWidget):

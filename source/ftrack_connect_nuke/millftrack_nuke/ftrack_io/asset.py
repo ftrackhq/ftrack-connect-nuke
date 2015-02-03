@@ -10,7 +10,8 @@ from task import N_TaskFactory
 import os
 from pytz import timezone
 
-from ..logger import FT_logger
+from FnAssetAPI import logging
+
 from .. import utilities
 
 
@@ -216,7 +217,7 @@ class AssetVersionIO(FtrackObjectIO):
         version.load_dependencies()
 
       except AssetIOError as err:
-        FT_logger.error("Can't load some dependencies [{0}]".format(err))
+        logging.error("Can't load some dependencies [{0}]".format(err))
 
   def load_asset(self):
     self.asset.connector.loadVersion(self.ftrack_object)
@@ -269,7 +270,6 @@ class AssetFactory(FtrackObjectFactory):
       self._assets_dict[asset.getId()] = asset_class(asset)
     return self._assets_dict[asset.getId()]
 
-  @FT_logger.profiler
   def get_version(self, asset_version, asset_class=None):
     # Try to guess the asset class if this has not been indicated
     if asset_class is None:

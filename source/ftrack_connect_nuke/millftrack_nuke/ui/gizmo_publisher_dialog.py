@@ -20,8 +20,6 @@ from widgets.assets_tree import AssetsTree
 
 # from ..ftrack_io.asset import AssetIOError
 
-# from ..logger import FT_logger
-
 
 class GizmoPublisherDialog(BaseIODialog):
   def __init__(self, version_id):

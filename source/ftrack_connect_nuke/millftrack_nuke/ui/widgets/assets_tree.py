@@ -10,7 +10,8 @@ from ...controller import Controller
 
 import os, re
 
-from ...logger import FT_logger
+from FnAssetAPI import logging
+
 from ... import utilities
 
 
@@ -782,7 +783,6 @@ class AssetsTree(QtGui.QTreeView):
   def set_draggable(self, bool_value):
     self.setDragEnabled(True)
 
-  @FT_logger.profiler
   def import_assets(self, assets, asset_types=None, filter=None):
     self.initiate()
 
@@ -794,7 +794,6 @@ class AssetsTree(QtGui.QTreeView):
 
     self.setCursor(QtCore.Qt.WaitCursor)
 
-  @FT_logger.profiler
   def _get_versions(self, assets):
     self._assets.clear()
 
@@ -815,7 +814,6 @@ class AssetsTree(QtGui.QTreeView):
 
     self.setCursor(QtCore.Qt.ArrowCursor)
 
-  @FT_logger.profiler
   def update_display(self, asset_types=None, filter=None):
     self.proxy_model.set_asset_types(asset_types)
 

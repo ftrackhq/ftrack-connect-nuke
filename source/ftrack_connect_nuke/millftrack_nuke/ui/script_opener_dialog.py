@@ -13,7 +13,7 @@ from generic.base_dialog import BaseIODialog
 from task_widgets import TaskWidget
 from scene_widgets import SceneVersionWidget
 
-from ..logger import FT_logger
+from FnAssetAPI import logging
 
 
 class ScriptOpenerDialog(BaseIODialog):
@@ -81,7 +81,6 @@ class ScriptOpenerDialog(BaseIODialog):
   def current_scene_version(self):
     return self._scene_version_widget.current_scene_version
 
-  @FT_logger.profiler
   def update_task(self, *args):
     task = self.current_task
     self._scene_version_widget.initiate()
@@ -92,20 +91,18 @@ class ScriptOpenerDialog(BaseIODialog):
     if self._task_widget.current_asset_version == None:
       self.validate()
 
-  @FT_logger.profiler
   def set_scene_version(self, scene_version):
     if scene_version is None:
       self._scene_version_widget.set_empty()
       self.set_enabled(False)
     elif not scene_version.is_being_cached:
-      FT_logger.debug(scene_version.name)
+      logging.debug(scene_version.name)
       self._scene_version_widget.set_scene_version(scene_version)
       self.validate(scene_version)
 
   def set_no_asset_version(self):
     self._scene_version_widget.set_empty()
 
-  @FT_logger.profiler
   def validate(self, scene_version=None):
     self.initiate_warning_box()
     self.initiate_error_box()

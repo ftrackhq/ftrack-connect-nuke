@@ -7,7 +7,7 @@ LOCATION = os.getenv('FTRACK_LOCATION_PLUGIN_PATH')
 TOPIC = os.getenv('FTRACK_TOPIC_PLUGIN_PATH')
 
 from assets_manager import AssetsManager
-from logger import FT_logger
+from FnAssetAPI import logging
 
 import nuke
 import ftrack_connect_nuke.millftrack_nuke
@@ -21,7 +21,7 @@ class MillFTrack(object):
     ''' Create a new instance '''
     if not cls._instance:
       cls._instance = super(MillFTrack, cls).__new__(cls)
-      FT_logger.info('FTrack loaded.')
+      logging.info('FTrack loaded.')
     return cls._instance
 
   def __init__(self):
@@ -106,10 +106,6 @@ class MillFTrack(object):
       log_folder.setFlag(nuke.STARTLINE)
       log_folder.setValue(log_folder_default)
       preferences.addKnob(log_folder)
-
-    FT_logger.update_log_folder()
-    FT_logger.update_profiler()
-    FT_logger.update_level()
 
   def initiate_callbacks(self):
     # Update script metadatas and links

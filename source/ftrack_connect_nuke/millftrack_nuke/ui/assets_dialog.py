@@ -22,14 +22,12 @@ from ..ftrack_io.assets.gizmo_io import GizmoIO
 from ..ftrack_io.assets.xmlf_io import XmlfIO
 from ..ftrack_io.assets.lut_io import LutIO
 
-from ..logger import FT_logger
-
+from FnAssetAPI import logging
 import os
 
 
 class AssetsLoaderDialog(BaseIOScopeDialog):
 
-  @FT_logger.profiler
   def __init__(self, version_id):
     super(AssetsLoaderDialog, self).__init__(QtGui.QApplication.activeWindow())
     self.setFTrackTitle("Asset Management...")
@@ -53,7 +51,6 @@ class AssetsLoaderDialog(BaseIOScopeDialog):
 
     self.initiate_tasks()
 
-  @FT_logger.profiler
   def setupUI(self):
     self.resize(100,900)
     self.setMinimumWidth(1000)
@@ -187,7 +184,6 @@ class AssetsLoaderDialog(BaseIOScopeDialog):
   def _refresh_tasks(self, bool_value):
     self.initiate_tasks()
 
-  @FT_logger.profiler
   def update_task(self):
     self.set_enabled(False)
 

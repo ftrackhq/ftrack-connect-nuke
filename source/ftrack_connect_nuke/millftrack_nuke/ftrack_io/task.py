@@ -8,8 +8,7 @@ from ftrack import getTaskStatuses, getShotStatuses
 from base import FtrackObjectIO, FtrackObjectFactory
 from project import N_ProjectFactory
 
-from ..logger import FT_logger
-
+from FnAssetAPI import logging
 
 class TaskIOError(Exception):
   pass
@@ -17,7 +16,6 @@ class TaskIOError(Exception):
 
 class TaskIO(FtrackObjectIO):
 
-  @FT_logger.profiler
   def __init__(self, task):
     super(TaskIO, self).__init__(task)
     self.project = N_ProjectFactory.get_project_from_task(task)
