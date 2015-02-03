@@ -19,7 +19,10 @@ class Delegate(delegate.Delegate):
         import nuke
         import legacy
         from nukescripts import panels
+        from ftrack_connect_nuke import ftrackConnector
         from ftrack_connect_nuke.ftrackplugin.ftrackDialogs import ftrackAssetManagerDialog, ftrackImportAssetDialog
+        
+        ftrackConnector.Connector.registerAssets()
 
         # Populate the ui
         nukeMenu = nuke.menu("Nuke")
@@ -68,7 +71,6 @@ class Delegate(delegate.Delegate):
         nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='Read')
         nuke.addKnobChanged(legacy.ftrackPublishKnobChanged, nodeClass="Group")
         nuke.addOnCreate(legacy.ftrackPublishHieroInit)
-
 
 
     def populateUI(self, uiElement, specification, context):
