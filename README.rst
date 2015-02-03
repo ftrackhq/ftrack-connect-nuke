@@ -32,25 +32,33 @@ specific language governing permissions and limitations under the License.
 Environment Variables:
 ======================
 
+ftrack
+------
+
 * FTRACK_SERVER= <ftrack server address>
 * FTRACK_APIKEY= <ftrack api key>
 * FTRACK_LOCATION_PLUGIN_PATH= <full path to location plugins>
 * LOGNAME= <ftrack user>
+* FTRACK_SHOTID=<ftrack shot id>
+* FTRACK_TASKID=<ftrack task id>
+
+nuke
+----
 
 * NUKE_PATH= ${FTRACK-CONNECT-NUKE}/resource/nuke/nuke_path
 
-# python modules 
+python modules 
+--------------
+
 * PYTHONPATH=${PYTHONPATH}:~/devel/python-api-v3 # ftrack core lib v3
 * PYTHONPATH=${PYTHONPATH}:~/devel/connector/ftrack-connect/source
 * PYTHONPATH=${PYTHONPATH}:~/devel/connector/ftrack-connect-foundry/source
 * PYTHONPATH=${PYTHONPATH}:~/devel/connector/ftrack-connect-nuke/source
 * PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python2.7/dist-packages/ # adding the local os modules available
 
-# waiting for the new connector 
-* FTRACK_SHOTID=<ftrack shot id>
-* FTRACK_TASKID=<ftrack task id>
+Foundry related envs 
+--------------------
 
-# Foundry related envs 
 * FOUNDRY_ASSET_LOGGING_SEVERITY=6 
 * FOUNDRY_ASSET_API_DEBUG=1 
 * FOUNDRY_ASSET_PLUGIN_PATH= ${FTRACK-CONNECT-NUKE}/resource/nuke
