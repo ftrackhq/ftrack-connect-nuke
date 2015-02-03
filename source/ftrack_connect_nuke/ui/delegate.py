@@ -21,15 +21,23 @@ class Delegate(delegate.Delegate):
         from nukescripts import panels
         from ftrack_connect_nuke import ftrackConnector
         from ftrack_connect_nuke.ftrackplugin.ftrackDialogs import ftrackAssetManagerDialog, ftrackImportAssetDialog
+        from ftrack_connect_nuke.millftrack_nuke.assets_manager import AssetsManager
         
         ftrackConnector.Connector.registerAssets()
+
+        millAssetManager = AssetsManager()
 
         # Populate the ui
         nukeMenu = nuke.menu("Nuke")
         ftrackMenu = nukeMenu.addMenu("&ftrack")
 
         # add ftrack publish node to the menu
-        ftrackMenu.addCommand('Create Publish Node', lambda: legacy.createFtrackPublish())
+        ftrackMenu.addCommand('Create ftrack Publish Node', lambda: legacy.createFtrackPublish())
+
+        # add new entries in the ftrack menu
+        ftrackMenu.addSeparator()
+        ftrackMenu.addCommand('Publish a gizmo...', '')
+        ftrackMenu.addCommand('Publish a group of nodes...', '')
 
 
         # Create the import asset dialog entry in the menu
@@ -71,6 +79,12 @@ class Delegate(delegate.Delegate):
         nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='Read')
         nuke.addKnobChanged(legacy.ftrackPublishKnobChanged, nodeClass="Group")
         nuke.addOnCreate(legacy.ftrackPublishHieroInit)
+
+        file_menu = nukeMenu.menu('File')
+        file_menu.addSeparator(index=1)
+        file_menu.addCommand('FTrack - Open Script...', millAssetManager.open_script_panel, index=2)
+        file_menu.addCommand('FTrack - Publish Script...', millAssetManager.publish_script_panel, index=3)
+
 
 
     def populateUI(self, uiElement, specification, context):
