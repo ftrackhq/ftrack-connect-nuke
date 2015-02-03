@@ -7,11 +7,13 @@ from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.WebViewWidget import WebView
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.HeaderWidget import HeaderWidget
 
 
-class ftrackInfoQt(QtGui.QDialog):
+class FtrackInfoDialog(QtGui.QDialog):
     def __init__(self, parent=None):
-        if not parent:
-            self.parent = ftrackConnector.Connector.getMainWindow()
-        super(ftrackInfoQt, self).__init__(self.parent)
+        # if not parent:
+        #     self.parent = ftrackConnector.Connector.getMainWindow()
+
+        super(FtrackInfoDialog, self).__init__(parent=parent)
+        
         self.setMinimumWidth(400)
         self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding))
 
@@ -51,20 +53,3 @@ class ftrackInfoQt(QtGui.QDialog):
     def updateObj(self, taskId):
         self.setObject(taskId)
 
-
-class ftrackInfoDialog(ftrackConnector.Dialog):
-    def __init__(self):
-        super(ftrackInfoDialog, self).__init__()
-        self.dockName = 'ftrackInfo'
-        self.panelWidth = 500
-
-    def initGui(self):
-        return ftrackInfoQt
-
-    @staticmethod
-    def category():
-        return 'info'
-
-    @staticmethod
-    def accepts():
-        return ['maya']

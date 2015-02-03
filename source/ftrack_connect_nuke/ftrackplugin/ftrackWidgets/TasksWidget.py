@@ -27,7 +27,7 @@ class TasksWidget(QtGui.QWidget):
 
         self.ui.tasksTableWidget.setHorizontalHeaderLabels(['Task', 'Task Type', 'Status', 'proj', 'state'])
 
-        self.ui.tasksTableWidget.verticalHeader().setDefaultSectionSize(ftrackConnector.Dialog.TABLEROWHEIGHT)
+        # self.ui.tasksTableWidget.verticalHeader().setDefaultSectionSize(ftrackConnector.Dialog.TABLEROWHEIGHT)
 
         user = os.environ['LOGNAME']
         ftrackUser = ftrack.User(user)

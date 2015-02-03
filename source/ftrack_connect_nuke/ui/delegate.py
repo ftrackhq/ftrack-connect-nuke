@@ -31,7 +31,7 @@ class Delegate(delegate.Delegate):
 
         # Create the import asset dialog entry in the menu
         panels.registerWidgetAsPanel(
-            'ftrack_connect_nuke.ftrackplugin.ftrackDialogs.ftrackImportAssetDialog.ftrackImportAssetQt', 
+            'ftrack_connect_nuke.ftrackplugin.ftrackDialogs.ftrackImportAssetDialog.FtrackImportAssetDialog', 
             'ftrackImportAsset', 
             'ftrackDialogs.ftrackImportAssetDialog'
         )
@@ -44,7 +44,7 @@ class Delegate(delegate.Delegate):
         
         # Create the asset manager dialog entry in the menu
         panels.registerWidgetAsPanel(
-            'ftrack_connect_nuke.ftrackplugin.ftrackDialogs.ftrackAssetManagerDialog.ftrackAssetManagerQt', 
+            'ftrack_connect_nuke.ftrackplugin.ftrackDialogs.ftrackAssetManagerDialog.FtrackAssetManagerDialog', 
             'ftrackAssetManager', 
             'ftrackDialogs.ftrackAssetManagerDialog'
         )

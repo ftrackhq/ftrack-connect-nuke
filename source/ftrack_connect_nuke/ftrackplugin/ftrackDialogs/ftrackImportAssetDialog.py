@@ -10,14 +10,15 @@ from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.ImportOptionsWidget import I
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.HeaderWidget import HeaderWidget
 from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetObject
 
-class ftrackImportAssetQt(QtGui.QDialog):
+class FtrackImportAssetDialog(QtGui.QDialog):
     importSignal = QtCore.Signal()
 
     def __init__(self, parent=None):
-        if not parent:
-            self.parent = ftrackConnector.Connector.getMainWindow()
+        # if not parent:
+        #     self.parent = ftrackConnector.Connector.getMainWindow()
 
-        super(ftrackImportAssetQt, self).__init__(self.parent)
+        super(FtrackImportAssetDialog, self).__init__(parent=parent)
+
         self.setSizePolicy(QtGui.QSizePolicy.Expanding,
                            QtGui.QSizePolicy.Expanding)
         self.setMinimumWidth(600)
@@ -173,17 +174,3 @@ class ftrackImportAssetQt(QtGui.QDialog):
             
         message = 'Notice: \n' + message
         self.messageLabel.setText(message)
-
-
-class ftrackImportAssetDialog(ftrackConnector.Dialog):
-    def __init__(self):
-        super(ftrackImportAssetDialog, self).__init__()
-        self.dockName = 'ftrackImportAsset'
-        self.panelWidth = 650
-
-    def initGui(self):
-        return ftrackImportAssetQt
-
-    @staticmethod
-    def category():
-        return 'assethandle'

@@ -10,7 +10,6 @@ from ftrack_connect_nuke import ftrackConnector
 class TableKnob():
     def makeUI(self):
         self.tableWidget = QtGui.QTableWidget()
-        self.tableWidget.verticalHeader().setDefaultSectionSize(ftrack_connect_nuke.ftrackplugin.ftrackConnector.Dialog.TABLEROWHEIGHT)
         self.tableWidget.setColumnCount(7)
         self.tableWidget.setHorizontalHeaderLabels(['', 'Filename', 'Component', 'NodeName', '', '', ''])
         self.tableWidget.verticalHeader().setVisible(False)

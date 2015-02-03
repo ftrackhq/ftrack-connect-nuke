@@ -5,12 +5,14 @@ from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.AssetManagerWidget import As
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.HeaderWidget import HeaderWidget
 
 
-class ftrackAssetManagerQt(QtGui.QDialog):
+class FtrackAssetManagerDialog(QtGui.QDialog):
     def __init__(self, parent=None):
-        if not parent:
-            self.parent = ftrackConnector.Connector.getMainWindow()
 
-        super(ftrackAssetManagerQt, self).__init__(self.parent)
+        # if not parent:
+        #     self.parent = ftrackConnector.Connector.getMainWindow()
+
+        super(FtrackAssetManagerDialog, self).__init__(parent=parent)
+
         self.setMinimumWidth(400)
         self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding))
 
@@ -33,21 +35,3 @@ class ftrackAssetManagerQt(QtGui.QDialog):
 
         panelComInstance = ftrackConnector.panelcom.PanelComInstance.instance()
         panelComInstance.addRefreshListener(self.assetManagerWidget.refreshAssetManager)
-
-
-class ftrackAssetManagerDialog(ftrackConnector.Dialog):
-    def __init__(self):
-        super(ftrackAssetManagerDialog, self).__init__()
-        self.dockName = 'ftrackAssetManager'
-        self.panelWidth = 650
-
-    def initGui(self):
-        return ftrackAssetManagerQt
-
-    @staticmethod
-    def accepts():
-        return []
-
-    @staticmethod
-    def category():
-        return 'assetmanager'

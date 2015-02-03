@@ -12,12 +12,12 @@ import os
 import shutil
 
 
-class ftrackPublishAssetQt(QtGui.QDialog):
+class FtrackPublishAssetDialog(QtGui.QDialog):
     def __init__(self, parent=None):
-        if not parent:
-            self.parent = ftrackConnector.Connector.getMainWindow()
+        # if not parent:
+        #     self.parent = ftrackConnector.Connector.getMainWindow()
 
-        super(ftrackPublishAssetQt, self).__init__(self.parent)
+        super(FtrackPublishAssetDialog, self).__init__(parent=parent)
         self.setSizePolicy(QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding))
 
         self.assetType = None
@@ -193,32 +193,3 @@ class ftrackPublishAssetQt(QtGui.QDialog):
         msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
         msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
         msgBox.exec_()
-
-
-class ftrackPublishAssetDialog(ftrackConnector.Dialog):
-    def __init__(self):
-        super(ftrackPublishAssetDialog, self).__init__()
-        self.dockName = 'ftrackPublishAsset'
-        self.panelWidth = 450
-
-    def initGui(self):
-        return ftrackPublishAssetQt
-
-    def show(self, assetType=None, assetName=None, comment=''):
-        ftrackConnector.Dialog.show(self)
-        # This is only supported in maya
-        conName = ftrackConnector.Connector.getConnectorName()
-
-        if conName == 'maya':
-            window = self.getWindow()
-            window.setAssetType(assetType)
-            window.setAssetName(assetName)
-            window.setComment(comment)
-
-    @staticmethod
-    def category():
-        return 'assethandle'
-
-    @staticmethod
-    def accepts():
-        return ['maya']

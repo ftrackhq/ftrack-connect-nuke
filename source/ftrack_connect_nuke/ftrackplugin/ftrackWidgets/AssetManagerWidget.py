@@ -4,6 +4,7 @@ from AssetManager import Ui_AssetManager
 
 from ftrack_connect_nuke import ftrackConnector
 from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetObject
+from ftrack_connect_nuke.ftrackplugin.ftrackDialogs.ftrackInfoDialog import FtrackInfoDialog
 
 import ftrack
 
@@ -30,7 +31,6 @@ class AssetManagerWidget(QtGui.QWidget):
         self.ui.AssertManagerTableWidget.setColumnWidth(10, 20)
         self.ui.AssertManagerTableWidget.setColumnWidth(11, 20)
         self.ui.AssertManagerTableWidget.setColumnWidth(15, 20)
-        self.ui.AssertManagerTableWidget.verticalHeader().setDefaultSectionSize(ftrackConnector.Dialog.TABLEROWHEIGHT)
         self.ui.AssertManagerTableWidget.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         self.ui.AssertManagerTableWidget.horizontalHeader().setResizeMode(0, QtGui.QHeaderView.Fixed)
         self.ui.AssertManagerTableWidget.horizontalHeader().setResizeMode(5, QtGui.QHeaderView.Fixed)
@@ -48,12 +48,14 @@ class AssetManagerWidget(QtGui.QWidget):
         self.ui.AssertManagerTableWidget.setColumnHidden(13, True)
         self.ui.AssertManagerTableWidget.setColumnHidden(14, True)
 
-        self.columnHeaders = [\
-                              '', 'Component', 'CmpId', 'AssetTypeShort', \
-                              'Type', 'Version', 'LatestV', 'Name', \
-                              'SceneName', '', '', '', 'AssetId', \
-                              'AssetVersionId', 'CurrentVersionFallback', ''\
-                              ]
+        self.columnHeaders = [
+            '', 'Component', 'CmpId', 'AssetTypeShort',
+            'Type', 'Version', 'LatestV', 'Name',
+            'SceneName', '', '', '', 'AssetId',
+            'AssetVersionId', 'CurrentVersionFallback', ''
+        ]
+
+
         self.ui.AssertManagerTableWidget.setHorizontalHeaderLabels(self.columnHeaders)
 
         self.ui.AssetManagerComboBoxModel = QtGui.QStandardItemModel()
@@ -219,13 +221,12 @@ class AssetManagerWidget(QtGui.QWidget):
         self.ui.AssertManagerTableWidget.setHorizontalHeaderLabels(self.columnHeaders)
 
     def openComments(self, taskId):
-        from ftrackplugin import ftrackDialogs
-        window = ftrackDialogs.ftrackInfoDialog()
-        window.type = "popup"
-        qtObj = window.show()
-        qtObj.move(QtGui.QApplication.desktop().screen().rect().center() - qtObj.rect().center())
-        panelComInstance = ftrackConnector.panelcom.PanelComInstance.instance()
-        panelComInstance.infoListeners(taskId)
+        self.comment_dialog = FtrackInfoDialog(self)
+        # print window
+        self.comment_dialog.show()
+        # window.move(QtGui.QApplication.desktop().screen().rect().center() - qtObj.rect().center())
+        # panelComInstance = ftrackConnector.panelcom.PanelComInstance.instance()
+        # panelComInstance.infoListeners(taskId)
 
     @QtCore.Slot(int)
     def filterAssets(self, comboBoxIndex):

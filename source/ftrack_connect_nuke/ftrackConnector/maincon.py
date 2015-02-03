@@ -14,48 +14,48 @@ from PySide import QtGui
 import ftrack
 
 
-def register_scheme(scheme):
-    for method in filter(lambda s: s.startswith('uses_'), dir(urlparse)):
-        getattr(urlparse, method).append(scheme)
+# def register_scheme(scheme):
+#     for method in filter(lambda s: s.startswith('uses_'), dir(urlparse)):
+#         getattr(urlparse, method).append(scheme)
 
-register_scheme('ftrack')
+# register_scheme('ftrack')
 
 
-class Dialog(object):
-    __metaclass__ = abc.ABCMeta
-    TABLEROWHEIGHT = 25
+# class Dialog(object):
+#     __metaclass__ = abc.ABCMeta
+#     TABLEROWHEIGHT = 25
 
-    # Init function
-    @abc.abstractmethod
-    def __init__(self):
-        super(Dialog, self).__init__()
-        # Default type is panel. To override and launch
-        # as popup window set type to window in init
-        self.type = 'panel'
+#     # Init function
+#     @abc.abstractmethod
+#     def __init__(self):
+#         super(Dialog, self).__init__()
+#         # Default type is panel. To override and launch
+#         # as popup window set type to window in init
+#         self.type = 'panel'
 
-    # Return a Qt widget
-    @abc.abstractmethod
-    def initGui(self):
-        pass
+#     # Return a Qt widget
+#     @abc.abstractmethod
+#     def initGui(self):
+#         pass
 
-    # Attach QT Gui to application
-    @abc.abstractmethod
-    def show(self):
-        pass
+#     # Attach QT Gui to application
+#     @abc.abstractmethod
+#     def show(self):
+#         pass
 
-    # Overload this function if your dialog
-    # should only work in for example maya
-    # Then it should be as "return ['maya']"
-    @staticmethod
-    def accepts():
-        return None
+#     # Overload this function if your dialog
+#     # should only work in for example maya
+#     # Then it should be as "return ['maya']"
+#     @staticmethod
+#     def accepts():
+#         return None
 
-    # Overload this function if your dialog
-    # should be in a group in the menu
-    # Then it should be as "return ['category']"
-    @staticmethod
-    def category():
-        return ''
+#     # Overload this function if your dialog
+#     # should be in a group in the menu
+#     # Then it should be as "return ['category']"
+#     @staticmethod
+#     def category():
+#         return ''
 
 
 class Connector(object):
