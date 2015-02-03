@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import ftrack
 
 from PySide import QtGui, QtCore
 
-from millftrack.user import MFTrackUser
+# from millftrack.user import MFTrackUser
 
 from ..widgets.message_widget import MessageWidget
 from ..widgets.scope_widget import ScopeWidget
@@ -29,7 +30,8 @@ class BaseDialog(QtGui.QDialog):
   def __init__(self, parent=None):
     super(BaseDialog, self).__init__(parent)
 
-    self._user = MFTrackUser()
+    # self._user = MFTrackUser()
+    self._user = ftrack.User(os.getenv('LOGNAME'))
     self._thumbnail_user = self._user.getThumbnail()
 
     self._error = False

@@ -4,41 +4,43 @@
 from PySide import QtGui, QtCore
 import os, re
 
+from FnAssetAPI import logging
+
 from generic.base_dialog import BaseIODialog
 from widgets.script_editor_widget import ScriptEditorWidget
 from widgets.message_widget import MessageWidget
 from widgets.comment_widget import CommentWidget
 from widgets.assets_tree import AssetsTree
 
-from ..ftrack_io.assets.gizmo_io import GizmoIO
-from ..ftrack_io.assets.scene_io import SceneIO
+# from ..ftrack_io.assets.gizmo_io import GizmoIO
+# from ..ftrack_io.assets.scene_io import SceneIO
 
-from ..ftrack_io.asset import N_AssetFactory
-from ..ftrack_io.task import N_TaskFactory
+# from ..ftrack_io.asset import N_AssetFactory
+# from ..ftrack_io.task import N_TaskFactory
 
-from ..ftrack_io.asset import AssetIOError
+# from ..ftrack_io.asset import AssetIOError
 
-from ..logger import FT_logger
+# from ..logger import FT_logger
 
 
 class GizmoPublisherDialog(BaseIODialog):
   def __init__(self, version_id):
-    FT_logger.debug('version id: %s' % version_id)
+    logging.debug('version id: %s' % version_id)
 
     super(GizmoPublisherDialog, self).__init__(QtGui.QApplication.activeWindow())
     self.setFTrackTitle("Publish a gizmo...")
 
-    self._gizmos_connector = GizmoIO.connectors()[0]
+    # self._gizmos_connector = GizmoIO.connectors()[0]
 
     self.setupUI()
 
     # Check current asset (None if no version_id found)
-    try:
-      self._current_scene = N_AssetFactory.get_asset_from_version_id(version_id, SceneIO)
-    except AssetIOError as err:
-      self.set_error(str(err))
+    # try:
+    #   self._current_scene = N_AssetFactory.get_asset_from_version_id(version_id, SceneIO)
+    # except AssetIOError as err:
+    #   self.set_error(str(err))
 
-    self.initiate_tasks()
+    # self.initiate_tasks()
 
     self.exec_()
 
@@ -73,8 +75,8 @@ class GizmoPublisherDialog(BaseIODialog):
     task_label.setStyleSheet(css_label)
     task_frame_layout.addWidget(task_label)
     self._gizmo_tree = AssetsTree(self, False)
-    asset_colors = { self._gizmos_connector.name : self._gizmos_connector.color }
-    self._gizmo_tree.add_assets_colors(asset_colors)
+    # asset_colors = { self._gizmos_connector.name : self._gizmos_connector.color }
+    # self._gizmo_tree.add_assets_colors(asset_colors)
     self._gizmo_tree.set_selection_mode(False)
     task_frame_layout.addWidget(self._gizmo_tree)
 

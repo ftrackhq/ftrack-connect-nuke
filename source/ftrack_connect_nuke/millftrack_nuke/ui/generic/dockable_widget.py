@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import ftrack
 from PySide import QtGui, QtCore
 import os
 
 from ..widgets.message_widget import MessageWidget
 from ... import utilities
 
-from millftrack.user import MFTrackUser
+# from millftrack.user import MFTrackUser
 from nukescripts import panels
 
 
@@ -17,7 +18,7 @@ class BaseDockableWidget(QtGui.QWidget):
 
     self._name = None
 
-    self._user = MFTrackUser()
+    self._user = ftrack.User(os.getenv('LOGNAME'))
     self._thumbnail_user = self._user.getThumbnail()
 
     self._error = False
