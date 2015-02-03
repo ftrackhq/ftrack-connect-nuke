@@ -1,4 +1,4 @@
-from PySide import QtGui, QtCore
+from FnAssetAPI.ui.toolkit import QtGui
 from FnAssetAPI import specifications
 
 import ftrack_connect_nuke

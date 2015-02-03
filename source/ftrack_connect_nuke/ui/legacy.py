@@ -5,7 +5,7 @@ import clique
 import glob
 import tempfile
 
-from PySide import QtGui, QtCore
+from FnAssetAPI.ui.toolkit import QtGui
 
 import FnAssetAPI
 
