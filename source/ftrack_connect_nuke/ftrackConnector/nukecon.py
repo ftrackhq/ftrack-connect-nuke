@@ -1,46 +1,18 @@
 import sys
-import nukescripts
-import nuke
-from nukescripts import panels
+import os
 import tempfile
+import urlparse
 import traceback
 
-import os
+from nukescripts import panels
+import nukescripts
+import nuke
+
+import assetmgr_nuke
 import maincon
 from maincon import FTAssetHandlerInstance
 from maincon import HelpFunctions
 import nukeassets
-
-import assetmgr_nuke
-
-
-import urlparse
-
-
-# def register_scheme(scheme):
-#     for method in filter(lambda s: s.startswith('uses_'), dir(urlparse)):
-#         getattr(urlparse, method).append(scheme)
-
-# register_scheme('ftrack')
-
-
-# class Dialog(maincon.Dialog):
-#     def __init__(self):
-#         super(Dialog, self).__init__()
-#         self.dockName = 'myDock'
-
-#     def initGui(self):
-#         return None
-
-#     # Attach QT Gui to application
-#     def show(self):
-#         window = self.initGui()
-#         return window
-#         # # if self.type == 'panel':
-#         # #     panels.registerWidgetAsPanel('ftrack_connect_nuke.ftrackplugin.ftrackDialogs.' + window.__name__, self.dockName, 'ftrackDialogs.' + self.__class__.__name__)
-#         # if self.type == 'popup':
-#         #     showWindow = window()
-#         #     showWindow.show()
 
 
 class Connector(maincon.Connector):
