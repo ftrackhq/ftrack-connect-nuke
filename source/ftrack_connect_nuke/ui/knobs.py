@@ -1,4 +1,4 @@
-from FnAssetAPI.ui.toolkit import QtGui
+from FnAssetAPI.ui.toolkit import QtGui, QtCore
 from FnAssetAPI import specifications
 
 import ftrack_connect_nuke
