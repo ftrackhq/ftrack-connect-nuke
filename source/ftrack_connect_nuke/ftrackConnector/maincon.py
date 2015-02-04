@@ -13,6 +13,12 @@ from PySide import QtGui
 
 import ftrack
 
+def register_scheme(scheme):
+    for method in filter(lambda s: s.startswith('uses_'), dir(urlparse)):
+        getattr(urlparse, method).append(scheme)
+
+register_scheme('ftrack')
+
 
 class Connector(object):
     __metaclass__ = abc.ABCMeta
