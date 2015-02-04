@@ -9,9 +9,6 @@ from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.HeaderWidget import HeaderWi
 
 class FtrackInfoDialog(QtGui.QDialog):
     def __init__(self, parent=None):
-        # if not parent:
-        #     self.parent = ftrackConnector.Connector.getMainWindow()
-
         super(FtrackInfoDialog, self).__init__(parent=parent)
         
         self.setMinimumWidth(400)
@@ -21,10 +18,8 @@ class FtrackInfoDialog(QtGui.QDialog):
         self.verticalMainLayout = QtGui.QVBoxLayout(self)
         self.horizontalLayout = QtGui.QHBoxLayout()
 
-        if 'FTRACK_TASKID' in os.environ:
-            taskId = os.environ['FTRACK_TASKID']
-        else:
-            taskId = os.environ['FTRACK_SHOTID']
+        shotId = os.getenv('FTRACK_SHOTID')
+        taskId = os.getenv('FTRACK_TASKID', shotId)
 
         self.headerWidget = HeaderWidget(self)
 

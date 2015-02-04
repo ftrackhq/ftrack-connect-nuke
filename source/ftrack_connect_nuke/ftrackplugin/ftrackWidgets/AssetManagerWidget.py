@@ -221,12 +221,11 @@ class AssetManagerWidget(QtGui.QWidget):
         self.ui.AssertManagerTableWidget.setHorizontalHeaderLabels(self.columnHeaders)
 
     def openComments(self, taskId):
-        self.comment_dialog = FtrackInfoDialog(self)
-        # print window
+        self.comment_dialog = FtrackInfoDialog()
         self.comment_dialog.show()
-        # window.move(QtGui.QApplication.desktop().screen().rect().center() - qtObj.rect().center())
-        # panelComInstance = ftrackConnector.panelcom.PanelComInstance.instance()
-        # panelComInstance.infoListeners(taskId)
+        self.comment_dialog.move(QtGui.QApplication.desktop().screen().rect().center() - self.comment_dialog.rect().center())
+        panelComInstance = ftrackConnector.panelcom.PanelComInstance.instance()
+        panelComInstance.infoListeners(taskId)
 
     @QtCore.Slot(int)
     def filterAssets(self, comboBoxIndex):

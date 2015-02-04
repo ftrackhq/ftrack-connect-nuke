@@ -19,7 +19,7 @@ class WebViewWidget(QtGui.QWidget):
         self.persCookieJar = PersistentCookieJar.PersistentCookieJar(self)
         self.persCookieJar.load()
 
-        self.webPage.networkAccessManager().setCookieJar(self.persCookieJar)
+        # self.webPage.networkAccessManager().setCookieJar(self.persCookieJar)
         proxy = HelpFunctions.getFtrackQNetworkProxy()
         if proxy:
             self.webPage.networkAccessManager().setProxy(proxy)
@@ -32,4 +32,3 @@ class WebViewWidget(QtGui.QWidget):
 
     def setUrl(self, url):
         self.ui.WebViewView.load(QtCore.QUrl(url))
-        #self.ui.WebViewView.setUrl(QtCore.QUrl(url))

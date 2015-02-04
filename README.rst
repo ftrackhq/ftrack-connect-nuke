@@ -27,3 +27,38 @@ Unless required by applicable law or agreed to in writing, software distributed
 under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
+
+
+Environment Variables:
+======================
+
+ftrack
+------
+
+* FTRACK_SERVER= <ftrack server address>
+* FTRACK_APIKEY= <ftrack api key>
+* FTRACK_LOCATION_PLUGIN_PATH= <full path to location plugins>
+* LOGNAME= <ftrack user>
+* FTRACK_SHOTID=<ftrack shot id>
+* FTRACK_TASKID=<ftrack task id>
+
+nuke
+----
+
+* NUKE_PATH= ${FTRACK-CONNECT-NUKE}/resource/nuke/nuke_path
+
+python modules 
+--------------
+
+* PYTHONPATH=${PYTHONPATH}:~/devel/python-api-v3 # ftrack core lib v3
+* PYTHONPATH=${PYTHONPATH}:~/devel/connector/ftrack-connect/source
+* PYTHONPATH=${PYTHONPATH}:~/devel/connector/ftrack-connect-foundry/source
+* PYTHONPATH=${PYTHONPATH}:~/devel/connector/ftrack-connect-nuke/source
+* PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python2.7/dist-packages/ # adding the local os modules available
+
+Foundry related envs 
+--------------------
+
+* FOUNDRY_ASSET_LOGGING_SEVERITY=6 
+* FOUNDRY_ASSET_API_DEBUG=1 
+* FOUNDRY_ASSET_PLUGIN_PATH= ${FTRACK-CONNECT-NUKE}/resource/nuke

@@ -77,16 +77,10 @@ def addPublishKnobsToGroupNode(g):
     whitespaceKnob = nuke.Text_Knob('fwhite', '  ', '  ')
     g.addKnob(whitespaceKnob)
     
-    if 'assetmgr_nuke' in globals():
-        browseKnob = nuke.PyCustom_Knob("fpubto", "Publish to:", "%s.BrowseKnob()" % current_module)
-        browseKnob.setFlag(nuke.STARTLINE)
-        g.addKnob(browseKnob)
-    else:
-        if os.getenv('FTRACK_MODE', '') == 'Shot':
-            shot = ftrackConnector.Connector.objectById(os.environ['FTRACK_SHOTID'])
-            taskEnums = [x.getName() for x in shot.getTasks()]
-            tasksKnob = nuke.Enumeration_Knob('ftask', 'Task:', taskEnums)
-            g.addKnob(tasksKnob)
+
+    browseKnob = nuke.PyCustom_Knob("fpubto", "Publish to:", "%s.BrowseKnob()" % current_module)
+    browseKnob.setFlag(nuke.STARTLINE)
+    g.addKnob(browseKnob)
 
     existingAssetsKnob = nuke.Enumeration_Knob('fassetnameexisting', 'Existing assets:', ['New'])
     g.addKnob(existingAssetsKnob)

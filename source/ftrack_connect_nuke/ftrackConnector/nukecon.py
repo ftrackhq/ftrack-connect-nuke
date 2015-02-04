@@ -15,6 +15,13 @@ from maincon import HelpFunctions
 import nukeassets
 
 
+def register_scheme(scheme):
+    for method in filter(lambda s: s.startswith('uses_'), dir(urlparse)):
+        getattr(urlparse, method).append(scheme)
+
+register_scheme('ftrack')
+
+
 class Connector(maincon.Connector):
     def __init__(self):
         super(Connector, self).__init__()
