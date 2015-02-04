@@ -8,7 +8,6 @@ import os
 from ..widgets.message_widget import MessageWidget
 from ... import utilities
 
-# from millftrack.user import MFTrackUser
 from nukescripts import panels
 
 
@@ -110,7 +109,3 @@ class BaseDockableWidget(QtGui.QWidget):
 
   def addContentItem(self, item):
     self._main_layout.addLayout(item)
-
-  def registerAsPanel(self, name, id):
-    object_name = self.__class__.__name__
-    return panels.registerWidgetAsPanel(object_name, name, id, create = True)

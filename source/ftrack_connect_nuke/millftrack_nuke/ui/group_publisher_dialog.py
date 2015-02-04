@@ -81,8 +81,10 @@ class GroupPublisherDialog(BaseIODialog):
     task_label.setStyleSheet(css_label)
     task_frame_layout.addWidget(task_label)
     self._group_tree = AssetsTree(self)
+    
     # asset_colors = { self._group_connector.name : self._group_connector.color }
     # self._group_tree.add_assets_colors(asset_colors)
+
     self._group_tree.set_selection_mode(False)
     task_frame_layout.addWidget(self._group_tree)
 

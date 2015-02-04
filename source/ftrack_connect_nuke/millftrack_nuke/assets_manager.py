@@ -3,7 +3,26 @@
 
 from FnAssetAPI import logging
 
-from ftrack_io.asset import N_AssetFactory
+from ui.script_opener_dialog import ScriptOpenerDialog
+from ui.script_editor_dialog import ScriptEditorDialog
+from ui.script_publisher_dialog import ScriptPublisherDialog
+from ui.gizmo_publisher_dialog import GizmoPublisherDialog
+from ui.group_publisher_dialog import GroupPublisherDialog
+from ui.warning_dialog import LockedSceneDialog
+from ui.assets_dialog import AssetsLoaderDialog
+
+from ftrack_connect_nuke.ftrackConnector import FTAssetObject
+
+# from ftrack_io.assets.gizmo_io import GizmoIO
+# from ftrack_io.assets.scene_io import SceneIO
+# from ftrack_io.assets.group_io import GroupIO
+# from ftrack_io.assets.scene_io import SceneIO
+# from ftrack_io.assets.image_io import ImageIO
+
+# from ftrack_io.asset import N_AssetFactory
+    
+from ui.images import image_dir
+
 
 import os, re
 
@@ -32,7 +51,6 @@ class AssetsManager(object):
       return
 
     try:
-      from ftrack_io.assets.scene_io import SceneIO
       scene_version = N_AssetFactory.get_version_from_id(version_id, SceneIO)
     except:
       logging.error("This asset doesn't exist [%s]" % version_id)
@@ -41,8 +59,6 @@ class AssetsManager(object):
 
   @staticmethod
   def open_script(asset_version_id):
-    from ftrack_io.asset import N_AssetFactory
-    from ftrack_io.assets.scene_io import SceneIO
 
     current_version_id = AssetsManager.get_current_scene_version_id()
 
@@ -65,7 +81,6 @@ class AssetsManager(object):
       scene_version.load_asset()
 
   def open_script_panel(self):
-    from ui.script_opener_dialog import ScriptOpenerDialog
     version_id = AssetsManager.get_current_scene_version_id()
 
     panel = ScriptOpenerDialog(version_id)
@@ -82,7 +97,6 @@ class AssetsManager(object):
       self.recent_assets.update_menu()
 
   def publish_script_panel(self):
-    from ui.script_publisher_dialog import ScriptPublisherDialog
     version_id = AssetsManager.get_current_scene_version_id()
 
     panel = ScriptPublisherDialog(version_id)
@@ -104,8 +118,6 @@ class AssetsManager(object):
         task.setStatus(panel.current_task_status)
 
       # Update version links and metadatas
-      from ftrack_io.asset import N_AssetFactory
-      from ftrack_io.assets.scene_io import SceneIO
       scene_version = N_AssetFactory.get_version_from_id(version.getId(), SceneIO)
 
       scene_version.set_metadatas()
@@ -122,8 +134,7 @@ class AssetsManager(object):
     self.block_save_callback = False
 
   def publish_gizmo_panel(self):
-    from ui.gizmo_publisher_dialog import GizmoPublisherDialog
-    from ftrack_io.assets.gizmo_io import GizmoIO
+
     version_id = AssetsManager.get_current_scene_version_id()
 
     panel = GizmoPublisherDialog(version_id)
@@ -137,9 +148,7 @@ class AssetsManager(object):
                                              gizmo_path= panel.gizmo_path )
 
   def publish_group_panel(self):
-    from ui.group_publisher_dialog import GroupPublisherDialog
-    from ftrack_io.assets.group_io import GroupIO
-    from ftrack_io.asset import N_AssetFactory
+
     version_id = AssetsManager.get_current_scene_version_id()
 
     black_list = ["Viewer", "BackdropNode"]
@@ -165,7 +174,6 @@ class AssetsManager(object):
 
   @staticmethod
   def load_gizmos_from_task(task):
-    from ftrack_io.assets.gizmo_io import GizmoIO
     gizmos = N_AssetFactory.get_assets_from_task(task, [GizmoIO])
 
     for gizmo in gizmos:
@@ -182,20 +190,17 @@ class AssetsManager(object):
       return
 
     try:
-      from ftrack_io.assets.scene_io import SceneIO
       scene_version = N_AssetFactory.get_version_from_id(version_id, SceneIO)
     except:
       logging.error("This asset doesn't exist [%s]" % version_id, "FTrack")
       return
 
-    from ftrack_io.assets.gizmo_io import GizmoIO
     task_object = scene_version.asset.task.ftrack_object
     gizmos = N_AssetFactory.get_assets_from_task(task_object, [GizmoIO])
 
     toolbar = nuke.toolbar("Nodes")
     project_menu = toolbar.menu("Ftrack Task")
     if project_menu == None:
-      from ui.images import image_dir
       icon=os.path.join(image_dir,"mill_toolbar_menu.png")
       project_menu = toolbar.addMenu("Ftrack Task", icon=icon)
 
@@ -216,7 +221,6 @@ class AssetsManager(object):
 
     self.block_save_callback = True
 
-    from ui.script_editor_dialog import ScriptEditorDialog
     panel = ScriptEditorDialog(scene_version)
 
     if panel.result():
@@ -254,7 +258,6 @@ class AssetsManager(object):
 
   def management_panel(self):
     if self._loader_panel == None:
-      from ui.assets_dialog import AssetsLoaderDialog
       version_id = AssetsManager.get_current_scene_version_id()
       self._loader_panel = AssetsLoaderDialog(version_id)
     self._loader_panel.show()
@@ -271,9 +274,6 @@ class AssetsManager(object):
     if id_ftrack != "FTRACK_DROP_ACTION":
       return False
 
-    from ftrack_io.assets.image_io import ImageIO
-    from ftrack_io.assets.gizmo_io import GizmoIO
-    from ftrack_io.assets.group_io import GroupIO
 
     droppable_assets = [ImageIO, GizmoIO, GroupIO]
 
@@ -390,7 +390,6 @@ class AssetLocker(object):
     if len(locker_dict) == 0:
       return
 
-    from ui.warning_dialog import LockedSceneDialog
     panel = LockedSceneDialog(locker_dict.keys())
     if panel.result():
       for scene_id in panel.ids_to_remove:

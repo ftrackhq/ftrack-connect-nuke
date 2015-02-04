@@ -4,7 +4,6 @@ import ftrack
 
 from PySide import QtGui, QtCore
 
-# from millftrack.user import MFTrackUser
 
 from ..widgets.message_widget import MessageWidget
 from ..widgets.scope_widget import ScopeWidget
