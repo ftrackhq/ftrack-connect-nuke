@@ -175,11 +175,8 @@ def publishAssetKnob():
             if task.getName() == selectedTask:
                 currentTask = task
     else:
-        if 'assetmgr_nuke' in globals():
-            currentTask = ftrackConnector.Connector.objectById(n.knob('fpubto').getObject().targetTask)
-        else:
-            currentTask = ftrackConnector.Connector.objectById(os.environ['FTRACK_TASKID'])
-        shot = currentTask.getParent()
+        currentTask = ftrackConnector.Connector.objectById(n.knob('fpubto').getObject().targetTask)
+
 
     publishAsset(n, assetName, content, comment, shot, currentTask)
     n.knob('pknob').setEnabled(True)
