@@ -1,7 +1,11 @@
+import os
+import ftrack
+import FnAssetAPI
 from FnAssetAPI.ui.toolkit import QtGui, QtCore
 from FnAssetAPI import specifications
 
 import ftrack_connect_nuke
+from ftrack_connect_nuke.ftrackConnector.maincon import HelpFunctions
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets import HeaderWidget
 from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
 from ftrack_connect_nuke import ftrackConnector
