@@ -179,8 +179,8 @@ class BrowserProject(QtGui.QScrollArea):
 
 
 class TaskList(QtGui.QListWidget):
-  item_selected = QtCore.Signal(FtrackObjectIO, int)
-  task_selected = QtCore.Signal(TaskIO)
+  item_selected = QtCore.Signal(object, int)
+  task_selected = QtCore.Signal(object)
 
   def __init__(self, parent=None, level=0):
     super(TaskList, self).__init__(parent)
