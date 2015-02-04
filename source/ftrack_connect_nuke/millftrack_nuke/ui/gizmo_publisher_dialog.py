@@ -38,7 +38,7 @@ class GizmoPublisherDialog(BaseIODialog):
     # except AssetIOError as err:
     #   self.set_error(str(err))
 
-    # self.initiate_tasks()
+    self.initiate_tasks()
 
     self.exec_()
 

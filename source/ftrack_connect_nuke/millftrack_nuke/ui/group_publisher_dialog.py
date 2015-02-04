@@ -42,7 +42,7 @@ class GroupPublisherDialog(BaseIODialog):
     # except AssetIOError as err:
     #   self.set_error(str(err))
 
-    # self.initiate_tasks()
+    self.initiate_tasks()
 
     self._nodes_graph.import_nodes(nodes)
     self._nodes_graph.nodes_loaded.connect(self._validate_group)
