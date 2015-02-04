@@ -288,8 +288,47 @@ class GeometryAsset(GenericAsset):
         return [], "Publish function not implemented for geometry asset"
 
 
+class GizmoAsset(GenericAsset):
+    def __init__(self):
+        super(GizmoAsset, self).__init__()
+
+    def importAsset(self, iAObj=None):
+        if iAObj.filePath.endswith('gizmo'):
+            nuke.createNode(iAObj.filePath)
+
+
+    def changeVersion(self, iAObj=None, applicationObject=None):
+        n = nuke.toNode(applicationObject)
+        n['file'].setValue(nukecon.Connector.windowsFixPath(iAObj.filePath))
+        self.setFTab(n, iAObj)
+
+        return True
+
+    def publishContent(self, content, assetVersion, progressCallback=None):
+        publishedComponents = []
+        
+        for c in content:
+            publishfilename = c[0]
+            componentName = c[1]
+            
+            publishedComponents.append(FTComponent(componentname=componentName, path=publishfilename))
+            
+        return publishedComponents
+
+class NukeGroupNodes(GizmoAsset):
+    def __init__(self):
+        super(NukeGroupNodes, self).__init__()
+
+    def importAsset(self, iAObj=None):
+        if iAObj.filePath.endswith('nk'):
+            nuke.createNode(iAObj.filePath)
+
+
 def registerAssetTypes():
     assetHandler = FTAssetHandlerInstance.instance()
     assetHandler.registerAssetType(name='cam', cls=CameraAsset)
     assetHandler.registerAssetType(name='img', cls=ImageSequenceAsset)
     assetHandler.registerAssetType(name='geo', cls=GeometryAsset)
+    assetHandler.registerAssetType(name='nuke_gizmo', cls=GizmoAsset)
+    assetHandler.registerAssetType(name='nuke_group_nodes', cls=NukeGroupNodes)
+
