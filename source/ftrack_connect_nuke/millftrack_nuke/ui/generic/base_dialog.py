@@ -413,6 +413,16 @@ class BaseIODialog(BaseDialog):
     self._controller.completed.connect(self.set_tasks)
     self._controller.start()
 
+  def _get_task_parents(self, task):
+      parents = [t.getName() for t in task.getParents()]
+      tasks = [t.getId() for t in task.getParents()]
+      tasks.reverse()
+      tasks.append(task.getId())
+      parents.reverse()
+      parents.append(task.getName())
+      parents = ' / '.join(parents)
+      return parents, tasks
+
   def _get_tasks(self):
     from ...ftrack_io.task import N_TaskFactory
     for task in N_TaskFactory.get_task_from_user(self._user):
