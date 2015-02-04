@@ -230,6 +230,13 @@ class BaseDialog(QtGui.QDialog):
     if self._user != None:
       return self._user.getId()
 
+  def _get_task_parents(self, task):
+      parents = [t.getName() for t in task.getParents()]
+      parents.reverse()
+      parents.append(task.getName())
+      parents = ' / '.join(parents)
+      return parents
+
   def set_user(self):
     if self._user != None:
       self._username_lbl.setText( self._user.getName() )
@@ -384,12 +391,14 @@ class BaseIODialog(BaseDialog):
     if task is None:
       return
 
-    if task.parents in self._tasks_dict.keys():
-      index = self._tasks_cbbx.findText( task.parents, QtCore.Qt.MatchFixedString )
+    parents = self._get_task_parents(task)
+
+    if parents in self._tasks_dict.keys():
+      index = self._tasks_cbbx.findText( parents, QtCore.Qt.MatchFixedString )
       self._tasks_cbbx.setCurrentIndex(index)
     else:
-      self._tasks_dict[task.parents] = task
-      self._tasks_cbbx.insertItem(0,task.parents)
+      self._tasks_dict[parents] = task
+      self._tasks_cbbx.insertItem(0,parents)
       self._tasks_cbbx.setCurrentIndex(0)
 
   def browse_all_tasks(self):
@@ -413,24 +422,20 @@ class BaseIODialog(BaseDialog):
     self._controller.completed.connect(self.set_tasks)
     self._controller.start()
 
-  def _get_task_parents(self, task):
-      parents = [t.getName() for t in task.getParents()]
-      tasks = [t.getId() for t in task.getParents()]
-      tasks.reverse()
-      tasks.append(task.getId())
-      parents.reverse()
-      parents.append(task.getName())
-      parents = ' / '.join(parents)
-      return parents, tasks
 
   def _get_tasks(self):
-    from ...ftrack_io.task import N_TaskFactory
-    for task in N_TaskFactory.get_task_from_user(self._user):
-      self._tasks_dict[task.parents] = task
+    # from ...ftrack_io.task import N_TaskFactory
+    for task in self._user.getTasks():
+        parent = self._get_task_parents(task)
+        self._tasks_dict[parent] = task
+
+    # for task in N_TaskFactory.get_task_from_user(self._user):
+    #   self._tasks_dict[task.parents] = task
 
     if self._current_scene != None:
-      if self._current_scene.task.parents not in self._tasks_dict.keys():
-        self._tasks_dict[self._current_scene.task.parents] = self._current_scene.task
+      current_parents = self._get_task_parents(self._current_scene.getId())
+      if current_parents not in self._tasks_dict.keys():
+        self._tasks_dict[current_parents] = self._current_scene
 
   def set_tasks(self):
     self._tasks_cbbx.blockSignals(True)
@@ -438,7 +443,8 @@ class BaseIODialog(BaseDialog):
     current_item_index = 0
     items = sorted(self._tasks_dict.keys())
     if self._current_scene != None:
-      current_item_index = items.index(self._current_scene.task.parents)
+      parent = self._get_task_parents(self._current_scene)
+      current_item_index = items.index(parent)
 
     self._tasks_cbbx.addItems(items)
     self._tasks_cbbx.setCurrentIndex(current_item_index)
@@ -519,7 +525,8 @@ class BaseIOScopeDialog(BaseIODialog):
     current_item_index = 0
     items = sorted(self._tasks_dict.keys())
     if self._current_scene != None:
-      current_item_index = items.index(self._current_scene.task.parents)
+      parent = self._get_task_parents(self._current_scene)
+      current_item_index = items.index(parent)
 
     self._tasks_cbbx.addItems(items)
     self._tasks_cbbx.setCurrentIndex(current_item_index)

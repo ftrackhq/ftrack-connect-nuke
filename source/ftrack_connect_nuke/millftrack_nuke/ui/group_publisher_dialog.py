@@ -29,7 +29,7 @@ class GroupPublisherDialog(BaseIODialog):
 
     self._nodes = nodes
 
-    # self._group_connector = GroupIO.connectors()[0]
+    self._group_connector = GroupIO.connectors()[0]
 
     # Dict used when several group assets are found in the nodes
     self._group_included_dict = dict()

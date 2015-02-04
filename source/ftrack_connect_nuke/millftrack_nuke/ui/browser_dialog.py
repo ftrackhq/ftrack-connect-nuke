@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import ftrack
 from PySide import QtGui, QtCore
 import os
 
@@ -82,21 +82,22 @@ class BrowserDialog(BaseDialog):
       return self._tasks_per_path[self._location_cbbx.currentText()]
 
   def set_projects(self):
-    self._projects_list.add_items(N_ProjectFactory.get_all_projects())
+    self._projects_list.add_items(ftrack.getProjects())
     self._projects_list.item_selected.connect(self.call_project_browser)
 
   def call_project_browser(self, current_project):
-    if current_project.id not in self._projects_browsers.keys():
+    if current_project.getId() not in self._projects_browsers.keys():
       widget = BrowserProject(current_project, self)
       widget.task_selected.connect(self.set_selected_task)
       self._stackLayout.addWidget(widget)
-      self._projects_browsers[current_project.id] = widget
-    self._stackLayout.setCurrentWidget(self._projects_browsers[current_project.id])
+      self._projects_browsers[current_project.getId()] = widget
+    self._stackLayout.setCurrentWidget(self._projects_browsers[current_project.getId()])
 
   def set_selected_task(self, task):
+    parents = self._get_task_parents(task)
     self._location_cbbx.blockSignals(True)
-    self._tasks_per_path[task.parents] = task
-    self._location_cbbx.insertItem(0,task.parents)
+    self._tasks_per_path[parents] = task
+    self._location_cbbx.insertItem(0,parents)
     self._location_cbbx.setCurrentIndex(0)
     self._location_cbbx.blockSignals(False)
     self.set_enabled(True)
@@ -106,7 +107,8 @@ class BrowserDialog(BaseDialog):
     self.set_task(task)
 
   def set_task(self, task):
-    item = self._projects_list.findItems( task.project.name,
+
+    item = self._projects_list.findItems( task.getProject().getName(),
                                           QtCore.Qt.MatchFixedString )[0]
     self._projects_list.setCurrentItem(item)
     browser = self._stackLayout.currentWidget()
@@ -148,8 +150,8 @@ class BrowserProject(QtGui.QScrollArea):
         self._widget_per_level[level].close()
         del self._widget_per_level[level]
 
-    children = current_task.children
-    tasks = current_task.tasks
+    children = current_task.getChildren()
+    tasks = current_task.getTasks()
 
     if len(children) > 0 or len(tasks) > 0:
       current_task_list = TaskList(self._scrollAreaWidgetContents, new_level)
@@ -163,7 +165,7 @@ class BrowserProject(QtGui.QScrollArea):
     self.task_selected.emit(task)
 
   def set_task(self, task, block_signal):
-    path_list = task.parents_list[1:]  # Without the project
+    path_list = task.getParents()[1:]  # Without the project
     for i in range(len(path_list)):
       browserlist = self._widget_per_level[i]
       if i == len(path_list) - 1 and block_signal:
@@ -230,16 +232,16 @@ class TaskList(QtGui.QListWidget):
     self.clear()
 
     for child in list_children:
-      self._element_per_item[child.name] = child
-      item = QtGui.QListWidgetItem(child.name, self)
+      self._element_per_item[child.getName()] = child
+      item = QtGui.QListWidgetItem(child.getName(), self)
 
       # Set Icon
-      if child.object_type in self._icones_per_type_name.keys():
-        icon = QtGui.QIcon(self._icones_per_type_name[child.object_type])
-        item.setIcon(icon)
+      # if child.object_type in self._icones_per_type_name.keys():
+      #   icon = QtGui.QIcon(self._icones_per_type_name[child.object_type])
+      #   item.setIcon(icon)
       self.addItem(item)
 
     if list_tasks != None:
       for task in list_tasks:
-        self._tasks_per_item[task.name] = task
+        self._tasks_per_item[task.getName()] = task
       self.addItems(self._tasks_per_item.keys())
