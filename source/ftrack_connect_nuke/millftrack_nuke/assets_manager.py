@@ -11,7 +11,7 @@ from ui.group_publisher_dialog import GroupPublisherDialog
 from ui.warning_dialog import LockedSceneDialog
 from ui.assets_dialog import AssetsLoaderDialog
 
-from ftrack_connect_nuke.ftrackConnector import FTAssetObject
+from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetObject
 
 # from ftrack_io.assets.gizmo_io import GizmoIO
 # from ftrack_io.assets.scene_io import SceneIO
