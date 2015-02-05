@@ -28,15 +28,7 @@ class GizmoPublisherDialog(BaseIODialog):
     super(GizmoPublisherDialog, self).__init__(QtGui.QApplication.activeWindow())
     self.setFTrackTitle("Publish a gizmo...")
 
-    # self._gizmos_connector = GizmoIO.connectors()[0]
-
     self.setupUI()
-
-    # Check current asset (None if no version_id found)
-    # try:
-    #   self._current_scene = N_AssetFactory.get_asset_from_version_id(version_id, SceneIO)
-    # except AssetIOError as err:
-    #   self.set_error(str(err))
 
     self.initiate_tasks()
 
@@ -73,8 +65,7 @@ class GizmoPublisherDialog(BaseIODialog):
     task_label.setStyleSheet(css_label)
     task_frame_layout.addWidget(task_label)
     self._gizmo_tree = AssetsTree(self, False)
-    # asset_colors = { self._gizmos_connector.name : self._gizmos_connector.color }
-    # self._gizmo_tree.add_assets_colors(asset_colors)
+
     self._gizmo_tree.set_selection_mode(False)
     task_frame_layout.addWidget(self._gizmo_tree)
 
@@ -193,7 +184,7 @@ class GizmoPublisherDialog(BaseIODialog):
     if task != None:
       self._gizmo_file_content.set_enabled(False)
 
-      self._gizmo_tree.import_assets(task.gizmo_assets)
+      # self._gizmo_tree.import_assets(task.gizmo_assets)
 
       self._validate_asset_name()
       self._validate_gizmo()
@@ -282,8 +273,15 @@ class GizmoPublisherDialog(BaseIODialog):
     pattern_BadChar = re.compile("[^a-zA-Z0-9\._-]")
     asset_name = re.sub(pattern_BadChar, "", self._asset_name.text())
     self._asset_name.setText(asset_name)
-    version = self.current_task.asset_version_number( asset_name,
-                                                      self._gizmos_connector.asset_type )
+    asset = self.current_task.getAssets(assetTypes=['nuke_gizmo'])
+    version = 0
+
+    if asset :
+        asset = asset[0]        
+        version = asset.getVersions()
+        if version:
+            version = version[-1].get('version')
+
     self._asset_version.setText("%03d" % version)
     self._asset_name.blockSignals(False)
 
