@@ -30,7 +30,8 @@ class Connector(maincon.Connector):
     def getAssets():
         allReadNodes = nuke.allNodes('Read')
         allCamNodess = nuke.allNodes('Camera2')
-        allInterestingNodes = allReadNodes + allCamNodess
+        allGizmos =  [n for n in nuke.allNodes() if type(n) ==  nuke.Gizmo]
+        allInterestingNodes = allReadNodes + allCamNodess + allGizmos
 
         componentIds = []
 
