@@ -11,6 +11,18 @@ from ..ftrack_io.task import TaskIO
 from ..ftrack_io.project import N_ProjectFactory
 
 from images import image_dir
+from FnAssetAPI import logging
+
+TYPE_DICT = {
+  "e5139355-61da-4c8f-9db4-3abc870166bc" : "Sequence",
+  "22139355-61da-4c8f-9db4-3abc870166bc" : "Episode",
+  "ab77c654-df17-11e2-b2f3-20c9d0831e59" : "Build",
+  "4be63b64-5010-42fb-bf1f-428af9d638f0" : "Asset",
+  "bad911de-3bd6-47b9-8b46-3476e237cb36" : "Shot",
+  "11c137c0-ee7e-4f9c-91c5-8c77cec22b2c" : "Task",
+  "": "Project"
+}
+
 
 
 class BrowserDialog(BaseDialog):
@@ -234,11 +246,17 @@ class TaskList(QtGui.QListWidget):
     for child in list_children:
       self._element_per_item[child.getName()] = child
       item = QtGui.QListWidgetItem(child.getName(), self)
+    
+      # TODO: FIX ICONS FOR BROWSER 
+      # item_type_id = getattr(child, 'typeid', '')
+      # item_type = TYPE_DICT.get(item_type_id)
 
-      # Set Icon
-      # if child.object_type in self._icones_per_type_name.keys():
-      #   icon = QtGui.QIcon(self._icones_per_type_name[child.object_type])
+      # logging.info(item_type)
+
+      # if item_type in self._icones_per_type_name.keys():
+      #   icon = QtGui.QIcon(self._icones_per_type_name[item_type])
       #   item.setIcon(icon)
+
       self.addItem(item)
 
     if list_tasks != None:
