@@ -424,13 +424,9 @@ class BaseIODialog(BaseDialog):
 
 
   def _get_tasks(self):
-    # from ...ftrack_io.task import N_TaskFactory
     for task in self._user.getTasks():
         parent = self._get_task_parents(task)
         self._tasks_dict[parent] = task
-
-    # for task in N_TaskFactory.get_task_from_user(self._user):
-    #   self._tasks_dict[task.parents] = task
 
     if self._current_scene != None:
       current_parents = self._get_task_parents(self._current_scene.getId())
