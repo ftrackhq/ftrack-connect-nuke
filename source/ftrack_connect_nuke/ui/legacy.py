@@ -177,6 +177,8 @@ def publishAssetKnob():
     else:
         currentTask = ftrackConnector.Connector.objectById(n.knob('fpubto').getObject().targetTask)
 
+    
+    shot = currentTask.getParent()
 
     publishAsset(n, assetName, content, comment, shot, currentTask)
     n.knob('pknob').setEnabled(True)
