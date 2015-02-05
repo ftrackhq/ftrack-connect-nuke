@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import ftrack
 from FnAssetAPI import logging
 
 from ui.script_opener_dialog import ScriptOpenerDialog
@@ -12,6 +12,8 @@ from ui.warning_dialog import LockedSceneDialog
 from ui.assets_dialog import AssetsLoaderDialog
 
 from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetObject
+from ftrack_connect_nuke.ftrackConnector.nukeassets import GizmoAsset
+from ftrack_connect_nuke.ftrackConnector.nukecon import Connector
 
 # from ftrack_io.assets.gizmo_io import GizmoIO
 # from ftrack_io.assets.scene_io import SceneIO
@@ -39,10 +41,18 @@ class AssetsManager(object):
     self.block_save_callback = False
 
   @staticmethod
-  def get_current_scene_version_id():
-    id_meta = "ftrack_version_id"
-    if id_meta in nuke.root().knobs().keys():
-      return nuke.root()[id_meta].value()
+  def get_current_scene_version_id(asset_type=None):
+    current_task = ftrack.Task(
+        os.getenv('FTRACK_TASKID', 
+            os.getenv('FTRACK_SHOTID'
+            )
+        )
+    )
+
+    asset = current_task.getAssets(assetTypes=[asset_type])
+    if asset:
+        version = asset.getVersions()[-1]
+        return version.getId()
 
   @staticmethod
   def get_current_scene():
@@ -136,16 +146,29 @@ class AssetsManager(object):
   def publish_gizmo_panel(self):
 
     version_id = AssetsManager.get_current_scene_version_id()
-
     panel = GizmoPublisherDialog(version_id)
     if panel.result():
       task = panel.current_task
+      asset_name = panel.asset_name
+      comment = panel.comment
+      file_path = panel.gizmo_path
 
-      gizmo_connector = GizmoIO.connectors()[0]
-      asset = gizmo_connector.create( panel.asset_name, task.ftrack_object,
-                                      task.shot.ftrack_object )
-      version = gizmo_connector.saveVersion( asset, panel.comment, task.id,
-                                             gizmo_path= panel.gizmo_path )
+      if not version_id:
+
+        asset = task.getParent().createAsset(
+            name='gizmo', 
+            assetType='nuke_gizmo'
+        )
+        asset_version = asset.createVersion(comment=comment, taskid=task.getId())
+        version_id = asset_version.getId()
+      
+      version = ftrack.AssetVersion(version_id)
+
+      version.createComponent(
+        name=asset_name, 
+        path=file_path
+      )
+      version.publish()
 
   def publish_group_panel(self):
 
