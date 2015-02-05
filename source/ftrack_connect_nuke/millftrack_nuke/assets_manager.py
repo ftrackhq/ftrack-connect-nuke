@@ -15,13 +15,6 @@ from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetObject
 from ftrack_connect_nuke.ftrackConnector.nukeassets import GizmoAsset
 from ftrack_connect_nuke.ftrackConnector.nukecon import Connector
 
-# from ftrack_io.assets.gizmo_io import GizmoIO
-# from ftrack_io.assets.scene_io import SceneIO
-# from ftrack_io.assets.group_io import GroupIO
-# from ftrack_io.assets.scene_io import SceneIO
-# from ftrack_io.assets.image_io import ImageIO
-
-# from ftrack_io.asset import N_AssetFactory
     
 from ui.images import image_dir
 
