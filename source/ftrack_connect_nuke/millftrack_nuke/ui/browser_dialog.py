@@ -6,9 +6,9 @@ import os
 
 from generic.base_dialog import BaseDialog
 
-from ..ftrack_io.base import FtrackObjectIO
-from ..ftrack_io.task import TaskIO
-from ..ftrack_io.project import N_ProjectFactory
+# from ..ftrack_io.base import FtrackObjectIO
+# from ..ftrack_io.task import TaskIO
+# from ..ftrack_io.project import N_ProjectFactory
 
 from images import image_dir
 from FnAssetAPI import logging
@@ -129,7 +129,7 @@ class BrowserDialog(BaseDialog):
 
 
 class BrowserProject(QtGui.QScrollArea):
-  task_selected = QtCore.Signal(TaskIO)
+  task_selected = QtCore.Signal(object)
 
   def __init__(self, project, parent=None):
     super(BrowserProject, self).__init__(parent)
