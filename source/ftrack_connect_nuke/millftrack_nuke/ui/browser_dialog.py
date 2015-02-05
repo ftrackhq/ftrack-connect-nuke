@@ -6,10 +6,6 @@ import os
 
 from generic.base_dialog import BaseDialog
 
-# from ..ftrack_io.base import FtrackObjectIO
-# from ..ftrack_io.task import TaskIO
-# from ..ftrack_io.project import N_ProjectFactory
-
 from images import image_dir
 from FnAssetAPI import logging
 
