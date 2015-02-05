@@ -294,7 +294,9 @@ class GizmoAsset(GenericAsset):
 
     def importAsset(self, iAObj=None):
         if iAObj.filePath.endswith('gizmo'):
-            nuke.createNode(iAObj.filePath)
+            resultingNode = nuke.createNode(iAObj.filePath)
+            self.addFTab(resultingNode)
+            self.setFTab(resultingNode, iAObj)
 
 
     def changeVersion(self, iAObj=None, applicationObject=None):
