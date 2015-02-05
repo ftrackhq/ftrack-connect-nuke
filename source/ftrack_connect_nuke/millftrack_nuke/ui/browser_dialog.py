@@ -177,7 +177,12 @@ class BrowserProject(QtGui.QScrollArea):
     self.task_selected.emit(task)
 
   def set_task(self, task, block_signal):
-    path_list = task.getParents()[1:]  # Without the project
+    parents = task.getParents()
+    parents = [p.getName() for p in parents]
+    parents.reverse()
+    parents.append(task.getName())
+    path_list = parents[1:]  # Without the project
+
     for i in range(len(path_list)):
       browserlist = self._widget_per_level[i]
       if i == len(path_list) - 1 and block_signal:
