@@ -68,6 +68,13 @@ class BaseDockableWidget(QtGui.QWidget):
     self._main_layout.addWidget(self._warning_box)
 
     self.set_user()
+    
+  def _get_task_parents(self, task):
+      parents = [t.getName() for t in task.getParents()]
+      parents.reverse()
+      parents.append(task.getName())
+      parents = ' / '.join(parents)
+      return parents
 
   def set_user(self):
     if self._user != None:

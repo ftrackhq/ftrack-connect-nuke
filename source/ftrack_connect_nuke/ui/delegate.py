@@ -67,8 +67,8 @@ class Delegate(delegate.Delegate):
         # add new entries in the ftrack menu
         ftrackMenu.addSeparator()
         ftrackMenu.addCommand('Publish a gizmo...', millAssetManager.publish_gizmo_panel)
+        ftrackMenu.addCommand('Publish script...', millAssetManager.publish_script_panel)
         # ftrackMenu.addCommand('Publish a group of nodes...', millAssetManager.publish_group_panel)
-        # ftrackMenu.addCommand('Publish script...', millAssetManager.publish_script_panel)
 
         # Add ftrack publish node
         toolbar = nuke.toolbar("Nodes")
