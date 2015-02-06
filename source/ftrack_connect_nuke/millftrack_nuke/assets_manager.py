@@ -147,11 +147,16 @@ class AssetsManager(object):
       file_path = panel.gizmo_path
 
       if not asset_id:
+        ftask = task.getParent()
 
-        asset_id = task.getParent().createAsset(
-            name=asset_name, 
-            assetType='nuke_gizmo'
-        ).getId()
+        try:
+            asset_id = ftask.createAsset(
+                name=asset_name, 
+                assetType='nuke_gizmo'
+            ).getId()
+        except AttributeError, message:
+           logging.error(message)
+           return
 
       asset = ftrack.Asset(asset_id)
       version = asset.createVersion(comment=comment, taskid=task.getId())
@@ -160,7 +165,11 @@ class AssetsManager(object):
         path=file_path
       )
 
-      version.publish()
+      result = version.publish()
+      if result:
+        nuke.message('Asset %s correctly published' % asset.getName())
+
+
 
   def publish_group_panel(self):
 

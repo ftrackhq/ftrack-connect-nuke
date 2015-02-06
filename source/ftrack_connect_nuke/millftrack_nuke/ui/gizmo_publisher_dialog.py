@@ -173,13 +173,7 @@ class GizmoPublisherDialog(BaseIODialog):
         self._save_btn.setText("Publish Gizmo")
         self._save_btn.setMinimumWidth(150)
         self._save_btn.setEnabled(False)
-        self._save_btn.clicked.connect(self.on_save)
     
-    def on_save(self):
-        msgBox = QtGui.QMessageBox(self)
-        msgBox.setText("The gizmo has been published.");
-        msgBox.exec_()
-
     @property
     def comment(self):
         return self._comment_widget.text
