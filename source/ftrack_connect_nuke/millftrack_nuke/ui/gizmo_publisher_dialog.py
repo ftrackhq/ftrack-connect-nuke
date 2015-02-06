@@ -290,15 +290,15 @@ class GizmoPublisherDialog(BaseIODialog):
         asset_name = re.sub(pattern_BadChar, "", self._asset_name.text())
         self._asset_name.setText(asset_name)
         asset = self.current_task.getAssets(assetTypes=['nuke_gizmo'])
-        version = 0
-
+        gizmo_version = 0
+        errors = []
         if asset:
             asset = asset[0]
             version = asset.getVersions()
             if version:
-                version = version[-1].get('version')
+                gizmo_version = version[-1].get('version')
 
-        self._asset_version.setText("%03d" % version)
+        self._asset_version.setText("%03d" % gizmo_version)
         self._asset_name.blockSignals(False)
 
     def _validate_gizmo(self):
