@@ -44,8 +44,7 @@ class AssetsManager(object):
 
     asset = current_task.getAssets(assetTypes=[asset_type])
     if asset:
-        version = asset[0].getVersions()[-1]
-        return version.getId()
+        version = asset[0].getId()
 
   @staticmethod
   def get_current_scene():
@@ -138,25 +137,24 @@ class AssetsManager(object):
 
   def publish_gizmo_panel(self):
 
-    version_id = AssetsManager.get_current_scene_version_id('nuke_gizmo')
-    panel = GizmoPublisherDialog(version_id)
+    asset_id = AssetsManager.get_current_scene_version_id('nuke_gizmo')
+    panel = GizmoPublisherDialog(asset_id)
+
     if panel.result():
       task = panel.current_task
       asset_name = panel.asset_name
       comment = panel.comment
       file_path = panel.gizmo_path
 
-      if not version_id:
+      if not asset_id:
 
-        asset = task.getParent().createAsset(
+        asset_id = task.getParent().createAsset(
             name=asset_name, 
             assetType='nuke_gizmo'
-        )
-        asset_version = asset.createVersion(comment=comment, taskid=task.getId())
-        version_id = asset_version.getId()
-      
-      version = ftrack.AssetVersion(version_id)
+        ).getId()
 
+      asset = ftrack.Asset(asset_id)
+      version = asset.createVersion(comment=comment, taskid=task.getId())
       version.createComponent(
         name='gizmo', 
         path=file_path
