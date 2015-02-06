@@ -63,23 +63,10 @@ class Delegate(delegate.Delegate):
             'panel.addToPane(pane)'
         )
 
-        # Create the gizmo manager dialog entry in the menu
-        panels.registerWidgetAsPanel(
-            'ftrack_connect_nuke.millftrack_nuke.ui.gizmo_publisher_dialog.GizmoPublisherDialog', 
-            'ftrackGizmoPublisher', 
-            'ftrackDialogs.GizmoPublisherDialog'
-        )
-        ftrackMenu.addCommand(
-            'GizmoPublisher',
-            'pane = nuke.getPaneFor("Properties.1");'
-            'panel = nukescripts.restorePanel("ftrackDialogs.GizmoPublisherDialog");'
-            'panel.addToPane(pane)'
-        )
-
 
         # add new entries in the ftrack menu
         ftrackMenu.addSeparator()
-        # ftrackMenu.addCommand('Publish a gizmo...', millAssetManager.publish_gizmo_panel)
+        ftrackMenu.addCommand('Publish a gizmo...', millAssetManager.publish_gizmo_panel)
         # ftrackMenu.addCommand('Publish a group of nodes...', millAssetManager.publish_group_panel)
         # ftrackMenu.addCommand('Publish script...', millAssetManager.publish_script_panel)
 

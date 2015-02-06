@@ -8,6 +8,7 @@ import re
 from FnAssetAPI import logging
 
 from generic.base_dialog import BaseIODialog
+
 from widgets.script_editor_widget import ScriptEditorWidget
 from widgets.message_widget import MessageWidget
 from widgets.comment_widget import CommentWidget
@@ -24,7 +25,7 @@ from widgets.assets_tree import AssetsTree
 
 class GizmoPublisherDialog(BaseIODialog):
 
-    def __init__(self):
+    def __init__(self, version_id):
         # logging.debug('version id: %s' % version_id)
 
         super(GizmoPublisherDialog, self).__init__(
@@ -35,7 +36,7 @@ class GizmoPublisherDialog(BaseIODialog):
 
         self.initiate_tasks()
 
-        # self.exec_()
+        self.exec_()
 
     def setupUI(self):
         # self.resize(1300, 900)
@@ -172,6 +173,12 @@ class GizmoPublisherDialog(BaseIODialog):
         self._save_btn.setText("Publish Gizmo")
         self._save_btn.setMinimumWidth(150)
         self._save_btn.setEnabled(False)
+        self._save_btn.clicked.connect(self.on_save)
+    
+    def on_save(self):
+        msgBox = QtGui.QMessageBox(self)
+        msgBox.setText("The gizmo has been published.");
+        msgBox.exec_()
 
     @property
     def comment(self):
