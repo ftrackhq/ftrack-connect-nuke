@@ -22,7 +22,8 @@ class Delegate(delegate.Delegate):
         from ftrack_connect_nuke import ftrackConnector
         from ftrack_connect_nuke.ftrackplugin.ftrackDialogs import ftrackAssetManagerDialog, ftrackImportAssetDialog
         from ftrack_connect_nuke.millftrack_nuke.assets_manager import AssetsManager
-        
+        from ftrack_connect_nuke.millftrack_nuke.ui.gizmo_publisher_dialog import GizmoPublisherDialog
+
         ftrackConnector.Connector.registerAssets()
 
         millAssetManager = AssetsManager()
@@ -34,11 +35,7 @@ class Delegate(delegate.Delegate):
         # add ftrack publish node to the menu
         ftrackMenu.addCommand('Create ftrack Publish Node', lambda: legacy.createFtrackPublish())
 
-        # add new entries in the ftrack menu
         ftrackMenu.addSeparator()
-        ftrackMenu.addCommand('Publish a gizmo...', millAssetManager.publish_gizmo_panel)
-        ftrackMenu.addCommand('Publish a group of nodes...', millAssetManager.publish_group_panel)
-
 
         # Create the import asset dialog entry in the menu
         panels.registerWidgetAsPanel(
@@ -65,6 +62,26 @@ class Delegate(delegate.Delegate):
             'panel = nukescripts.restorePanel("ftrackDialogs.ftrackAssetManagerDialog");'
             'panel.addToPane(pane)'
         )
+
+        # Create the gizmo manager dialog entry in the menu
+        panels.registerWidgetAsPanel(
+            'ftrack_connect_nuke.millftrack_nuke.ui.gizmo_publisher_dialog.GizmoPublisherDialog', 
+            'ftrackGizmoPublisher', 
+            'ftrackDialogs.GizmoPublisherDialog'
+        )
+        ftrackMenu.addCommand(
+            'GizmoPublisher',
+            'pane = nuke.getPaneFor("Properties.1");'
+            'panel = nukescripts.restorePanel("ftrackDialogs.GizmoPublisherDialog");'
+            'panel.addToPane(pane)'
+        )
+
+
+        # add new entries in the ftrack menu
+        ftrackMenu.addSeparator()
+        # ftrackMenu.addCommand('Publish a gizmo...', millAssetManager.publish_gizmo_panel)
+        # ftrackMenu.addCommand('Publish a group of nodes...', millAssetManager.publish_group_panel)
+        # ftrackMenu.addCommand('Publish script...', millAssetManager.publish_script_panel)
 
         # Add ftrack publish node
         toolbar = nuke.toolbar("Nodes")

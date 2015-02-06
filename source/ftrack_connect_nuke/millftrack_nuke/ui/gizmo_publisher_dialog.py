@@ -24,8 +24,8 @@ from widgets.assets_tree import AssetsTree
 
 class GizmoPublisherDialog(BaseIODialog):
 
-    def __init__(self, version_id):
-        logging.debug('version id: %s' % version_id)
+    def __init__(self):
+        # logging.debug('version id: %s' % version_id)
 
         super(GizmoPublisherDialog, self).__init__(
             QtGui.QApplication.activeWindow())
@@ -35,22 +35,22 @@ class GizmoPublisherDialog(BaseIODialog):
 
         self.initiate_tasks()
 
-        self.exec_()
+        # self.exec_()
 
     def setupUI(self):
-        self.resize(1300, 900)
-        self.setMinimumWidth(1300)
-        self.setMinimumHeight(900)
+        # self.resize(1300, 900)
+        # self.setMinimumWidth(1300)
+        # self.setMinimumHeight(900)
 
         # GIZMOS FOR TASK
 
-        splitter = QtGui.QSplitter(self)
-        splitter.setContentsMargins(0, 0, 0, 10)
-        splitter.setChildrenCollapsible(False)
+        # splitter = QtGui.QSplitter(self)
+        # splitter.setContentsMargins(0, 0, 0, 10)
+        # splitter.setChildrenCollapsible(False)
 
-        left_widget = QtGui.QWidget(splitter)
-        left_layout = QtGui.QVBoxLayout(left_widget)
-        left_layout.setContentsMargins(0, 0, 5, 0)
+        # left_widget = QtGui.QWidget(splitter)
+        # left_layout = QtGui.QVBoxLayout(left_widget)
+        # left_layout.setContentsMargins(0, 0, 5, 0)
 
         css_task_global = """
     QFrame { padding: 3px; border-radius: 4px;
@@ -58,26 +58,27 @@ class GizmoPublisherDialog(BaseIODialog):
     """
         css_label = "color: #c3cfa4; font-size: 12px; font-weight: bold;"
 
-        task_frame = QtGui.QFrame(self)
-        task_frame.setStyleSheet(css_task_global)
-        task_frame_layout = QtGui.QVBoxLayout(task_frame)
-        task_frame_layout.setContentsMargins(0, 0, 0, 0)
-        task_frame_layout.setSpacing(5)
-        task_label = QtGui.QLabel("Gizmos available for this Task", task_frame)
-        task_label.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        task_label.setStyleSheet(css_label)
-        task_frame_layout.addWidget(task_label)
-        self._gizmo_tree = AssetsTree(self, False)
+        # task_frame = QtGui.QFrame(self)
+        # task_frame.setStyleSheet(css_task_global)
+        # task_frame_layout = QtGui.QVBoxLayout(task_frame)
+        # task_frame_layout.setContentsMargins(0, 0, 0, 0)
+        # task_frame_layout.setSpacing(5)
+        # task_label = QtGui.QLabel("Gizmos available for this Task", task_frame)
+        # task_label.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        # task_label.setStyleSheet(css_label)
+        # task_frame_layout.addWidget(task_label)
+        # self._gizmo_tree = AssetsTree(self, False)
 
-        self._gizmo_tree.set_selection_mode(False)
-        task_frame_layout.addWidget(self._gizmo_tree)
+        # self._gizmo_tree.set_selection_mode(False)
+        # task_frame_layout.addWidget(self._gizmo_tree)
 
-        left_layout.addWidget(task_frame)
-        splitter.addWidget(left_widget)
+        # left_layout.addWidget(task_frame)
+        # splitter.addWidget(left_widget)
 
         # CONTENT GIZMO
 
-        right_widget = QtGui.QWidget(splitter)
+        # right_widget = QtGui.QWidget(splitter)
+        right_widget = QtGui.QWidget()
         right_layout = QtGui.QVBoxLayout(right_widget)
         right_layout.setContentsMargins(5, 0, 0, 0)
 
@@ -163,9 +164,10 @@ class GizmoPublisherDialog(BaseIODialog):
         self._comment_widget.changed.connect(self._validate_gizmo)
         right_layout.addWidget(self._comment_widget)
 
-        splitter.addWidget(right_widget)
+        # splitter.addWidget(right_widget)
 
-        self.addContentWidget(splitter)
+        # self.addContentWidget(splitter)
+        self.addContentWidget(right_widget)
 
         self._save_btn.setText("Publish Gizmo")
         self._save_btn.setMinimumWidth(150)
