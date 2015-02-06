@@ -249,14 +249,16 @@ class TaskList(QtGui.QListWidget):
       item = QtGui.QListWidgetItem(child.getName(), self)
     
       # TODO: FIX ICONS FOR BROWSER 
-      # item_type_id = getattr(child, 'typeid', '')
-      # item_type = TYPE_DICT.get(item_type_id)
+      try:
+        item_type_id = child.get('object_typeid')
+      except:
+        item_type_id = ''
 
-      # logging.info(item_type)
+      item_type = TYPE_DICT.get(item_type_id)
 
-      # if item_type in self._icones_per_type_name.keys():
-      #   icon = QtGui.QIcon(self._icones_per_type_name[item_type])
-      #   item.setIcon(icon)
+      if item_type in self._icones_per_type_name.keys():
+        icon = QtGui.QIcon(self._icones_per_type_name[item_type])
+        item.setIcon(icon)
 
       self.addItem(item)
 
