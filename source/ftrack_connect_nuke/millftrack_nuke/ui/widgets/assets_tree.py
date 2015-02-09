@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from PySide import QtGui, QtCore
-
-from ...ftrack_io.asset import N_AssetFactory, AssetVersionIO
+import ftrack
+# from ...ftrack_io.asset import N_AssetFactory, AssetVersionIO
 
 from ..images import image_dir
 from ...controller import Controller
@@ -63,7 +63,9 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
     self._background_not_available = QtGui.QPixmap(os.path.join(image_dir, "asset_unavail.png"))
     self._background_child_not_available = QtGui.QPixmap(os.path.join(image_dir, "version_unavail.png"))
 
-    self._thumnbail_default = QtGui.QPixmap(AssetVersionIO.default_thumbnail())
+    self._thumnbail_default = utilities.get_url_file(
+        os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
+    )
 
     self._icon_locked = QtGui.QPixmap(os.path.join(image_dir, "locked.png"))
 
@@ -184,7 +186,7 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
       # Draw thumbnail if necessary
       if self._show_thumbnail:
         if thumbnail is None:
-          pixmap = self._thumnbail_default
+          pixmap = QtGui.QPixmap(self._thumnbail_default)
         else:
           pixmap = QtGui.QPixmap(thumbnail)
         pixmap_scaled = pixmap.scaled( size_thumbnail, QtCore.Qt.KeepAspectRatio )
@@ -253,7 +255,7 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
 
         label = "published by " if not is_edited else "edited by "
         padding_top += self._fm_desc.height()
-        painter.drawText(padding_left, padding_top, label + publisher)
+        painter.drawText(padding_left, padding_top, label + publisher.getName())
 
         # Draw Date
         painter.setPen( QtGui.QPen(self._owner_color, 1, QtCore.Qt.SolidLine) )
@@ -478,7 +480,7 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
       if ( (event.pos().y() >= rect_date.top()  and event.pos().y() <= rect_date.bottom())
        and (event.pos().x() >= rect_date.left() and event.pos().x() <= rect_date.right()) ):
         model.setData(index, self._hover_state["date_hover"], QtCore.Qt.DecorationRole)
-      elif ( (btn_role or asset_version.version_number > 1)
+      elif ( (btn_role or asset_version.get('version') > 1)
        and (event.pos().y() >= rect_btn.top()  and event.pos().y() <= rect_btn.bottom())
        and (event.pos().x() >= rect_btn.left() and event.pos().x() <= rect_btn.right()) ):
         model.setData(index, self._hover_state["btn_hover"], QtCore.Qt.DecorationRole)
@@ -486,7 +488,7 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
         model.setData(index, self._hover_state["no_hover"], QtCore.Qt.DecorationRole)
 
     elif event.type() == QtCore.QEvent.Type.MouseButtonPress:
-      if ( (btn_role or asset_version.version_number > 1)
+      if ( (btn_role or asset_version.get('version') > 1)
        and (event.pos().y() >= rect_btn.top()  and event.pos().y() <= rect_btn.bottom())
        and (event.pos().x() >= rect_btn.left() and event.pos().x() <= rect_btn.right()) ):
         model.setData(index, self._hover_state["btn_pressed"], QtCore.Qt.DecorationRole)
@@ -498,7 +500,7 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
         model.setData(index, self._hover_state["no_hover"], QtCore.Qt.DecorationRole)
 
     elif event.type() == QtCore.QEvent.Type.MouseButtonRelease:
-      if ( (btn_role or asset_version.version_number > 1)
+      if ( (btn_role or asset_version.get('version') > 1)
        and (event.pos().y() >= rect_btn.top()  and event.pos().y() <= rect_btn.bottom())
        and (event.pos().x() >= rect_btn.left() and event.pos().x() <= rect_btn.right()) ):
         model.setData(index, self._hover_state["btn_hover"], QtCore.Qt.DecorationRole)
@@ -577,44 +579,44 @@ class AssetItem(TreeItem):
 
     self.setData(self._asset_version, self.asset_version_role)
 
-    self.setData(self._asset_version.name, self.name_role)
+    self.setData(self._asset_version.getAsset().getName(), self.name_role)
     self.setData(asset_type_role, self.asset_type_role)
-    self.setData(self._asset_version.version_number, self.version_nb_role)
+    self.setData(self._asset_version.get('version'), self.version_nb_role)
 
     self.setData(False, self.is_button_role)
 
-    if self._asset_version.is_being_cached:
-      self.setDragEnabled(False)
+    # if self._asset_version.is_being_cached:
+    #   self.setDragEnabled(False)
 
-      # Thread that...
-      self._controller = Controller(self._asset_version.regen_cache)
-      self._controller.completed.connect(self.set_version)
-      self._controller.start()
+    #   # Thread that...
+    #   self._controller = Controller(self._asset_version.regen_cache)
+    #   self._controller.completed.connect(self.set_version)
+    #   self._controller.start()
 
-    else:
-      self.set_version()
+    # else:
+    self.set_version()
 
   def set_version(self):
-    tuple_editor = self._asset_version.editor()
-    if tuple_editor is not None:
-      user_edit, date_edit = tuple_editor
-      self.setData(date_edit, self.date_role)
-      self.setData(user_edit.getName(), self.publisher_role)
-      self.setData(True, self.is_edited_role)
-    else:
-      self.setData(self._asset_version.date, self.date_role)
-      self.setData(self._asset_version.owner.getName(), self.publisher_role)
-      self.setData(False, self.is_edited_role)
+    # tuple_editor = self._asset_version.editor()
+    # if tuple_editor is not None:
+    #   user_edit, date_edit = tuple_editor
+    #   self.setData(date_edit, self.date_role)
+    #   self.setData(user_edit.getName(), self.publisher_role)
+    #   self.setData(True, self.is_edited_role)
+    # else:
+    self.setData(self._asset_version.getDate(), self.date_role)
+    self.setData(self._asset_version.getOwner(), self.publisher_role)
+    self.setData(False, self.is_edited_role)
 
-    self.setData(self._asset_version.comment, self.comment_role)
-    self.setData(self._asset_version.asset.locker != None, self.is_locked_role)
-    self.setData(self._asset_version.is_available, self.is_available_role)
-    self.setData(self._asset_version.locations, self.location_role)
+    self.setData(self._asset_version.get('comment'), self.comment_role)
+    # self.setData(self._asset_version.asset.locker != None, self.is_locked_role)
+    # self.setData(self._asset_version.is_available, self.is_available_role)
+    # self.setData(self._asset_version.locations, self.location_role)
 
-    if not self._asset_version.is_available:
-      self.setDragEnabled(False)
+    # if not self._asset_version.is_available:
+    #   self.setDragEnabled(False)
 
-    self.setData(self._asset_version.thumbnail_file, self.thumbnail_role)
+    self.setData(self._asset_version.getThumbnail(), self.thumbnail_role)
     self._emit_asset_regenerated()
 
   def refresh_item(self):
@@ -796,13 +798,18 @@ class AssetsTree(QtGui.QTreeView):
 
   def _get_versions(self, assets):
     self._assets.clear()
+    
+    task = ftrack.Task(assets)
+    asset = task.getAssets(assetTypes=['nuke_scene'])
+    if not asset:
+        return 
 
-    for asset in assets:
-      asset_version = N_AssetFactory.get_version(asset.versions[-1], asset.__class__)
-      asset_type = asset_version.asset.connector.name
+    asset_versions = asset[0].getVersions()
+    asset_type = 'nuke_scene'
+    for asset_version in asset_versions:
       if asset_type not in self._assets.keys():
-        self._assets[asset_type] = []
-      self._assets[asset_type].append(asset_version)
+        self._assets['nuke_scene'] = []
+      self._assets['nuke_scene'].append(asset_version)
 
   def set_assets(self):
     for asset_type, scene_versions in self._assets.iteritems():

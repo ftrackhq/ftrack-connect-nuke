@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import ftrack
 from PySide import QtGui, QtCore, QtWebKit
 import os, datetime
 
@@ -11,13 +11,13 @@ from widgets.status_widget import StatusWidget
 
 from ..controller import Controller
 
-from ..ftrack_io.asset import N_AssetFactory
+# from ..ftrack_io.asset import N_AssetFactory
 
-from ..ftrack_io.task import TaskIO
-from ..ftrack_io.asset import AssetVersionIO
-from ..ftrack_io.asset import AssetIOError
+# from ..ftrack_io.task import TaskIO
+# from ..ftrack_io.asset import AssetVersionIO
+# from ..ftrack_io.asset import AssetIOError
 
-from ..ftrack_io.assets.scene_io import SceneIO
+# from ..ftrack_io.assets.scene_io import SceneIO
 
 from FnAssetAPI import logging
 
@@ -65,7 +65,6 @@ class TaskManagerWidget(BaseDockableWidget):
     self.initiate_error_box()
 
     version_id = self._get_meta("ftrack_version_id")
-    logging.debug(version_id)
     if version_id == None:
       msg = "This script is not an asset and does not belong to any tasks. "
       msg += "Please publish it in order to manage the corresponding task. "
@@ -95,14 +94,14 @@ class TaskManagerWidget(BaseDockableWidget):
 
 
 class TaskWidget(QtGui.QWidget):
-  asset_version_selected = QtCore.Signal(AssetVersionIO)
+  asset_version_selected = QtCore.Signal(object)
   no_asset_version = QtCore.Signal()
 
   def __init__(self, parent=None):
     super(TaskWidget, self).__init__(parent)
     self.setupUI()
 
-    self._current_task = None
+    self._current_task = None 
 
     self._read_only = True
     self._selection_mode = False
@@ -148,17 +147,24 @@ class TaskWidget(QtGui.QWidget):
     for widget in self._tasks_dict.values():
       widget.set_selection_mode(bool_value)
 
+  def _get_task_parents(self, task):
+      parents = [t.getName() for t in task.getParents()]
+      parents.reverse()
+      parents.append(task.getName())
+      parents = ' / '.join(parents)
+      return parents
+      
   def set_task(self, task, current_scene=None):
-    logging.debug("name: %s" % task.name)
-    if task.parents not in self._tasks_dict.keys():
+    parents = self._get_task_parents(task)
+    if parents not in self._tasks_dict.keys():
       single_task_widget = SingleTaskWidget(task, current_scene, self)
       single_task_widget.assets_widget.assets_tree.asset_version_selected.connect(self._emit_asset_version_selected)
       single_task_widget.set_read_only(self._read_only)
       single_task_widget.set_selection_mode(self._selection_mode)
-      self._tasks_dict[task.parents] = single_task_widget
+      self._tasks_dict[parents] = single_task_widget
       self._stackLayout.addWidget(single_task_widget)
 
-    self._stackLayout.setCurrentWidget(self._tasks_dict[task.parents])
+    self._stackLayout.setCurrentWidget(self._tasks_dict[parents])
     self._current_task = task
 
   def current_shot_status_changed(self):
@@ -252,10 +258,12 @@ class SingleTaskWidget(QtGui.QFrame):
     shot_layout.addItem(spacer_shot)
 
     shot_status_lbl = QtGui.QLabel("Shot status", self)
-    self._shot_status = StatusWidget(TaskIO.getShotStatuses(), self)
+    shot_status = ftrack.getShotStatuses()
+    self._shot_status = StatusWidget(shot_status, self)
 
     task_status_lbl = QtGui.QLabel("Task status", self)
-    self._task_status = StatusWidget(TaskIO.getTaskStatuses(), self)
+    task_status = ftrack.getTaskStatuses()
+    self._task_status = StatusWidget(task_status, self)
 
     due_date_lbl = QtGui.QLabel("Due date", self)
     self._due_date = QtGui.QLabel(self)
@@ -297,15 +305,20 @@ class SingleTaskWidget(QtGui.QFrame):
   def _get_task_infos(self):
     if self._task == None:
       return
-    self._t_project_name = self._task.project.name
-    self._t_name = self._task.name
-    if self._task.sequence is not None:
-      self._t_sequence_name = self._task.sequence.name
-    if self._task.shot is not None:
-      self._t_shot_name = self._task.shot.name
-      self._t_shot_status = self._task.shot.status
-    self._t_status = self._task.status
-    self._t_due_date = self._task.end_date
+    self._t_project_name = self._task.getProject().getName()
+    self._t_name = self._task.getName()
+    
+    if self._task.getParent() is not None:
+      self._t_sequence_name = self._task.getParent().getName()
+
+    if self._task.getParent() is not None:
+      self._t_shot_name = self._task.getName()
+      self._t_shot_status = self._task.getStatus()
+    self._t_status = self._task.getStatus()
+    try:
+        self._t_due_date = self._task.getEndDate()
+    except:
+        self._t_due_date = None
 
   def initiate_task(self):
     if self._task == None:
@@ -347,16 +360,21 @@ class SingleTaskWidget(QtGui.QFrame):
     self.assets_widget.set_selection_mode(bool_value)
 
 
+from ftrack_connect_nuke.ftrackConnector.nukeassets import NukeSceneAsset
+
 class SceneAssetsWidget(QtGui.QWidget):
 
   def __init__(self, parent=None):
     super(SceneAssetsWidget, self).__init__(parent)
 
-    self._scenes_connectors = SceneIO.connectors()
+    # self._scenes_connectors = SceneIO.connectors()
 
     self._connectors_per_type = dict()
-    for scene_connector in self._scenes_connectors:
-      self._connectors_per_type[scene_connector.name] = scene_connector
+    # for scene_connector in self._scenes_connectors:
+    self._connectors_per_type['nuke_comp_scene'] = NukeSceneAsset()
+    self._connectors_per_type['nuke_precomp_scene'] = NukeSceneAsset()
+    self._connectors_per_type['nuke_roto_scene'] = NukeSceneAsset()
+
 
     self._task = None
 
@@ -381,7 +399,8 @@ class SceneAssetsWidget(QtGui.QWidget):
     layout_settings.setContentsMargins(0,0,0,0)
     layout_settings.setSpacing(6)
 
-    asset_types = [ "All Asset Types" ] + [c.name for c in self._scenes_connectors]
+    asset_types = [ "All Asset Types" ] + ['nuke_comp_scene', 'nuke_precomp_scene', 'nuke_roto_scene']
+
     self._asset_connectors_cbbox = QtGui.QComboBox(self)
     self._asset_connectors_cbbox.addItems(asset_types)
     self._asset_connectors_cbbox.currentIndexChanged.connect(self._update_tree)
@@ -404,14 +423,13 @@ class SceneAssetsWidget(QtGui.QWidget):
     self.assets_tree = AssetsTree(self)
 
     assets_colors = dict()
-    for connector_name, connector in self._connectors_per_type.iteritems():
-      assets_colors[connector_name] = connector.color
-    self.assets_tree.add_assets_colors(assets_colors)
+    # for connector_name, connector in self._connectors_per_type.iteritems():
+    #   assets_colors[connector_name] = connector.color
+    # self.assets_tree.add_assets_colors(assets_colors)
 
     main_layout.addWidget(self.assets_tree)
 
   def initiate_task(self, task, current_scene=None):
-    logging.debug("name: %s" % task.name, color="blue")
     self._task = task
 
     if current_scene != None:
@@ -433,7 +451,7 @@ class SceneAssetsWidget(QtGui.QWidget):
     if self._asset_connectors_cbbox.currentIndex() == 0:
       asset_types = None
 
-    self.assets_tree.import_assets(self._task.scene_assets, asset_types)
+    self.assets_tree.import_assets(self._task.getId(), asset_types)
 
   def _update_tree(self):
     asset_type = self._asset_connectors_cbbox.currentText()

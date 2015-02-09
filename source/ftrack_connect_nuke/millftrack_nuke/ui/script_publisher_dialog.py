@@ -80,18 +80,18 @@ class ScriptPublisherDialog(BaseIODialog):
 
     # CONTENT TASK
 
-    # splitter = QtGui.QSplitter(self)
-    # splitter.setContentsMargins(0,0,0,10)
-    # splitter.setChildrenCollapsible(False)
+    splitter = QtGui.QSplitter(self)
+    splitter.setContentsMargins(0,0,0,10)
+    splitter.setChildrenCollapsible(False)
 
-    # left_widget = QtGui.QWidget(splitter)
-    # left_layout = QtGui.QVBoxLayout(left_widget)
-    # left_layout.setContentsMargins(0,0,5,0)
-    # self._task_widget = TaskWidget(self)
-    # self._task_widget.set_read_only(False)
-    # self._task_widget.set_selection_mode(False)
-    # left_layout.addWidget(self._task_widget)
-    # splitter.addWidget(left_widget)
+    left_widget = QtGui.QWidget(splitter)
+    left_layout = QtGui.QVBoxLayout(left_widget)
+    left_layout.setContentsMargins(0,0,5,0)
+    self._task_widget = TaskWidget(self)
+    self._task_widget.set_read_only(False)
+    self._task_widget.set_selection_mode(False)
+    left_layout.addWidget(self._task_widget)
+    splitter.addWidget(left_widget)
 
     # CONTENT ASSET
 
@@ -111,7 +111,7 @@ class ScriptPublisherDialog(BaseIODialog):
     QScrollBar::sub-line, QScrollBar::add-line {height: 0px; width: 0px;}
     """
 
-    right_widget = QtGui.QWidget()
+    right_widget = QtGui.QWidget(splitter)
     right_layout = QtGui.QVBoxLayout(right_widget)
     right_layout.setContentsMargins(5,0,0,0)
     asset_frame = QtGui.QFrame(self)
@@ -155,9 +155,9 @@ class ScriptPublisherDialog(BaseIODialog):
     asset_frame_layout.addItem(spacer)
 
     right_layout.addWidget(asset_frame)
-    # splitter.addWidget(right_widget)
+    splitter.addWidget(right_widget)
 
-    self.addContentWidget(right_widget)
+    self.addContentWidget(splitter)
 
     self._save_btn.setText("Publish and Save script")
     self._save_btn.setMinimumWidth(150)
@@ -228,7 +228,7 @@ class ScriptPublisherDialog(BaseIODialog):
     task = self.current_task
     if task != None:
       logging.debug("current: %s" % task.getName())
-      # self._task_widget.set_task(task, self._current_scene)
+      self._task_widget.set_task(task, self._current_scene)
       self.update_asset()
 
     self._validate(soft_validation=True)

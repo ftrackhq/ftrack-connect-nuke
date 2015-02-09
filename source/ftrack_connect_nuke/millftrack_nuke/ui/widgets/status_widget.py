@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PySide import QtGui, QtCore
-
+from FnAssetAPI import logging
 from ..images import image_dir
 import os
 
@@ -99,7 +99,7 @@ class StatusWidgetDisplay(QtGui.QLabel):
 
   def set_status(self, status):
     self.setText(status.getName())
-    self.set_status_css(status.get("color"))
+    # self.set_status_css(status.get("color"))
     self.status = status
 
   def set_status_css(self, color=None):
