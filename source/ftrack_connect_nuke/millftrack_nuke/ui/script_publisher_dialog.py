@@ -4,11 +4,11 @@
 from PySide import QtGui
 import os, re
 
-from ..ftrack_io.task import N_TaskFactory
-from ..ftrack_io.asset import N_AssetFactory
-from ..ftrack_io.asset import AssetIOError
+# from ..ftrack_io.task import N_TaskFactory
+# from ..ftrack_io.asset import N_AssetFactory
+# from ..ftrack_io.asset import AssetIOError
 
-from ..ftrack_io.assets.scene_io import SceneIO
+# from ..ftrack_io.assets.scene_io import SceneIO
 
 from generic.base_dialog import BaseIODialog
 
@@ -17,6 +17,8 @@ from widgets.comment_widget import CommentWidget
 from task_widgets import TaskWidget
 
 from FnAssetAPI import logging
+from ftrack_connect_nuke.ftrackConnector.nukeassets import NukeSceneAsset
+from ftrack_connect_nuke.ftrackConnector.nukecon import Connector
 
 
 class ScriptPublisherDialog(BaseIODialog):
@@ -26,19 +28,20 @@ class ScriptPublisherDialog(BaseIODialog):
     super(ScriptPublisherDialog, self).__init__(QtGui.QApplication.activeWindow())
     self.setFTrackTitle("Publish script...")
 
-    self._scenes_connectors = SceneIO.connectors()
+    # self._scenes_connectors = Connector()
 
-    self._connectors_per_type = dict()
-    for scene_connector in self._scenes_connectors:
-      self._connectors_per_type[scene_connector.name] = scene_connector
-
+    self._connectors_per_type = {}
+    # for scene_connector in self._scenes_connectors:
+    self._connectors_per_type['nuke_comp_scene'] = NukeSceneAsset()
+    self._connectors_per_type['nuke_precomp_scene'] = NukeSceneAsset()
+    self._connectors_per_type['nuke_roto_scene'] = NukeSceneAsset()
     self.setupUI()
 
     # Check current asset (None if no version_id found)
-    try:
-      self._current_scene = N_AssetFactory.get_asset_from_version_id(version_id, SceneIO)
-    except AssetIOError as err:
-      self.set_error(str(err))
+    # try:
+    #   self._current_scene = N_AssetFactory.get_asset_from_version_id(version_id, SceneIO)
+    # except AssetIOError as err:
+    #   self.set_error(str(err))
 
     # Check error
     if not self.is_error():
@@ -53,9 +56,9 @@ class ScriptPublisherDialog(BaseIODialog):
     self.exec_()
 
   def setupUI(self):
-    self.resize(1200,900)
-    self.setMinimumWidth(1200)
-    self.setMinimumHeight(900)
+    # self.resize(1200,900)
+    # self.setMinimumWidth(1200)
+    # self.setMinimumHeight(900)
 
     # HEADER
 
@@ -65,7 +68,9 @@ class ScriptPublisherDialog(BaseIODialog):
     asset_connectors_lbl.setMinimumWidth(60)
     self._asset_connectors_cbbox = QtGui.QComboBox(self._tasks_frame)
     self._asset_connectors_cbbox.setMinimumHeight(23)
-    self._asset_connectors_cbbox.addItems([c.name for c in self._scenes_connectors])
+    # self._asset_connectors_cbbox.addItems([c for c in self._scenes_connectors])
+    self._asset_connectors_cbbox.addItems(self._connectors_per_type.keys())
+    
     self._asset_connectors_cbbox.currentIndexChanged.connect(self._toggle_asset_type)
     spacer_asset_type = QtGui.QSpacerItem( 0, 0, QtGui.QSizePolicy.Expanding,
                                                 QtGui.QSizePolicy.Minimum )
@@ -77,18 +82,18 @@ class ScriptPublisherDialog(BaseIODialog):
 
     # CONTENT TASK
 
-    splitter = QtGui.QSplitter(self)
-    splitter.setContentsMargins(0,0,0,10)
-    splitter.setChildrenCollapsible(False)
+    # splitter = QtGui.QSplitter(self)
+    # splitter.setContentsMargins(0,0,0,10)
+    # splitter.setChildrenCollapsible(False)
 
-    left_widget = QtGui.QWidget(splitter)
-    left_layout = QtGui.QVBoxLayout(left_widget)
-    left_layout.setContentsMargins(0,0,5,0)
-    self._task_widget = TaskWidget(self)
-    self._task_widget.set_read_only(False)
-    self._task_widget.set_selection_mode(False)
-    left_layout.addWidget(self._task_widget)
-    splitter.addWidget(left_widget)
+    # left_widget = QtGui.QWidget(splitter)
+    # left_layout = QtGui.QVBoxLayout(left_widget)
+    # left_layout.setContentsMargins(0,0,5,0)
+    # self._task_widget = TaskWidget(self)
+    # self._task_widget.set_read_only(False)
+    # self._task_widget.set_selection_mode(False)
+    # left_layout.addWidget(self._task_widget)
+    # splitter.addWidget(left_widget)
 
     # CONTENT ASSET
 
@@ -108,7 +113,7 @@ class ScriptPublisherDialog(BaseIODialog):
     QScrollBar::sub-line, QScrollBar::add-line {height: 0px; width: 0px;}
     """
 
-    right_widget = QtGui.QWidget(splitter)
+    right_widget = QtGui.QWidget()
     right_layout = QtGui.QVBoxLayout(right_widget)
     right_layout.setContentsMargins(5,0,0,0)
     asset_frame = QtGui.QFrame(self)
@@ -152,9 +157,9 @@ class ScriptPublisherDialog(BaseIODialog):
     asset_frame_layout.addItem(spacer)
 
     right_layout.addWidget(asset_frame)
-    splitter.addWidget(right_widget)
+    # splitter.addWidget(right_widget)
 
-    self.addContentWidget(splitter)
+    self.addContentWidget(right_widget)
 
     self._save_btn.setText("Publish and Save script")
     self._save_btn.setMinimumWidth(150)
@@ -220,8 +225,8 @@ class ScriptPublisherDialog(BaseIODialog):
   def update_task(self, *args):
     task = self.current_task
     if task != None:
-      logging.debug("current: %s" % task.name)
-      self._task_widget.set_task(task, self._current_scene)
+      logging.debug("current: %s" % task.getName())
+      # self._task_widget.set_task(task, self._current_scene)
       self.update_asset()
 
     self._validate(soft_validation=True)
@@ -231,11 +236,20 @@ class ScriptPublisherDialog(BaseIODialog):
     task = self.current_task
     asset_type = self._asset_connectors_cbbox.currentText()
     connector = self._connectors_per_type[asset_type]
-    asset_name = task.name + "_" + connector.short
+    asset_name = task.getName() + "_" + asset_type
     self._asset_name.setText(asset_name)
+    
+    asset = self.current_task.getAssets(assetTypes=[asset_type])
 
-    version = task.asset_version_number(self.asset_name, self.connector.asset_type)
-    self._asset_version.setText("%03d" % version)
+    asset_version = 0
+    if asset:
+        asset = asset[0]
+        version = asset.getVersions()
+        if version:
+            asset_version = version[-1].get('version')
+
+    # version = task.asset_version_number(self.asset_name, self.connector.asset_type)
+    self._asset_version.setText("%03d" % asset_version)
 
   def _validate(self, soft_validation=False):
     logging.debug("soft_validation: %s" % soft_validation)
@@ -272,7 +286,7 @@ asset type should be '%s'" % self._current_scene.connector.asset_type
       error = "You don't have any task assigned to you."
       self._asset_connectors_cbbox.setEnabled(False)
 
-    elif self.current_task.shot == None:
+    elif self.current_task.getParent() == None:
       error = "This task isn't attached to any shot.. You need one to publish an asset"
 
     if error == None and len(self._comment_widget.text) == 0:
