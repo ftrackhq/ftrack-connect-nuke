@@ -111,15 +111,6 @@ class AssetsManager(object):
       thumbnail = panel.asset_thumbnail
       comment = panel.comment
       asset_type = panel.current_asset_type
-      # status = panel.current_shot_status
-      #
-      # logging.info('task %s' % task.getName())
-      # logging.info('asset name %s '%  asset_name)
-      # logging.info('thumbnail %s'% thumbnail)
-      # logging.info('comment %s'% comment)
-      # logging.info('asset_type %s'% asset_type)
-      # # logging.info('status', status)
-      
 
       import tempfile
       tmp_script = tempfile.NamedTemporaryFile(suffix='.nk', delete=False).name
@@ -144,6 +135,8 @@ class AssetsManager(object):
         name='scene',
         path=tmp_script
       )
+      
+      version.createThumbnail(thumbnail)
 
       result = version.publish()
       if result:
