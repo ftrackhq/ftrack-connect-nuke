@@ -262,7 +262,7 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
 
         padding_top += self._fm_desc.height() + self._inter_text
 
-        self.draw_date(painter, date, padding_left, padding_top, index)
+        # self.draw_date(painter, date, padding_left, padding_top, index)
 
         self._date_rect = QtCore.QRect( padding_left,
                                         padding_top - self._fm_desc.height() - option.rect.top(),
@@ -272,10 +272,10 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
         # Draw Location if necessary
         if not available:
           locations_info = "Locations: "
-          if len(locations) > 0:
-            locations_info += ", ".join(locations)
-          else:
-            locations_info += "Hmmm... nowhere?"
+          # if len(locations) > 0:
+          #   locations_info += ", ".join(locations)
+          # else:
+          #   locations_info += "Hmmm... nowhere?"
           painter.setPen( QtGui.QPen(QtCore.Qt.red, 1, QtCore.Qt.SolidLine) )
 
           padding_top += self._fm_desc.height() + self._inter_text
@@ -466,7 +466,7 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
     # Set rects
     rect_btn = QtCore.QRect()
     if (self._button_rect is not None
-      and (btn_role or asset_version.version_number > 1)):
+      and (btn_role or asset_version.get('version') > 1)):
       rect_btn = self._button_rect.translated(0, option.rect.top())
 
     rect_date = QtCore.QRect()
