@@ -336,9 +336,6 @@ def registerAssetTypes():
     assetHandler.registerAssetType(name='geo', cls=GeometryAsset)
     # new mill asset types
     assetHandler.registerAssetType(name='nuke_gizmo', cls=GizmoAsset)
-    assetHandler.registerAssetType(name='nuke_comp_scene', cls=NukeSceneAsset)
-    assetHandler.registerAssetType(name='nuke_precomp_scene', cls=NukeSceneAsset)
-    assetHandler.registerAssetType(name='nuke_roto_scene', cls=NukeSceneAsset)
-
+    assetHandler.registerAssetType(name='nuke_scene', cls=NukeSceneAsset)
 
 
