@@ -288,6 +288,7 @@ class GeometryAsset(GenericAsset):
         return [], "Publish function not implemented for geometry asset"
 
 
+# new gizmo asset (mill) # not used atm
 class GizmoAsset(GenericAsset):
     def __init__(self):
         super(GizmoAsset, self).__init__()
@@ -317,13 +318,15 @@ class GizmoAsset(GenericAsset):
             
         return publishedComponents
 
-class NukeGroupNodes(GizmoAsset):
-    def __init__(self):
-        super(NukeGroupNodes, self).__init__()
+
+# new scene assets (Mill)
+class NukeSceneAsset(GizmoAsset):
 
     def importAsset(self, iAObj=None):
         if iAObj.filePath.endswith('nk'):
-            nuke.createNode(iAObj.filePath)
+            resultingNode = nuke.createNode(iAObj.filePath)
+            self.addFTab(resultingNode)
+            self.setFTab(resultingNode, iAObj)
 
 
 def registerAssetTypes():
@@ -331,6 +334,11 @@ def registerAssetTypes():
     assetHandler.registerAssetType(name='cam', cls=CameraAsset)
     assetHandler.registerAssetType(name='img', cls=ImageSequenceAsset)
     assetHandler.registerAssetType(name='geo', cls=GeometryAsset)
+    # new mill asset types
     assetHandler.registerAssetType(name='nuke_gizmo', cls=GizmoAsset)
-    assetHandler.registerAssetType(name='nuke_group_nodes', cls=NukeGroupNodes)
+    assetHandler.registerAssetType(name='nuke_comp_scene', cls=NukeSceneAsset)
+    assetHandler.registerAssetType(name='nuke_precomp_scene', cls=NukeSceneAsset)
+    assetHandler.registerAssetType(name='nuke_roto_scene', cls=NukeSceneAsset)
+
+
 
