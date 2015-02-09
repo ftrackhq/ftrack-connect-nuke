@@ -99,39 +99,80 @@ class AssetsManager(object):
       self.recent_assets.update_menu()
 
   def publish_script_panel(self):
-    version_id = AssetsManager.get_current_scene_version_id()
+    asset_id = AssetsManager.get_current_scene_version_id('nuke_scene')
 
-    panel = ScriptPublisherDialog(version_id)
+    panel = ScriptPublisherDialog(asset_id)
 
     self.block_save_callback = True
 
     if panel.result():
       task = panel.current_task
+      asset_name = panel.asset_name
+      thumbnail = panel.asset_thumbnail
+      comment = panel.comment
+      asset_type = panel.current_asset_type
+      # status = panel.current_shot_status
+      #
+      # logging.info('task %s' % task.getName())
+      # logging.info('asset name %s '%  asset_name)
+      # logging.info('thumbnail %s'% thumbnail)
+      # logging.info('comment %s'% comment)
+      # logging.info('asset_type %s'% asset_type)
+      # # logging.info('status', status)
+      
 
-      nuke_connector = panel.connector
-      asset = nuke_connector.create( panel.asset_name, task.ftrack_object, task.shot.ftrack_object )
-      version = nuke_connector.saveVersion( asset, panel.comment, task.id,
-                                            thumbnail= panel.asset_thumbnail )
+      import tempfile
+      tmp_script = tempfile.NamedTemporaryFile(suffix='.nk', delete=False).name
+      nuke.scriptSaveAs(tmp_script) 
 
-      if panel.current_shot_status_changed():
-        task.shot.ftrack_object.setStatus(panel.current_shot_status)
+      if not asset_id:
+        ftask = task.getParent()
 
-      if panel.current_task_status_changed():
-        task.setStatus(panel.current_task_status)
+        try:
+            asset_id = ftask.createAsset(
+                name=asset_name,
+                assetType=asset_type
+            ).getId()
 
-      # Update version links and metadatas
-      scene_version = N_AssetFactory.get_version_from_id(version.getId(), SceneIO)
+        except AttributeError, message:
+           logging.error(message)
+           return
 
-      scene_version.set_metadatas()
-      scene_version.set_links()
+      asset = ftrack.Asset(asset_id)
+      version = asset.createVersion(comment=comment, taskid=task.getId())
+      version.createComponent(
+        name='scene',
+        path=tmp_script
+      )
 
-      self.lock_scene_asset(scene_version)
+      result = version.publish()
+      if result:
+        nuke.message('Asset %s correctly published' % asset.getName())
 
-      AssetsManager.load_gizmos_from_task(scene_version.asset.task.ftrack_object)
+      # nuke_connector = panel.connector
+      # asset = nuke_connector.create( panel.asset_name, task.ftrack_object, task.shot.ftrack_object )
+      # version = nuke_connector.saveVersion( asset, panel.comment, task.id,
+      #                                       thumbnail= panel.asset_thumbnail )
 
-      # Update recent assets
-      self.recent_assets.add_scene(scene_version)
-      self.recent_assets.update_menu()
+      # if panel.current_shot_status_changed():
+      #   task.shot.ftrack_object.setStatus(panel.current_shot_status)
+      #
+      # if panel.current_task_status_changed():
+      #   task.setStatus(panel.current_task_status)
+      #
+      # # Update version links and metadatas
+      # # scene_version = N_AssetFactory.get_version_from_id(version.getId(), SceneIO)
+      #
+      # scene_version.set_metadatas()
+      # scene_version.set_links()
+      #
+      # self.lock_scene_asset(scene_version)
+      #
+      # AssetsManager.load_gizmos_from_task(scene_version.asset.task.ftrack_object)
+      #
+      # # Update recent assets
+      # self.recent_assets.add_scene(scene_version)
+      # self.recent_assets.update_menu()
 
     self.block_save_callback = False
 
