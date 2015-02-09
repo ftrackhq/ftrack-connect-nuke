@@ -32,9 +32,7 @@ class ScriptPublisherDialog(BaseIODialog):
 
     self._connectors_per_type = {}
     # for scene_connector in self._scenes_connectors:
-    self._connectors_per_type['nuke_comp_scene'] = NukeSceneAsset()
-    self._connectors_per_type['nuke_precomp_scene'] = NukeSceneAsset()
-    self._connectors_per_type['nuke_roto_scene'] = NukeSceneAsset()
+    self._connectors_per_type['nuke_scene'] = NukeSceneAsset()
     self.setupUI()
 
     # Check current asset (None if no version_id found)
@@ -184,6 +182,10 @@ class ScriptPublisherDialog(BaseIODialog):
   @property
   def current_shot_status(self):
     return self._task_widget.current_shot_status
+
+  @property
+  def current_asset_type(self):
+      return self._asset_connectors_cbbox.currentText()
 
   @property
   def current_task_status(self):
