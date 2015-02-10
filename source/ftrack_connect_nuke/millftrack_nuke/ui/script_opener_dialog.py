@@ -3,11 +3,11 @@
 
 from PySide import QtGui
 
-from ..ftrack_io.task import N_TaskFactory
-from ..ftrack_io.asset import N_AssetFactory
-from ..ftrack_io.asset import AssetIOError
+# from ..ftrack_io.task import N_TaskFactory
+# from ..ftrack_io.asset import N_AssetFactory
+# from ..ftrack_io.asset import AssetIOError
 
-from ..ftrack_io.assets.scene_io import SceneIO
+# from ..ftrack_io.assets.scene_io import SceneIO
 
 from generic.base_dialog import BaseIODialog
 from task_widgets import TaskWidget
@@ -17,115 +17,121 @@ from FnAssetAPI import logging
 
 
 class ScriptOpenerDialog(BaseIODialog):
-  def __init__(self, version_id):
-    super(ScriptOpenerDialog, self).__init__(QtGui.QApplication.activeWindow())
-    self.setFTrackTitle("Open script...")
 
-    self.setupUI()
+    def __init__(self, version_id):
+        super(ScriptOpenerDialog, self).__init__(
+            QtGui.QApplication.activeWindow())
+        self.setFTrackTitle("Open script...")
 
-    try:
-      self._current_scene = N_AssetFactory.get_asset_from_version_id(version_id, SceneIO)
-    except AssetIOError as err:
-      self._current_scene = None
-        # TODO: warning for wrong asset...
+        self.setupUI()
 
-    self.initiate_tasks()
+        try:
+            self._current_scene = N_AssetFactory.get_asset_from_version_id(
+                version_id, SceneIO)
+        except Exception as err:
+            self._current_scene = None
+            # TODO: warning for wrong asset...
 
-    self.exec_()
+        self.initiate_tasks()
 
-  def setupUI(self):
-    self.resize(1300,950)
-    self.setMinimumWidth(1300)
-    self.setMinimumHeight(950)
+        self.exec_()
 
-    # CONTENT TASK
+    def setupUI(self):
+        self.resize(1300, 950)
+        self.setMinimumWidth(1300)
+        self.setMinimumHeight(950)
 
-    splitter = QtGui.QSplitter(self)
-    splitter.setContentsMargins(0,0,0,10)
-    splitter.setChildrenCollapsible(False)
+        # CONTENT TASK
 
-    left_widget = QtGui.QWidget(splitter)
-    left_layout = QtGui.QVBoxLayout(left_widget)
-    left_layout.setContentsMargins(0,0,5,0)
-    self._task_widget = TaskWidget(self)
-    self._task_widget.set_read_only(True)
-    self._task_widget.set_selection_mode(True)
-    self._task_widget.asset_version_selected.connect(self.set_scene_version)
-    self._task_widget.no_asset_version.connect(self.set_no_asset_version)
-    left_layout.addWidget(self._task_widget)
-    splitter.addWidget(left_widget)
+        splitter = QtGui.QSplitter(self)
+        splitter.setContentsMargins(0, 0, 0, 10)
+        splitter.setChildrenCollapsible(False)
 
-    # CONTENT ASSET
+        left_widget = QtGui.QWidget(splitter)
+        left_layout = QtGui.QVBoxLayout(left_widget)
+        left_layout.setContentsMargins(0, 0, 5, 0)
+        self._task_widget = TaskWidget(self)
+        self._task_widget.set_read_only(True)
+        self._task_widget.set_selection_mode(True)
+        self._task_widget.asset_version_selected.connect(
+            self.set_scene_version)
+        self._task_widget.no_asset_version.connect(self.set_no_asset_version)
+        left_layout.addWidget(self._task_widget)
+        splitter.addWidget(left_widget)
 
-    css_asset_name = "color: #c3cfa4; font-weight: bold;"
-    css_asset_version = "color: #de8888; font-weight: bold;"
-    css_asset_global = """
-    QFrame { padding: 3px; border-radius: 4px;
-             background: #222; color: #FFF; font-size: 13px; }
-    QLabel { padding: 0px; background: none; }
-    """
+        # CONTENT ASSET
 
-    right_widget = QtGui.QWidget(splitter)
-    right_layout = QtGui.QVBoxLayout(right_widget)
-    right_layout.setContentsMargins(5,0,0,0)
-    self._scene_version_widget = SceneVersionWidget(self)
-    right_layout.addWidget(self._scene_version_widget)
-    splitter.addWidget(right_widget)
+        css_asset_name = "color: #c3cfa4; font-weight: bold;"
+        css_asset_version = "color: #de8888; font-weight: bold;"
+        css_asset_global = """
+        QFrame { padding: 3px; border-radius: 4px;
+                 background: #222; color: #FFF; font-size: 13px; }
+        QLabel { padding: 0px; background: none; }
+        """
 
-    self.addContentWidget(splitter)
+        right_widget = QtGui.QWidget(splitter)
+        right_layout = QtGui.QVBoxLayout(right_widget)
+        right_layout.setContentsMargins(5, 0, 0, 0)
+        self._scene_version_widget = SceneVersionWidget(self)
+        right_layout.addWidget(self._scene_version_widget)
+        splitter.addWidget(right_widget)
 
-    self._save_btn.setText("Open script")
-    self._save_btn.setMinimumWidth(150)
+        self.addContentWidget(splitter)
 
-  @property
-  def current_scene_version(self):
-    return self._scene_version_widget.current_scene_version
+        self._save_btn.setText("Open script")
+        self._save_btn.setMinimumWidth(150)
 
-  def update_task(self, *args):
-    task = self.current_task
-    self._scene_version_widget.initiate()
+    @property
+    def current_scene_version(self):
+        return self._scene_version_widget.current_scene_version
 
-    if task != None:
-      self._task_widget.set_task(task, self._current_scene)
+    def update_task(self, *args):
+        task = self.current_task
+        self._scene_version_widget.initiate()
 
-    if self._task_widget.current_asset_version == None:
-      self.validate()
+        if task != None:
+            self._task_widget.set_task(task, self._current_scene)
 
-  def set_scene_version(self, scene_version):
-    if scene_version is None:
-      self._scene_version_widget.set_empty()
-      self.set_enabled(False)
-    elif not scene_version.is_being_cached:
-      logging.debug(scene_version.name)
-      self._scene_version_widget.set_scene_version(scene_version)
-      self.validate(scene_version)
+        if self._task_widget.current_asset_version == None:
+            self.validate()
 
-  def set_no_asset_version(self):
-    self._scene_version_widget.set_empty()
+    def set_scene_version(self, scene_version):
+        if scene_version is None:
+            self._scene_version_widget.set_empty()
+            self.set_enabled(False)
 
-  def validate(self, scene_version=None):
-    self.initiate_warning_box()
-    self.initiate_error_box()
+        # elif not scene_version.is_being_cached:
+        # logging.debug(scene_version.name)
+        else:
+            self._scene_version_widget.set_scene_version(scene_version)
+            self.validate(scene_version)
 
-    self._validate_task()
+    def set_no_asset_version(self):
+        self._scene_version_widget.set_empty()
 
-    ### Error check
-    error = None
+    def validate(self, scene_version=None):
+        self.initiate_warning_box()
+        self.initiate_error_box()
 
-    if self.current_task == None:
-      error = "You don't have any task assigned to you."
+        self._validate_task()
 
-    if error != None:
-      self.set_error(error)
+        # Error check
+        error = None
 
-    elif scene_version == None:
-      self.set_enabled(False)
+        if self.current_task == None:
+            error = "You don't have any task assigned to you."
 
-    elif self._scene_version_widget.is_being_loaded():
-      self.set_enabled(False)
+        if error != None:
+            self.set_error(error)
 
-    elif self._scene_version_widget.is_error():
-      self.set_enabled(False)
+        elif scene_version == None:
+            self.set_enabled(False)
 
-    elif self._scene_version_widget.is_locked():
-      self.set_enabled(False)
+        elif self._scene_version_widget.is_being_loaded():
+            self.set_enabled(False)
+
+        elif self._scene_version_widget.is_error():
+            self.set_enabled(False)
+
+        elif self._scene_version_widget.is_locked():
+            self.set_enabled(False)

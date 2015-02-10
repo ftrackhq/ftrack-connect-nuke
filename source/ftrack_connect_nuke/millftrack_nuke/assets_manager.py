@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import ftrack
 from FnAssetAPI import logging
+import json
 
 from ui.script_opener_dialog import ScriptOpenerDialog
 from ui.script_editor_dialog import ScriptEditorDialog
@@ -62,7 +63,7 @@ class AssetsManager(object):
   @staticmethod
   def open_script(asset_version_id):
 
-    current_version_id = AssetsManager.get_current_scene_version_id()
+    current_version_id = AssetsManager.get_current_scene_version_id('nuke_scene')
 
     try:
       scene_version = N_AssetFactory.get_version_from_id(asset_version_id, SceneIO)
@@ -77,19 +78,20 @@ class AssetsManager(object):
     if locker != None:
       nuke.critical("This asset is locked by %s [%s]" % (locker.getName(), locker.getEmail()))
     else:
-      AssetsManager.load_gizmos_from_task(scene_version.asset.task.ftrack_object)
+      AssetsManager.load_gizmos_from_task(scene_version.getTask(), 'scene')
       scene_version.load_dependencies()
 
       scene_version.load_asset()
 
   def open_script_panel(self):
-    version_id = AssetsManager.get_current_scene_version_id()
+    version_id = AssetsManager.get_current_scene_version_id('nuke_scene')
 
     panel = ScriptOpenerDialog(version_id)
     if panel.result():
       scene_version = panel.current_scene_version
+      logging.info(scene_version)
 
-      AssetsManager.load_gizmos_from_task(scene_version.asset.task.ftrack_object)
+      AssetsManager.load_gizmos_from_task(scene_version.getTask(), 'scene')
       scene_version.load_dependencies()
 
       scene_version.load_asset()
@@ -138,21 +140,30 @@ class AssetsManager(object):
       
       version.createThumbnail(thumbnail)
 
+      scene_metas = SceneNodeAnalyser()
+
+      version.setMeta('mft.node_numbers', json.dumps(scene_metas.node_number_meta) )
+      # version.set_links()
+
       result = version.publish()
       if result:
         nuke.message('Asset %s correctly published' % asset.getName())
 
+      if panel.current_shot_status_changed():
+        task.shot.ftrack_object.setStatus(panel.current_shot_status)
+      
+      if panel.current_task_status_changed():
+        task.setStatus(panel.current_task_status)
+
+      self.recent_assets.add_scene(version)
+      self.recent_assets.update_menu()
+
+      #
       # nuke_connector = panel.connector
       # asset = nuke_connector.create( panel.asset_name, task.ftrack_object, task.shot.ftrack_object )
       # version = nuke_connector.saveVersion( asset, panel.comment, task.id,
       #                                       thumbnail= panel.asset_thumbnail )
 
-      # if panel.current_shot_status_changed():
-      #   task.shot.ftrack_object.setStatus(panel.current_shot_status)
-      #
-      # if panel.current_task_status_changed():
-      #   task.setStatus(panel.current_task_status)
-      #
       # # Update version links and metadatas
       # # scene_version = N_AssetFactory.get_version_from_id(version.getId(), SceneIO)
       #
@@ -164,8 +175,6 @@ class AssetsManager(object):
       # AssetsManager.load_gizmos_from_task(scene_version.asset.task.ftrack_object)
       #
       # # Update recent assets
-      # self.recent_assets.add_scene(scene_version)
-      # self.recent_assets.update_menu()
 
     self.block_save_callback = False
 
@@ -254,12 +263,12 @@ class AssetsManager(object):
       # group_version.set_links(versions_links_dict.values())
 
   @staticmethod
-  def load_gizmos_from_task(task):
+  def load_gizmos_from_task(task, component='gizmo'):
     gizmos = task.getAssets()
 
     for gizmo in gizmos:
       for version in gizmo.getVersions():
-        gizmo_path = version.getComponent('gizmo').path()
+        gizmo_path = version.getComponent(component).path()
         if gizmo_path != None:
           nuke.pluginAddPath(os.path.dirname(gizmo_path))
 
@@ -316,13 +325,11 @@ class AssetsManager(object):
       raise Exception("Script edition cancelled")
 
   def lock_scene_asset(self, scene_version=None):
-    logging.debug(scene_version)
     if scene_version == None:
       scene_version = AssetsManager.get_current_scene()
       if scene_version == None:
         return
 
-    logging.debug(scene_version)
 
     scene_version.asset.lock_asset(True)
     self.asset_locker.lock_asset(scene_version.asset.id, True)
@@ -584,3 +591,127 @@ class RecentScenes(object):
     f = open(self.config_file, "w")
     f.write("\n".join(recent_scenes_lines))
     f.close()
+
+
+
+class NodeType(object):
+  def __init__(self, name, regex=None, is_output=False):
+    self.name = name
+    self.is_output = is_output
+
+    self._total_ftrack_assets_ids = []
+
+    if regex is not None:
+      self._regex = re.compile(regex)
+    else:
+      self._regex = re.compile("^" + name + "$")
+
+    self.nodes = []
+
+  def add_instance(self, node, id_ftrack=None):
+    self.nodes.append(node)
+
+    if id_ftrack is not None:
+      self._total_ftrack_assets_ids.append(id_ftrack)
+
+  def match(self, node_class):
+    return re.search(self._regex, node_class) is not None
+
+  def compute_total(self, all_enabled_nodes, all_nodes_in_tree):
+    node_names = set([n.name() for n in self.nodes])
+
+    total = len(node_names)
+    total_enabled = len(node_names.intersection(all_enabled_nodes))
+    total_in_tree = 0
+
+    if self.is_output:
+      return (total, total_enabled)
+
+    total_in_tree = len(node_names.intersection(all_nodes_in_tree))
+    total_tracked = len(self._total_ftrack_assets_ids)
+    return (total, total_enabled, total_in_tree, total_tracked)
+
+
+
+class SceneNodeAnalyser(object):
+
+  ''' List the useful nodes composing the Nuke scene '''
+
+  def __init__(self):
+    self._outputs = [ "Write", "MillWrite", "MillWrite2", "MillWrite3" ]
+    self._inputs = [ "Read", "ReadGeo" ]
+    self._blacklist_classes = [ "Dot", "BackdropNode", "Viewer" ]
+
+    self._nodes_metas = [
+      NodeType("Output nodes", "^(" + "|".join(self._outputs) + ")$", is_output=True),
+      NodeType("Input nodes", "^(" + "|".join(self._inputs) + ")$"),
+      NodeType("Genarts nodes", "^OFXcom.genarts."),
+      NodeType("Revision nodes", "^OFXcom.revisionfx."),
+      NodeType("VectorBlur nodes"),
+      NodeType("OpticalFlares nodes")
+    ]
+
+    self.links = set()
+
+    all_nodes = []
+    all_enabled_nodes = []
+    all_tracked_nodes = []
+
+    blacklist_nodes = []
+
+    for node in nuke.allNodes(group=nuke.root()):
+      if node.Class() in self._blacklist_classes:
+        blacklist_nodes.append(node.name())
+        continue
+
+      id_ftrack = None
+      if "ftrack_version_id" in node.knobs().keys():
+        id_ftrack = node["ftrack_version_id"].value()
+        nuke.tprint(id_ftrack)
+        all_tracked_nodes.append(id_ftrack)
+
+      for node_meta in self._nodes_metas:
+        if node_meta.match(node.Class()):
+          node_meta.add_instance(node, id_ftrack)
+
+      try:
+        node_enabled = not node["disable"].value()
+      except: # If there is no 'disable' knob, we consider the node is enabled
+        node_enabled = True
+      if node_enabled:
+        all_enabled_nodes.append(node.name())
+
+      all_nodes.append(node.name())
+
+    all_nodes_in_tree = self._nodes_in_tree( self._nodes_metas[0].nodes,
+                                             blacklist_nodes )
+
+
+    self.node_number_meta = { "Nodes number" : ( len(all_nodes),
+                                                 len(all_enabled_nodes),
+                                                 len(all_nodes_in_tree),
+                                                 len(all_tracked_nodes) ) }
+    for node_meta in self._nodes_metas:
+      self.node_number_meta[node_meta.name] = node_meta.compute_total(all_enabled_nodes,
+                                                                      all_nodes_in_tree)
+
+    nuke.tprint(self.node_number_meta)
+
+  def _nodes_in_tree(self, outputs, blacklist_nodes):
+    tree = set()
+
+    for output in outputs:
+      deps = set()
+      if output["disable"].value():
+        continue
+      children = nuke.dependencies(output)
+      while len(children) != 0:
+        new_children = []
+        for child in children:
+          new_children += nuke.dependencies(child)
+        deps = deps.union([c.name() for c in children])
+        children = new_children
+      deps_valid = deps.difference(blacklist_nodes)
+      tree = tree.union(deps_valid)
+
+    return tree

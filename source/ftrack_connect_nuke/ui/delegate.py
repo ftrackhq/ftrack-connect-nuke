@@ -68,6 +68,8 @@ class Delegate(delegate.Delegate):
         ftrackMenu.addSeparator()
         ftrackMenu.addCommand('Publish a gizmo...', millAssetManager.publish_gizmo_panel)
         ftrackMenu.addCommand('Publish script...', millAssetManager.publish_script_panel)
+        ftrackMenu.addCommand('Load script...', millAssetManager.open_script_panel)
+
         # ftrackMenu.addCommand('Publish a group of nodes...', millAssetManager.publish_group_panel)
 
         # Add ftrack publish node

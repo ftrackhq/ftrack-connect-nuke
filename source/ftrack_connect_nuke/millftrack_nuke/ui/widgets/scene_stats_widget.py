@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import json
 from PySide import QtGui, QtCore
 import time, os
 
@@ -39,13 +39,16 @@ class StatisticWidget(QtGui.QWidget):
 
     for s in stats:
       infos_dict[s] = None
+    asset = self._scene_version.getAsset()
 
-    asset = self._scene_version.asset
-    for version in self._scene_version.previous_versions:
-      meta_version = asset.get_nodes_number_meta(version)
+    for version in self._scene_version.getParent().getVersions():
+      meta_version = version.getMeta('mft.node_numbers') or None
+      logging.info(meta_version)
+
       if meta_version is None:
         continue
 
+      meta_version =  json.loads(meta_version)
       infos_version_dict = infos_dict.copy()
 
       for elt, stat_tuple in meta_version.iteritems():
@@ -115,7 +118,7 @@ class StatisticWidget(QtGui.QWidget):
 
       if ( self._scene_version is not None
            and current_label in self._version_metas.keys() ):
-        version_nb = self._scene_version.version_number
+        version_nb = self._scene_version.get('version')
         version_metas = self._version_metas[current_label]
 
       is_in_tree = (current_label != self._output_label)

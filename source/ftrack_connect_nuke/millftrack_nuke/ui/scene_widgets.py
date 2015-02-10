@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PySide import QtGui, QtCore, QtWebKit
-
+import ftrack
 from generic.dockable_widget import BaseDockableWidget
 from widgets.scene_stats_widget import StatisticWidget
 from widgets.message_widget import MessageWidget
@@ -12,7 +12,7 @@ from widgets.status_widget import StatusWidget
 # from ..ftrack_io.asset import N_AssetFactory
 # from ..ftrack_io.asset import AssetIOError
 
-from ..ftrack_io.assets.scene_io import SceneIO
+# from ..ftrack_io.assets.scene_io import SceneIO
 
 from images import image_dir
 
@@ -127,12 +127,12 @@ class SceneVersionWidget(QtGui.QWidget):
         self._loading_asset_version.stop_anim()
 
     def set_scene_version(self, scene_version):
-        if scene_version.is_being_cached:
-            return
+        # if scene_version.is_being_cached:
+        #     return
 
-        if scene_version.id not in self._scene_versions_dict.keys():
+        if scene_version.getId() not in self._scene_versions_dict.keys():
             widget = SingleSceneVersionWidget(scene_version, self)
-            self._scene_versions_dict[scene_version.id] = widget
+            self._scene_versions_dict[scene_version.getId()] = widget
             self._stackLayout.addWidget(widget)
 
         self._stackLayout.setCurrentWidget(
@@ -279,7 +279,7 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         super(SingleSceneVersionWidget, self).__init__(parent)
         self.scene_version = scene_version
 
-        self._scenes_connectors = SceneIO.connectors()
+        # self._scenes_connectors = SceneIO.connectors()
 
         self.error = False
         self.locked = False
@@ -355,7 +355,7 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         self.set_asset_type("...")
         status_lbl = QtGui.QLabel("Status", self)
         status_lbl.setStyleSheet(self._css_lbl)
-        self._status = StatusWidget(TaskIO.getTaskStatuses(), self)
+        self._status = StatusWidget(ftrack.getTaskStatuses(), self)
         self._status.set_read_only(True)
 
         publish_lbl = QtGui.QLabel("Published by", self)
@@ -464,56 +464,56 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         if self.scene_version == None:
             return
 
-        self._asset_name.setText(self.scene_version.asset.name)
-        self._status.set_status(self.scene_version.status)
-        self._asset_version.setText("%03d" % self.scene_version.version_number)
-        self._thumbnail_widget.update_image(self.scene_version.thumbnail_file)
-        self.set_owner(self.scene_version.owner)
-        self._date.setText(self.scene_version.date_str)
-        self._availability.setText(', '.join(self.scene_version.locations))
-        self.set_asset_type(self.scene_version.asset.connector.asset_type)
-        self._comment.setText(self.scene_version.comment)
+        self._asset_name.setText(self.scene_version.getParent().getName())
+        self._status.set_status(self.scene_version.getStatus())
+        self._asset_version.setText("%03d" % self.scene_version.get('version'))
+        # self._thumbnail_widget.update_image(self.scene_version.getThumbanail())
+        self.set_owner(self.scene_version.getOwner())
+        # self._date.setText(self.scene_version.date_str)
+        # self._availability.setText(', '.join(self.scene_version.locations))
+        # self.set_asset_type(self.scene_version.asset.connector.asset_type)
+        # self._comment.setText(self.scene_version.comment)
 
-        tuple_editor = self.scene_version.editor()
-        if tuple_editor is not None:
-            user_edit, date_edit = tuple_editor
+        # tuple_editor = self.scene_version.editor()
+        # if tuple_editor is not None:
+        #     user_edit, date_edit = tuple_editor
 
-            editor_lbl = QtGui.QLabel("Last Edit by", self)
-            editor_lbl.setStyleSheet(self._css_lbl)
-            self._editor = QtGui.QLabel(self)
-            self.set_editor(user_edit)
-            self._editor.setTextFormat(QtCore.Qt.RichText)
-            self._editor.setTextInteractionFlags(
-                QtCore.Qt.TextBrowserInteraction)
-            self._editor.setOpenExternalLinks(True)
-            date_edit_lbl = QtGui.QLabel("on", self)
-            date_edit_lbl.setStyleSheet(self._css_lbl)
-            self._date_edit = QtGui.QLabel(
-                date_edit.strftime("%A, %d. %B %Y %I:%M%p"), self)
-            self._date_edit.setStyleSheet(self._css_value)
+        #     editor_lbl = QtGui.QLabel("Last Edit by", self)
+        #     editor_lbl.setStyleSheet(self._css_lbl)
+        #     self._editor = QtGui.QLabel(self)
+        #     self.set_editor(user_edit)
+        #     self._editor.setTextFormat(QtCore.Qt.RichText)
+        #     self._editor.setTextInteractionFlags(
+        #         QtCore.Qt.TextBrowserInteraction)
+        #     self._editor.setOpenExternalLinks(True)
+        #     date_edit_lbl = QtGui.QLabel("on", self)
+        #     date_edit_lbl.setStyleSheet(self._css_lbl)
+        #     self._date_edit = QtGui.QLabel(
+        #         date_edit.strftime("%A, %d. %B %Y %I:%M%p"), self)
+        #     self._date_edit.setStyleSheet(self._css_value)
 
-            self._infos_layout.insertRow(4, date_edit_lbl, self._date_edit)
-            self._infos_layout.insertRow(4, editor_lbl, self._editor)
+        #     self._infos_layout.insertRow(4, date_edit_lbl, self._date_edit)
+        #     self._infos_layout.insertRow(4, editor_lbl, self._editor)
 
-        if self.scene_version.asset.locker != None:
-            self.set_locker()
+        # if self.scene_version.asset.locker != None:
+        #     self.set_locker()
 
         self._validate()
 
     def set_asset_type(self, current_asset_type):
         asset_type_name = current_asset_type
         color = "#282828"
-        for scene_connector in self._scenes_connectors:
-            if scene_connector.asset_type == current_asset_type:
-                color = scene_connector.color
-                asset_type_name = scene_connector.name
+        # for scene_connector in self._scenes_connectors:
+        #     if scene_connector.asset_type == current_asset_type:
+        #         color = scene_connector.color
+        #         asset_type_name = scene_connector.name
 
-        css_asset_type = """
-    border-radius: 2px; border: 0px; color: #f0f0f0;
-    padding: 3px; background: """ + color + """;
-    """
+        # css_asset_type = """
+        #     border-radius: 2px; border: 0px; color: #f0f0f0;
+        #     padding: 3px; background: """ + color + """;
+        # """
         self._asset_type.setText(asset_type_name)
-        self._asset_type.setStyleSheet(css_asset_type)
+        # self._asset_type.setStyleSheet(css_asset_type)
 
     def set_owner(self, owner):
         name = owner.getName()
@@ -588,28 +588,29 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         errors = []
         warnings = []
 
+        # TODO ---
         try:
-            scene_path = self.scene_version.path()
+            scene_path = self.scene_version.getComponent(name='scene').getFilesystemPath()
             logging.debug(scene_path)
 
-        except AssetIOError as err:
+        except Exception as err:
             errors.append(str(err))
 
         else:
             if scene_path == None:
-                error = "This scene doesn't seem to be available in your location. Please \
-synchronize the script in your location before loading it."
+                error = "This scene doesn't seem to be available in your location. Please"
+                "synchronize the script in your location before loading it."
                 errors.append(error)
 
             elif not os.path.isfile(scene_path):
-                error = "The scene component exists and is in your location.. However it seems \
-that its path is incorrect. Did anyone move it or renamed it?"
+                error = "The scene component exists and is in your location.. However it seems"
+                "that its path is incorrect. Did anyone move it or renamed it?"
                 errors.append(error)
 
             elif not scene_path.endswith(".nk"):
                 file = os.path.basename(scene_path)
-                error = "The scene component exists and is in your location... But this is \
-not a Nuke script (ending with .nk)<br/>[file: %s]" % file
+                error = "The scene component exists and is in your location... But this is"
+                "not a Nuke script (ending with .nk)<br/>[file: %s]" % file
                 errors.append(error)
 
         if len(errors) > 0:

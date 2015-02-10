@@ -130,10 +130,18 @@ class TaskWidget(QtGui.QWidget):
     single_task_widget = self._stackLayout.currentWidget()
     return single_task_widget._task_status.status
 
+  def _get_task_parents(self, task):
+      parents = [t.getName() for t in task.getParents()]
+      parents.reverse()
+      parents.append(task.getName())
+      parents = ' / '.join(parents)
+      return parents
+
   @property
   def current_asset_version(self):
     if self._current_task != None and self._selection_mode:
-      widget = self._tasks_dict[self._current_task.parents]
+      parents = self._get_task_parents(self._current_task)
+      widget = self._tasks_dict[parents]
       tree = widget.assets_widget.assets_tree
       return tree.current_version
 
