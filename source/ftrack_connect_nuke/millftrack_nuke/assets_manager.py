@@ -46,6 +46,7 @@ class AssetsManager(object):
     asset = current_task.getAssets(assetTypes=[asset_type])
     if asset:
         version = asset[0].getId()
+        return version
 
   @staticmethod
   def get_current_scene():
@@ -78,10 +79,14 @@ class AssetsManager(object):
     if locker != None:
       nuke.critical("This asset is locked by %s [%s]" % (locker.getName(), locker.getEmail()))
     else:
-      AssetsManager.load_gizmos_from_task(scene_version.getTask(), 'scene')
-      scene_version.load_dependencies()
+      AssetsManager.load_gizmos_from_task(scene_version, 'scene')
+      # scene_version.load_dependencies()
 
       scene_version.load_asset()
+
+  def load_script(self, version):
+     path = version.getComponent(name='scene').getFilesystemPath()
+     nuke.nodePaste(path)
 
   def open_script_panel(self):
     version_id = AssetsManager.get_current_scene_version_id('nuke_scene')
@@ -91,10 +96,10 @@ class AssetsManager(object):
       scene_version = panel.current_scene_version
       logging.info(scene_version)
 
-      AssetsManager.load_gizmos_from_task(scene_version.getTask(), 'scene')
-      scene_version.load_dependencies()
-
-      scene_version.load_asset()
+      AssetsManager.load_gizmos_from_task(scene_version, 'scene')
+      # scene_version.load_dependencies()
+      self.load_script(scene_version)
+      # scene_version.load_asset()
 
       # Update recent assets
       self.recent_assets.add_scene(scene_version)
@@ -263,14 +268,10 @@ class AssetsManager(object):
       # group_version.set_links(versions_links_dict.values())
 
   @staticmethod
-  def load_gizmos_from_task(task, component='gizmo'):
-    gizmos = task.getAssets()
-
-    for gizmo in gizmos:
-      for version in gizmo.getVersions():
-        gizmo_path = version.getComponent(component).path()
-        if gizmo_path != None:
-          nuke.pluginAddPath(os.path.dirname(gizmo_path))
+  def load_gizmos_from_task(version, component='gizmo'):
+    gizmo_path = version.getComponent(component).getFilesystemPath()
+    if gizmo_path != None:
+        nuke.pluginAddPath(os.path.dirname(gizmo_path))
 
   @staticmethod
   def set_gizmos_to_toolbar():
@@ -522,10 +523,10 @@ class RecentScenes(object):
       logging.error(error)
       return
 
-    version_nb = " v%02d" % scene_version.version_number
+    version_nb = " v%02d" % scene_version.get('version')
 
     name = scene_version.asset.task.parents + " / " + scene_version.name + version_nb
-    tuple_asset = (scene_version.id, name)
+    tuple_asset = (scene_version.getId(), name)
     recents_list = [tuple_asset] + recents_list
 
     self._write_list(recents_list)
