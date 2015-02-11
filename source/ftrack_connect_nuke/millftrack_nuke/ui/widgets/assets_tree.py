@@ -310,18 +310,18 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
                                                padding_left - 10,
                                                self._fm_desc.height() + 10)
 
-                # Draw Location if necessary
-                if not available:
-                    locations_info = "Locations: "
-                    # if len(locations) > 0:
-                    #   locations_info += ", ".join(locations)
-                    # else:
-                    #   locations_info += "Hmmm... nowhere?"
-                    painter.setPen(
-                        QtGui.QPen(QtCore.Qt.red, 1, QtCore.Qt.SolidLine))
+                # # Draw Location if necessary
+                # if not available:
+                #     locations_info = "Locations: "
+                #     if len(locations) > 0:
+                #       locations_info += ", ".join(locations)
+                #     else:
+                #       locations_info += "Hmmm... nowhere?"
+                #     painter.setPen(
+                #         QtGui.QPen(QtCore.Qt.red, 1, QtCore.Qt.SolidLine))
 
-                    padding_top += self._fm_desc.height() + self._inter_text
-                    painter.drawText(padding_left, padding_top, locations_info)
+                #     padding_top += self._fm_desc.height() + self._inter_text
+                #     painter.drawText(padding_left, padding_top, locations_info)
 
                 # Draw comment
                 painter.setPen(
@@ -348,35 +348,35 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
                 padding_top += self._fm_desc.height()
                 painter.drawText(padding_left, padding_top, "Loading...")
 
-            # Draw 'show previous versions' button if necessary
-            if self._need_button(index, version_nb):
-                if self._view.isExpanded(index):
-                    text_btn = "hide previous versions..."
-                else:
-                    text_btn = "show previous versions..."
+            # # Draw 'show previous versions' button if necessary
+            # if self._need_button(index, version_nb):
+            #     if self._view.isExpanded(index):
+            #         text_btn = "hide previous versions..."
+            #     else:
+            #         text_btn = "show previous versions..."
 
-                if publisher != None:
-                    padding_top += r_comment.height() + self._fm_desc.height() + \
-                        self._space_before_btn
-                else:
-                    padding_top += self._fm_desc.height() * 2 + \
-                        self._space_before_btn
+            #     if publisher != None:
+            #         padding_top += r_comment.height() + self._fm_desc.height() + \
+            #             self._space_before_btn
+            #     else:
+            #         padding_top += self._fm_desc.height() * 2 + \
+            #             self._space_before_btn
 
-                padding_left_btn = option.rect.right() - \
-                    self._fm_desc.width(text_btn)
-                padding_left_btn -= (
-                    self._padding_item["right"] + self._padding_content["right"])
+            #     padding_left_btn = option.rect.right() - \
+            #         self._fm_desc.width(text_btn)
+            #     padding_left_btn -= (
+            #         self._padding_item["right"] + self._padding_content["right"])
 
-                self._button_rect = QtCore.QRect(padding_left_btn - 5,
-                                                 padding_top -
-                                                 self._fm_desc.height() -
-                                                 option.rect.top() - 5,
-                                                 self._fm_desc.width(
-                                                     text_btn) + 5,
-                                                 self._fm_desc.height() + 5)
+            #     self._button_rect = QtCore.QRect(padding_left_btn - 5,
+            #                                      padding_top -
+            #                                      self._fm_desc.height() -
+            #                                      option.rect.top() - 5,
+            #                                      self._fm_desc.width(
+            #                                          text_btn) + 5,
+            #                                      self._fm_desc.height() + 5)
 
-                self.draw_button(
-                    painter, text_btn, padding_left_btn, padding_top, index)
+            #     self.draw_button(
+            #         painter, text_btn, padding_left_btn, padding_top, index)
 
         painter.restore()
 
@@ -683,8 +683,8 @@ class AssetItem(TreeItem):
         self.setData(self._asset_version.get('comment'), self.comment_role)
         # self.setData(self._asset_version.asset.locker != None, self.is_locked_role)
         # self.setData(self._asset_version.is_available, self.is_available_role)
-        locations = self._asset_version.getComponent('scene').getLocation()
-        self.setData(locations, self.location_role)
+        location = self._asset_version.getComponent('scene').getLocation().getName()
+        self.setData([location], self.location_role)
 
         # if not self._asset_version.is_available:
         #   self.setDragEnabled(False)
