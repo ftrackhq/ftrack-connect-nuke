@@ -16,16 +16,18 @@ from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetObject
 from ftrack_connect_nuke.ftrackConnector.nukeassets import GizmoAsset, NukeSceneAsset
 from ftrack_connect_nuke.ftrackConnector.nukecon import Connector
 
-    
+
 from ui.images import image_dir
 
 
-import os, re
+import os
+import re
 
 import nuke
 
 
 class AssetsManager(object):
+
   def __init__(self):
     module_name = __name__ + "." + self.__class__.__name__
     self.recent_assets = RecentScenes(module_name)
@@ -35,12 +37,12 @@ class AssetsManager(object):
     self.block_save_callback = False
 
   @staticmethod
-  def get_current_scene_version_id(asset_type=None):
+  def get_current_scene_version_id():
     current_task = ftrack.Task(
-        os.getenv('FTRACK_TASKID', 
-            os.getenv('FTRACK_SHOTID'
-            )
-        )
+        os.getenv('FTRACK_TASKID',
+                  os.getenv('FTRACK_SHOTID'
+                            )
+                  )
     )
     return ftrack.Task(current_task).getId()
 
@@ -60,10 +62,11 @@ class AssetsManager(object):
   @staticmethod
   def open_script(asset_version_id):
 
-    current_version_id = AssetsManager.get_current_scene_version_id('nuke_scene')
+    current_version_id = AssetsManager.get_current_scene_version_id()
 
     try:
-      scene_version = N_AssetFactory.get_version_from_id(asset_version_id, SceneIO)
+      scene_version = N_AssetFactory.get_version_from_id(
+          asset_version_id, SceneIO)
       if scene_version.id == current_version_id:
         return
 
@@ -73,7 +76,8 @@ class AssetsManager(object):
 
     locker = scene_version.asset.locker
     if locker != None:
-      nuke.critical("This asset is locked by %s [%s]" % (locker.getName(), locker.getEmail()))
+      nuke.critical("This asset is locked by %s [%s]" % (
+          locker.getName(), locker.getEmail()))
     else:
       AssetsManager.load_gizmos_from_task(scene_version, 'scene')
       # scene_version.load_dependencies()
@@ -85,7 +89,7 @@ class AssetsManager(object):
      nuke.nodePaste(path)
 
   def open_script_panel(self):
-    version_id = AssetsManager.get_current_scene_version_id('nuke_scene')
+    version_id = AssetsManager.get_current_scene_version_id()
 
     panel = ScriptOpenerDialog(version_id)
     if panel.result():
@@ -101,9 +105,9 @@ class AssetsManager(object):
       self.recent_assets.update_menu()
 
   def publish_script_panel(self):
-    asset_id = AssetsManager.get_current_scene_version_id('nuke_scene')
+    task_id = AssetsManager.get_current_scene_version_id()
 
-    panel = ScriptPublisherDialog(asset_id)
+    panel = ScriptPublisherDialog(task_id)
 
     self.block_save_callback = True
 
@@ -116,20 +120,14 @@ class AssetsManager(object):
 
       import tempfile
       tmp_script = tempfile.NamedTemporaryFile(suffix='.nk', delete=False).name
-      nuke.scriptSaveAs(tmp_script) 
+      nuke.scriptSaveAs(tmp_script)
 
-      if not asset_id:
-        ftask = task.getParent()
-
-        try:
-            asset_id = ftask.createAsset(
-                name=asset_name,
-                assetType=asset_type
-            ).getId()
-
-        except AttributeError, message:
-           logging.error(message)
-           return
+      task = ftrack.Task(task_id)
+      parent = task.getParent()
+      asset_id = parent.createAsset(
+        name=asset_name,
+        assetType=asset_type
+      ).getId()
 
       asset = ftrack.Asset(asset_id)
       version = asset.createVersion(comment=comment, taskid=task.getId())
@@ -164,8 +162,8 @@ class AssetsManager(object):
       # version = nuke_connector.saveVersion( asset, panel.comment, task.id,
       #                                       thumbnail= panel.asset_thumbnail )
 
-      # # Update version links and metadatas
-      # # scene_version = N_AssetFactory.get_version_from_id(version.getId(), SceneIO)
+      # Update version links and metadatas
+      # scene_version = N_AssetFactory.get_version_from_id(version.getId(), SceneIO)
       #
       # scene_version.set_metadatas()
       # scene_version.set_links()
@@ -174,14 +172,14 @@ class AssetsManager(object):
       #
       # AssetsManager.load_gizmos_from_task(scene_version.asset.task.ftrack_object)
       #
-      # # Update recent assets
+      # Update recent assets
 
     self.block_save_callback = False
 
   def publish_gizmo_panel(self):
 
-    asset_id = AssetsManager.get_current_scene_version_id('nuke_gizmo')
-    panel = GizmoPublisherDialog(asset_id)
+    task_id = AssetsManager.get_current_scene_version_id()
+    panel = GizmoPublisherDialog(task_id)
 
     if panel.result():
       task = panel.current_task
@@ -189,22 +187,17 @@ class AssetsManager(object):
       comment = panel.comment
       file_path = panel.gizmo_path
 
-      if not asset_id:
-        ftask = task.getParent()
-
-        try:
-            asset_id = ftask.createAsset(
-                name=asset_name, 
-                assetType='nuke_gizmo'
-            ).getId()
-        except AttributeError, message:
-           logging.error(message)
-           return
+      task = ftrack.Task(task_id)
+      parent = task.getParent()
+      asset_id = parent.createAsset(
+        name=asset_name,
+        assetType='nuke_gizmo'
+      ).getId()
 
       asset = ftrack.Asset(asset_id)
       version = asset.createVersion(comment=comment, taskid=task.getId())
       version.createComponent(
-        name='gizmo', 
+        name='gizmo',
         path=file_path
       )
 
@@ -216,7 +209,7 @@ class AssetsManager(object):
 
   def publish_group_panel(self):
 
-    version_id = AssetsManager.get_current_scene_version_id('nuke_group_nodes')
+    version_id = AssetsManager.get_current_scene_version_id()
 
     black_list = ["Viewer", "BackdropNode"]
 

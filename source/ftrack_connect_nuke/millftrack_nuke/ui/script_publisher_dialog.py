@@ -277,9 +277,9 @@ class ScriptPublisherDialog(BaseIODialog):
                 warning = "The current Nuke script doesn't belong to this task... The"
                 "task should be '%s'" % self._current_scene.task.parents
                 
-            elif self._current_scene.connector.asset_type != connector.asset_type:
-                warning = "The current Nuke script doesn't belong to this asset... The"
-                "asset type should be '%s'" % self._current_scene.connector.asset_type
+            # elif self._current_scene.connector.asset_type != connector.asset_type:
+            #     warning = "The current Nuke script doesn't belong to this asset... The"
+            #     "asset type should be '%s'" % self._current_scene.connector.asset_type
 
         if warning != None:
             self.set_warning(warning)
