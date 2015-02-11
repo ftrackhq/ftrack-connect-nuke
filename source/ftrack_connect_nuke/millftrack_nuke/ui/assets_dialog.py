@@ -7,20 +7,20 @@ from generic.base_dialog import BaseIOScopeDialog
 from widgets.assets_tree import AssetsTree
 from images import image_dir
 
-from ..controller import Controller
+# from ..controller import Controller
 
-from ..ftrack_io.asset import N_AssetFactory
-from ..ftrack_io.task import N_TaskFactory
+# from ..ftrack_io.asset import N_AssetFactory
+# from ..ftrack_io.task import N_TaskFactory
 
-from ..ftrack_io.asset import AssetIOError
+# from ..ftrack_io.asset import AssetIOError
 
-from ..ftrack_io.assets.scene_io import SceneIO
+# from ..ftrack_io.assets.scene_io import SceneIO
 
-from ..ftrack_io.assets.image_io import ImageIO
-from ..ftrack_io.assets.group_io import GroupIO
-from ..ftrack_io.assets.gizmo_io import GizmoIO
-from ..ftrack_io.assets.xmlf_io import XmlfIO
-from ..ftrack_io.assets.lut_io import LutIO
+# from ..ftrack_io.assets.image_io import ImageIO
+# from ..ftrack_io.assets.group_io import GroupIO
+# from ..ftrack_io.assets.gizmo_io import GizmoIO
+# from ..ftrack_io.assets.xmlf_io import XmlfIO
+# from ..ftrack_io.assets.lut_io import LutIO
 
 from FnAssetAPI import logging
 import os

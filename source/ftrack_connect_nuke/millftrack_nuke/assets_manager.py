@@ -42,11 +42,7 @@ class AssetsManager(object):
             )
         )
     )
-    return ftrack.Task(current_task)
-    # asset = current_task.getAssets(assetTypes=[asset_type])
-    # if asset:
-    #     version = asset[0].getId()
-    #     return version
+    return ftrack.Task(current_task).getId()
 
   @staticmethod
   def get_current_scene():
@@ -102,7 +98,7 @@ class AssetsManager(object):
       # scene_version.load_asset()
 
       # Update recent assets
-      self.recent_assets.add_scene(scene_version)
+      # self.recent_assets.add_scene(scene_version)
       self.recent_assets.update_menu()
 
   def publish_script_panel(self):
@@ -160,7 +156,7 @@ class AssetsManager(object):
       if panel.current_task_status_changed():
         task.setStatus(panel.current_task_status)
 
-      self.recent_assets.add_scene(version)
+      # self.recent_assets.add_scene(version)
       self.recent_assets.update_menu()
 
       #
@@ -494,6 +490,14 @@ class RecentScenes(object):
     self.config_file = self._get_config_file()
     self.menu = None
 
+  def _get_task_parents(self, task):
+      task = ftrack.Task(task)
+      parents = [t.getName() for t in task.getParents()]
+      parents.reverse()
+      parents.append(task.getName())
+      parents = ' / '.join(parents)
+      return parents
+    
   def _get_config_file(self):
     home = os.getenv('HOME')
     if home == None or not os.path.isdir(home):
@@ -516,20 +520,20 @@ class RecentScenes(object):
 
     return config_file
 
-  def add_scene(self, scene_version):
-    recents_list = self._get_list()
-    if recents_list == None:
-      error = "Impossible to add this asset to the 'Recent scenes' list. Please contact RnD."
-      logging.error(error)
-      return
+  # def add_scene(self, scene_version):
+  #   recents_list = self._get_list()
+  #   if recents_list == None:
+  #     error = "Impossible to add this asset to the 'Recent scenes' list. Please contact RnD."
+  #     logging.error(error)
+  #     return
 
-    version_nb = " v%02d" % scene_version.get('version')
+  #   version_nb = " v%02d" % scene_version.get('version')
 
-    name = scene_version.asset.task.parents + " / " + scene_version.name + version_nb
-    tuple_asset = (scene_version.getId(), name)
-    recents_list = [tuple_asset] + recents_list
+  #   name = scene_version.asset.task.parents + " / " + scene_version.name + version_nb
+  #   tuple_asset = (scene_version.getId(), name)
+  #   recents_list = [tuple_asset] + recents_list
 
-    self._write_list(recents_list)
+  #   self._write_list(recents_list)
 
   def update_menu(self):
     if self.menu == None:

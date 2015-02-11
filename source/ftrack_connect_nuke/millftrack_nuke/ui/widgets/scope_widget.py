@@ -4,7 +4,7 @@
 from PySide import QtGui, QtCore
 
 from FnAssetAPI import logging
-from ...ftrack_io.task import N_TaskFactory
+# from ...ftrack_io.task import N_TaskFactory
 
 
 class ScopeWidget(QtGui.QWidget):

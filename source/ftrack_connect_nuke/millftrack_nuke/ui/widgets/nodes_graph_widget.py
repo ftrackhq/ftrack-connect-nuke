@@ -5,8 +5,8 @@ from PySide import QtGui, QtCore
 
 # import utilities
 
-from ...ftrack_io.asset import N_AssetFactory, AssetIOError
-from ...ftrack_io.assets.group_io import GroupIO
+# from ...ftrack_io.asset import N_AssetFactory, AssetIOError
+# from ...ftrack_io.assets.group_io import GroupIO
 
 from ..images import image_dir
 
