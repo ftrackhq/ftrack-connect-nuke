@@ -13,7 +13,7 @@ from ui.warning_dialog import LockedSceneDialog
 from ui.assets_dialog import AssetsLoaderDialog
 
 from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetObject
-from ftrack_connect_nuke.ftrackConnector.nukeassets import GizmoAsset
+from ftrack_connect_nuke.ftrackConnector.nukeassets import GizmoAsset, NukeSceneAsset
 from ftrack_connect_nuke.ftrackConnector.nukecon import Connector
 
     
@@ -42,11 +42,11 @@ class AssetsManager(object):
             )
         )
     )
-
-    asset = current_task.getAssets(assetTypes=[asset_type])
-    if asset:
-        version = asset[0].getId()
-        return version
+    return ftrack.Task(current_task)
+    # asset = current_task.getAssets(assetTypes=[asset_type])
+    # if asset:
+    #     version = asset[0].getId()
+    #     return version
 
   @staticmethod
   def get_current_scene():

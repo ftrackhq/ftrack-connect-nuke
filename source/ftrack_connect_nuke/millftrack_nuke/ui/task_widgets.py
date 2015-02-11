@@ -407,7 +407,7 @@ class SceneAssetsWidget(QtGui.QWidget):
     layout_settings.setContentsMargins(0,0,0,0)
     layout_settings.setSpacing(6)
 
-    asset_types = [ "All Asset Types" ] + ['nuke_comp_scene', 'nuke_precomp_scene', 'nuke_roto_scene']
+    asset_types = [ "All Asset Types" ] + ['nuke_scene']
 
     self._asset_connectors_cbbox = QtGui.QComboBox(self)
     self._asset_connectors_cbbox.addItems(asset_types)
@@ -443,12 +443,12 @@ class SceneAssetsWidget(QtGui.QWidget):
     if current_scene != None:
       self._asset_connectors_cbbox.blockSignals(True)
 
-      for i in range(1, self._asset_connectors_cbbox.count()):
-        asset_type = self._asset_connectors_cbbox.itemText(i)
-        connector = self._connectors_per_type[asset_type]
-        if connector.asset_type == current_scene.connector.asset_type:
-          self._asset_connectors_cbbox.setCurrentIndex(i)
-          break
+      # for i in range(1, self._asset_connectors_cbbox.count()):
+      #   asset_type = self._asset_connectors_cbbox.itemText(i)
+      #   connector = self._connectors_per_type[asset_type]
+      #   if connector.asset_type == current_scene.getType():
+      #     self._asset_connectors_cbbox.setCurrentIndex(i)
+      #     break
 
       self._asset_connectors_cbbox.blockSignals(False)
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PySide import QtGui
-
+import ftrack
 # from ..ftrack_io.task import N_TaskFactory
 # from ..ftrack_io.asset import N_AssetFactory
 # from ..ftrack_io.asset import AssetIOError
@@ -24,13 +24,11 @@ class ScriptOpenerDialog(BaseIODialog):
         self.setFTrackTitle("Open script...")
 
         self.setupUI()
+        
+        self._current_scene = None
 
-        try:
-            self._current_scene = N_AssetFactory.get_asset_from_version_id(
-                version_id, SceneIO)
-        except Exception as err:
-            self._current_scene = None
-            # TODO: warning for wrong asset...
+        if version_id:
+            self._current_scene = ftrack.Task(version_id)
 
         self.initiate_tasks()
 
@@ -113,7 +111,7 @@ class ScriptOpenerDialog(BaseIODialog):
         self.initiate_warning_box()
         self.initiate_error_box()
 
-        self._validate_task()
+        # self._validate_task()
 
         # Error check
         error = None

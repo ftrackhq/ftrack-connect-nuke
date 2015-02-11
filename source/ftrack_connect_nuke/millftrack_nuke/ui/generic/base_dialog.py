@@ -3,7 +3,7 @@
 import ftrack
 
 from PySide import QtGui, QtCore
-
+from FnAssetAPI import logging
 
 from ..widgets.message_widget import MessageWidget
 from ..widgets.scope_widget import ScopeWidget
@@ -231,6 +231,7 @@ class BaseDialog(QtGui.QDialog):
       return self._user.getId()
 
   def _get_task_parents(self, task):
+      task = ftrack.Task(task)
       parents = [t.getName() for t in task.getParents()]
       parents.reverse()
       parents.append(task.getName())
@@ -463,6 +464,9 @@ class BaseIODialog(BaseDialog):
     warning = None
     if self.current_task != None:
       user_tasks = [t.getId() for t in self._user.getTasks()]
+
+      logging.info(user_tasks)
+      logging.info(self.current_task.getId())
 
       self._not_my_task = self.current_task.getId() not in user_tasks
 

@@ -4,7 +4,7 @@
 from PySide import QtGui, QtCore
 import re
 from FnAssetAPI import logging
-
+import ftrack
 from generic.base_dialog import BaseIODialog
 from widgets.nodes_graph_widget import NodesGraphWidget
 from widgets.message_widget import MessageWidget
@@ -38,11 +38,11 @@ class GroupPublisherDialog(BaseIODialog):
 
         self.setupUI()
 
-        # Check current asset (None if no version_id found)
-        # try:
-        #   self._current_scene = N_AssetFactory.get_asset_from_version_id(version_id, SceneIO)
-        # except AssetIOError as err:
-        #   self.set_error(str(err))
+        self._current_scene = None
+
+        if version_id:
+            self._current_scene = ftrack.Task(version_id)
+
 
         self.initiate_tasks()
 

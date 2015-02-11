@@ -4,7 +4,7 @@
 from PySide import QtGui, QtCore
 import os
 import re
-
+import ftrack
 from FnAssetAPI import logging
 
 from generic.base_dialog import BaseIODialog
@@ -13,14 +13,6 @@ from widgets.script_editor_widget import ScriptEditorWidget
 from widgets.message_widget import MessageWidget
 from widgets.comment_widget import CommentWidget
 from widgets.assets_tree import AssetsTree
-
-# from ..ftrack_io.assets.gizmo_io import GizmoIO
-# from ..ftrack_io.assets.scene_io import SceneIO
-
-# from ..ftrack_io.asset import N_AssetFactory
-# from ..ftrack_io.task import N_TaskFactory
-
-# from ..ftrack_io.asset import AssetIOError
 
 
 class GizmoPublisherDialog(BaseIODialog):
@@ -32,6 +24,12 @@ class GizmoPublisherDialog(BaseIODialog):
             QtGui.QApplication.activeWindow())
         self.setFTrackTitle("Publish a gizmo...")
 
+        self._current_scene = None
+
+        if version_id:
+            self._current_scene = ftrack.Task(version_id)
+
+    
         self.setupUI()
 
         self.initiate_tasks()
