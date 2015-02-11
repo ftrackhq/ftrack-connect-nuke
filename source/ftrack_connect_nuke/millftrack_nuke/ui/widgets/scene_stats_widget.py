@@ -43,8 +43,6 @@ class StatisticWidget(QtGui.QWidget):
 
     for version in self._scene_version.getParent().getVersions():
       meta_version = version.getMeta('mft.node_numbers') or None
-      logging.info(meta_version)
-
       if meta_version is None:
         continue
 

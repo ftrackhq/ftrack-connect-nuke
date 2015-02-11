@@ -265,8 +265,9 @@ class ThumbnailWidget(QtGui.QLabel):
 
     def update_image(self, image_path=None):
         if image_path is None:
-            from ..ftrack_io.asset import AssetVersionIO
-            image_path = AssetVersionIO.default_thumbnail()
+            thumnbail_ftrack_url = os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
+            image_path = utilities.get_url_file(thumnbail_ftrack_url)
+
         self._pixmap = QtGui.QPixmap(image_path)
         pixmap_scaled = self._pixmap.scaled(
             self.size, QtCore.Qt.KeepAspectRatio)
@@ -467,7 +468,9 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         self._asset_name.setText(self.scene_version.getParent().getName())
         self._status.set_status(self.scene_version.getStatus())
         self._asset_version.setText("%03d" % self.scene_version.get('version'))
-        # self._thumbnail_widget.update_image(self.scene_version.getThumbanail())
+        thumbnail = self.scene_version.getThumbnail()
+        image_path = utilities.get_url_file(thumbnail)
+        self._thumbnail_widget.update_image(image_path)
         self.set_owner(self.scene_version.getOwner())
         # self._date.setText(self.scene_version.date_str)
         # self._availability.setText(', '.join(self.scene_version.locations))

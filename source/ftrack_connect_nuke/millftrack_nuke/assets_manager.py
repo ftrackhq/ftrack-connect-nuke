@@ -90,7 +90,6 @@ class AssetsManager(object):
     panel = ScriptOpenerDialog(version_id)
     if panel.result():
       scene_version = panel.current_scene_version
-      logging.info(scene_version)
 
       AssetsManager.load_gizmos_from_task(scene_version, 'scene')
       # scene_version.load_dependencies()
@@ -497,7 +496,7 @@ class RecentScenes(object):
       parents.append(task.getName())
       parents = ' / '.join(parents)
       return parents
-    
+
   def _get_config_file(self):
     home = os.getenv('HOME')
     if home == None or not os.path.isdir(home):

@@ -465,9 +465,6 @@ class BaseIODialog(BaseDialog):
     if self.current_task != None:
       user_tasks = [t.getId() for t in self._user.getTasks()]
 
-      logging.info(user_tasks)
-      logging.info(self.current_task.getId())
-
       self._not_my_task = self.current_task.getId() not in user_tasks
 
       if self._not_my_task:
