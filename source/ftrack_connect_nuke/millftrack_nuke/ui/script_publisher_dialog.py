@@ -151,7 +151,7 @@ class ScriptPublisherDialog(BaseIODialog):
         asset_setting_layout.addWidget(self._snapshotWidget)
 
         self._comment_widget = CommentWidget(asset_frame)
-        # self._comment_widget.changed.connect(self._validate)
+        self._comment_widget.changed.connect(self._validate)
         asset_setting_layout.addWidget(self._comment_widget)
         asset_frame_layout.addItem(asset_setting_layout)
 
@@ -207,7 +207,7 @@ class ScriptPublisherDialog(BaseIODialog):
         # "update_asset" method.
 
         self.update_asset()
-        # self._validate()
+        self._validate()
 
     def set_tasks(self):
         if self._current_scene != None:
@@ -237,7 +237,7 @@ class ScriptPublisherDialog(BaseIODialog):
             self._task_widget.set_task(task, self._current_scene)
             self.update_asset()
 
-        # self._validate(soft_validation=True)
+        self._validate(soft_validation=True)
         self._comment_widget.setFocus()
 
     def update_asset(self):
@@ -259,52 +259,52 @@ class ScriptPublisherDialog(BaseIODialog):
         # version = task.asset_version_number(self.asset_name, self.connector.asset_type)
         self._asset_version.setText("%03d" % asset_version)
 
-    # def _validate(self, soft_validation=False):
-    #     logging.debug("soft_validation: %s" % soft_validation)
+    def _validate(self, soft_validation=False):
+        logging.debug("soft_validation: %s" % soft_validation)
 
-    #     self._asset_connectors_cbbox.setEnabled(True)
-    #     self.initiate_error_box()
-    #     self.initiate_warning_box()
+        self._asset_connectors_cbbox.setEnabled(True)
+        self.initiate_error_box()
+        self.initiate_warning_box()
 
-    #     # Warning check
+        # Warning check
 
-    #     warning = None
+        warning = None
 
-    #     asset_type = self._asset_connectors_cbbox.currentText()
-    #     connector = self._connectors_per_type[asset_type]
-    #     if self.current_task != None and self._current_scene != None:
-    #         if self._current_scene.getId() != self.current_task.getId():
-    #             warning = "The current Nuke script doesn't belong to this task... The"
-    #             "task should be '%s'" % self._current_scene.task.parents
+        asset_type = self._asset_connectors_cbbox.currentText()
+        connector = self._connectors_per_type[asset_type]
+        if self.current_task != None and self._current_scene != None:
+            if self._current_scene.getId() != self.current_task.getId():
+                warning = "The current Nuke script doesn't belong to this task... The"
+                "task should be '%s'" % self._current_scene.task.parents
                 
-    #         # elif self._current_scene.connector.asset_type != connector.asset_type:
-    #         #     warning = "The current Nuke script doesn't belong to this asset... The"
-    #         #     "asset type should be '%s'" % self._current_scene.connector.asset_type
+            elif self._current_scene.connector.asset_type != connector.asset_type:
+                warning = "The current Nuke script doesn't belong to this asset... The"
+                "asset type should be '%s'" % self._current_scene.connector.asset_type
 
-    #     # if warning != None:
-    #     #     self.set_warning(warning)
-    #     # else:
-    #     #     self._validate_task()
+        if warning != None:
+            self.set_warning(warning)
+        else:
+            self._validate_task()
 
-    #     # Error check
+        # Error check
 
-    #     error = None
-    #     display_error = True
+        error = None
+        display_error = True
 
-    #     if self.current_task == None:
-    #         error = "You don't have any task assigned to you."
-    #         self._asset_connectors_cbbox.setEnabled(False)
+        if self.current_task == None:
+            error = "You don't have any task assigned to you."
+            self._asset_connectors_cbbox.setEnabled(False)
 
-    #     elif self.current_task.getParent() == None:
-    #         error = "This task isn't attached to any shot.. You need one to publish an asset"
+        elif self.current_task.getParent() == None:
+            error = "This task isn't attached to any shot.. You need one to publish an asset"
 
-    #     if error == None and len(self._comment_widget.text) == 0:
-    #         error = "You must comment before publishing"
-    #         if soft_validation:
-    #             display_error = False
+        if error == None and len(self._comment_widget.text) == 0:
+            error = "You must comment before publishing"
+            if soft_validation:
+                display_error = False
 
-    #     if error != None:
-    #         if display_error:
-    #             self.set_error(error)
-    #         else:
-    #             self.set_enabled(False)
+        if error != None:
+            if display_error:
+                self.set_error(error)
+            else:
+                self.set_enabled(False)

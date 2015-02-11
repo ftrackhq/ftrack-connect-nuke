@@ -111,7 +111,7 @@ class ScriptOpenerDialog(BaseIODialog):
         self.initiate_warning_box()
         self.initiate_error_box()
 
-        # self._validate_task()
+        self._validate_task()
 
         # Error check
         error = None
