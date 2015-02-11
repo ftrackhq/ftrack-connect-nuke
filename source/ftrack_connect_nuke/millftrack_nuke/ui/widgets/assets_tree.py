@@ -687,7 +687,9 @@ class AssetItem(TreeItem):
         # if not self._asset_version.is_available:
         #   self.setDragEnabled(False)
 
-        self.setData(self._asset_version.getThumbnail(), self.thumbnail_role)
+        thumbnail = self._asset_version.getThumbnail()
+        image_path = utilities.get_url_file(thumbnail)
+        self.setData(image_path, self.thumbnail_role)
         self._emit_asset_regenerated()
 
     def refresh_item(self):
@@ -962,7 +964,7 @@ class AssetsTree(QtGui.QTreeView):
 
         i = start_number
         while (i < start_number + self._add_versions_nb):
-            if asset_version.version_number == 1:
+            if asset_version.get('version') == 1:
                 break
 
             asset_version = asset_version.previous_version
