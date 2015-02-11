@@ -275,7 +275,7 @@ class ScriptPublisherDialog(BaseIODialog):
         if self.current_task != None and self._current_scene != None:
             if self._current_scene.getId() != self.current_task.getId():
                 warning = "The current Nuke script doesn't belong to this task... The"
-                "task should be '%s'" % self._current_scene.task.parents
+                "task should be '%s'" % self._current_scene.getName()
                 
             # elif self._current_scene.connector.asset_type != connector.asset_type:
             #     warning = "The current Nuke script doesn't belong to this asset... The"
