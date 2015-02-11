@@ -304,9 +304,6 @@ class GizmoAsset(GenericAsset):
 
     def changeVersion(self, iAObj=None, applicationObject=None):
 
-        FnAssetAPI.logging.info('APP:%s ' % applicationObject)
-        FnAssetAPI.logging.info(iAObj)
-
         old_gizmo = nuke.toNode(applicationObject)
         FnAssetAPI.logging.info(old_gizmo)
 
@@ -314,7 +311,6 @@ class GizmoAsset(GenericAsset):
         nuke.pluginAddPath(gizmo_path)
 
         new_gizmo = nuke.createNode(iAObj.filePath)
-
 
         # connect inputs
         for i in range(old_gizmo.inputs()):
@@ -325,8 +321,10 @@ class GizmoAsset(GenericAsset):
            for input in [i for i in range(d.inputs()) if d.input(i) == old_gizmo]:
                d.setInput(input, new_gizmo)
         
+        # restore ititial position
         new_gizmo.setXYpos(old_gizmo.xpos(), old_gizmo.ypos())
         
+        # swap them over
         nuke.delete(old_gizmo)
         new_gizmo['name'].setValue(iAObj.assetName)
 
