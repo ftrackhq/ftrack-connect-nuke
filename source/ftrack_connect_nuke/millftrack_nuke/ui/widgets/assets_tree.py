@@ -3,6 +3,7 @@
 
 from PySide import QtGui, QtCore
 import ftrack
+import datetime
 # from ...ftrack_io.asset import N_AssetFactory, AssetVersionIO
 
 from ..images import image_dir
@@ -251,14 +252,14 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
 
                 padding_left += size_thumbnail.width() + 10
 
-            # Draw locked symbol if necessary
-            if locked:
-                painter.drawPixmap(
-                    option.rect.right() - padding_right - 20, 
-                    padding_top, self._icon_locked
-                )
+            # # Draw locked symbol if necessary
+            # if locked:
+            #     painter.drawPixmap(
+            #         option.rect.right() - padding_right - 20, 
+            #         padding_top, self._icon_locked
+            #     )
 
-                padding_right += 30
+            #     padding_right += 30
 
             # Draw version number
             if self._is_top_asset_version(index):
@@ -299,7 +300,7 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
 
                 padding_top += self._fm_desc.height() + self._inter_text
 
-                # self.draw_date(painter, date, padding_left, padding_top, index)
+                self.draw_date(painter, date, padding_left, padding_top, index)
 
                 self._date_rect = QtCore.QRect(padding_left,
                                                padding_top -
@@ -682,7 +683,8 @@ class AssetItem(TreeItem):
         self.setData(self._asset_version.get('comment'), self.comment_role)
         # self.setData(self._asset_version.asset.locker != None, self.is_locked_role)
         # self.setData(self._asset_version.is_available, self.is_available_role)
-        # self.setData(self._asset_version.locations, self.location_role)
+        locations = self._asset_version.getComponent('scene').getLocation()
+        self.setData(locations, self.location_role)
 
         # if not self._asset_version.is_available:
         #   self.setDragEnabled(False)

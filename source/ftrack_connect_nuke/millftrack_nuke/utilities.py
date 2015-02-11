@@ -21,7 +21,7 @@ SERVER_TIME = LOC_TIMEZONES["NY"]
 
 
 def current_time():
-  return datetime.datetime.now(LOC_TIMEZONES[MY_LOCATION])
+  return datetime.datetime.now()
 
 
 def date_with_tz(date, local=False):
