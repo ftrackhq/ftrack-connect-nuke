@@ -287,6 +287,7 @@ class GeometryAsset(GenericAsset):
     def publishAsset(self, iAObj=None):
         return [], "Publish function not implemented for geometry asset"
 
+import FnAssetAPI
 
 # new gizmo asset (mill) # not used atm
 class GizmoAsset(GenericAsset):
@@ -296,15 +297,41 @@ class GizmoAsset(GenericAsset):
     def importAsset(self, iAObj=None):
         if iAObj.filePath.endswith('gizmo'):
             resultingNode = nuke.createNode(iAObj.filePath)
+            resultingNode['name'].setValue(iAObj.assetName)
             self.addFTab(resultingNode)
             self.setFTab(resultingNode, iAObj)
 
 
     def changeVersion(self, iAObj=None, applicationObject=None):
-        n = nuke.toNode(applicationObject)
-        n['file'].setValue(nukecon.Connector.windowsFixPath(iAObj.filePath))
-        self.setFTab(n, iAObj)
 
+        FnAssetAPI.logging.info('APP:%s ' % applicationObject)
+        FnAssetAPI.logging.info(iAObj)
+
+        old_gizmo = nuke.toNode(applicationObject)
+        FnAssetAPI.logging.info(old_gizmo)
+
+        gizmo_path = os.path.dirname(iAObj.filePath)
+        nuke.pluginAddPath(gizmo_path)
+
+        new_gizmo = nuke.createNode(iAObj.filePath)
+
+
+        # connect inputs
+        for i in range(old_gizmo.inputs()):
+           new_gizmo.setInput(i, old_gizmo.input(i))
+
+        # connect outputs
+        for d in old_gizmo.dependent(nuke.INPUTS | nuke.HIDDEN_INPUTS):
+           for input in [i for i in range(d.inputs()) if d.input(i) == old_gizmo]:
+               d.setInput(input, new_gizmo)
+        
+        new_gizmo.setXYpos(old_gizmo.xpos(), old_gizmo.ypos())
+        
+        nuke.delete(old_gizmo)
+        new_gizmo['name'].setValue(iAObj.assetName)
+
+        self.addFTab(new_gizmo)
+        self.setFTab(new_gizmo, iAObj)
         return True
 
     def publishContent(self, content, assetVersion, progressCallback=None):
