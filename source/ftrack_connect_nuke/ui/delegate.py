@@ -64,11 +64,11 @@ class Delegate(delegate.Delegate):
         )
 
 
-        # add new entries in the ftrack menu
-        ftrackMenu.addSeparator()
-        ftrackMenu.addCommand('Publish a gizmo...', millAssetManager.publish_gizmo_panel)
-        ftrackMenu.addCommand('Publish script...', millAssetManager.publish_script_panel)
-        ftrackMenu.addCommand('Load script...', millAssetManager.open_script_panel)
+        # # add new entries in the ftrack menu
+        # ftrackMenu.addSeparator()
+        # ftrackMenu.addCommand('Publish a gizmo...', millAssetManager.publish_gizmo_panel)
+        # ftrackMenu.addCommand('Publish script...', millAssetManager.publish_script_panel)
+        # ftrackMenu.addCommand('Load script...', millAssetManager.open_script_panel)
 
         # ftrackMenu.addCommand('Publish a group of nodes...', millAssetManager.publish_group_panel)
 
@@ -87,10 +87,19 @@ class Delegate(delegate.Delegate):
         nuke.addOnCreate(legacy.ftrackPublishHieroInit)
 
         file_menu = nukeMenu.menu('File')
-        file_menu.addSeparator(index=1)
-        file_menu.addCommand('FTrack - Open Script...', millAssetManager.open_script_panel, index=2)
-        file_menu.addCommand('FTrack - Publish Script...', millAssetManager.publish_script_panel, index=3)
+        file_menu.addSeparator(index=7)
+        file_menu.addCommand('FTrack - Open Script...', millAssetManager.open_script_panel, index=8)
+        file_menu.addCommand('FTrack - Publish Script...', millAssetManager.publish_script_panel, index=8)
+        file_menu.addCommand('FTrack - Publish a gizmo...', millAssetManager.publish_gizmo_panel, index=8)
+        file_menu.addSeparator(index=8)
 
+        # remove foundy ones
+        fn_publish = file_menu.removeItem("Publish Script...")
+        fn_open_publish = file_menu.removeItem("Open Published Script...")
+        fn_publish_new = file_menu.removeItem("Publish Script to a New Version")
+
+        
+        
 
 
     def populateUI(self, uiElement, specification, context):
