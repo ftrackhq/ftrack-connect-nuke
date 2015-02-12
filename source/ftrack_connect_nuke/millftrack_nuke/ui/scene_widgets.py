@@ -417,21 +417,21 @@ class SingleSceneVersionWidget(QtGui.QWidget):
 
         self._tab_widget = QtGui.QTabWidget(self)
         css_tab = """
-    QTabWidget::pane { border-top: 2px solid #151515; top: -2px;
-                       border-top-left-radius: 0px;
-                       border-top-right-radius: 0px;
-                       background: #282828; }
-    QTabBar::tab { padding: 6px 10px; background: #151515;
-                   border-top: 2px solid #151515;
-                   border-right: 2px solid #151515;
-                   border-left: 2px solid #151515;
-                   border-radius: 0px; }
-    QTabBar::tab:selected { background: #333;
-                            border-top-left-radius: 4px;
-                            border-top-right-radius: 4px; }
-    QTabBar::tab:hover { background: #222; }
-    QTabBar::tab:!selected { margin-top: 2px; }
-    """
+        QTabWidget::pane { border-top: 2px solid #151515; top: -2px;
+                           border-top-left-radius: 0px;
+                           border-top-right-radius: 0px;
+                           background: #282828; }
+        QTabBar::tab { padding: 6px 10px; background: #151515;
+                       border-top: 2px solid #151515;
+                       border-right: 2px solid #151515;
+                       border-left: 2px solid #151515;
+                       border-radius: 0px; }
+        QTabBar::tab:selected { background: #333;
+                                border-top-left-radius: 4px;
+                                border-top-right-radius: 4px; }
+        QTabBar::tab:hover { background: #222; }
+        QTabBar::tab:!selected { margin-top: 2px; }
+        """
         self._tab_widget.setStyleSheet(css_tab)
 
         # Display asset history
@@ -443,19 +443,19 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         tab_asset_history_layout.addWidget(self._graph_widget)
         self._tab_widget.addTab(tab_asset_history, "Asset history")
 
-        # Display Dependencies from this asset
+        # # Display Dependencies from this asset
 
-        tab_inputs = QtGui.QWidget()
-        tab_inputs_layout = QtGui.QVBoxLayout(tab_inputs)
-        tab_inputs_layout.setContentsMargins(0, 8, 0, 0)
-        self._tab_widget.addTab(tab_inputs, "Dependencies")
+        # tab_inputs = QtGui.QWidget()
+        # tab_inputs_layout = QtGui.QVBoxLayout(tab_inputs)
+        # tab_inputs_layout.setContentsMargins(0, 8, 0, 0)
+        # self._tab_widget.addTab(tab_inputs, "Dependencies")
 
-        # Display Renders from this asset
+        # # Display Renders from this asset
 
-        tab_renders = QtGui.QWidget()
-        tab_renders_layout = QtGui.QVBoxLayout(tab_renders)
-        tab_renders_layout.setContentsMargins(0, 8, 0, 0)
-        self._tab_widget.addTab(tab_renders, "Asset Renders")
+        # tab_renders = QtGui.QWidget()
+        # tab_renders_layout = QtGui.QVBoxLayout(tab_renders)
+        # tab_renders_layout.setContentsMargins(0, 8, 0, 0)
+        # self._tab_widget.addTab(tab_renders, "Asset Renders")
 
         asset_frame_layout.addWidget(self._tab_widget)
 
@@ -472,7 +472,13 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         self._asset_version.setText("%03d" % self.scene_version.get('version'))
 
         thumbnail = self.scene_version.getThumbnail()
-        image_path = utilities.get_url_file(thumbnail)
+        if thumbnail:
+            image_path = utilities.get_url_file(thumbnail)
+        else:
+            image_path = utilities.get_url_file(
+                os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
+            )    
+
         self._thumbnail_widget.update_image(image_path)
 
         self.set_owner(self.scene_version.getOwner())

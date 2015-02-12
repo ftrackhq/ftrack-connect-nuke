@@ -620,6 +620,10 @@ class TreeItem(QtGui.QStandardItem):
 
         self.setEditable(False)
 
+        self._thumnbail_default = utilities.get_url_file(
+            os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
+        )
+
         # initiate data
         self.setData(None, self.asset_version_role)
         self.setData(None, self.is_button_role)
@@ -690,8 +694,13 @@ class AssetItem(TreeItem):
         #   self.setDragEnabled(False)
 
         thumbnail = self._asset_version.getThumbnail()
-        image_path = utilities.get_url_file(thumbnail)
+        if thumbnail:
+            image_path = utilities.get_url_file(thumbnail)
+        else:
+            image_path = self._thumnbail_default
+        
         self.setData(image_path, self.thumbnail_role)
+
         self._emit_asset_regenerated()
 
     def refresh_item(self):
