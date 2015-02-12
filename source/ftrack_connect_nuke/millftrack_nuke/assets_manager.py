@@ -150,6 +150,7 @@ class AssetsManager(object):
             )
 
             dependencies = get_dependencies()
+            logging.info(dependencies.values())
             version.addUsesVersions(versions=dependencies.values())
 
             result = version.publish()
