@@ -30,6 +30,11 @@ with open(os.path.join(
         r'.*__version__ = \'(.*?)\'', _version_file.read(), re.DOTALL
     ).group(1)
 
+connect_foundry_dependency_link = (
+    'file://{0}#egg=ftrack-connect-foundry-0.1.0'
+    .format(os.environ['FTRACK_CONNECT_FOUNDRY'].replace('\\', '/'))
+)
+
 
 # Custom commands.
 class PyTest(TestCommand):
@@ -87,12 +92,12 @@ data_files.append(
 
 # Configuration.
 setup(
-    name='ftrack-connect-legacy-plugins',
+    name='ftrack-connect-nuke',
     version=VERSION,
-    description='Repository for ftrack connect legacy plugins.',
+    description='Repository for ftrack connect nuke.',
     long_description=open(README_PATH).read(),
     keywords='',
-    url='https://bitbucket.org/ftrack/ftrack-connect-legacy-plugins',
+    url='https://bitbucket.org/ftrack/ftrack-connect-nuke',
     author='ftrack',
     author_email='support@ftrack.com',
     license='Apache License (2.0)',
@@ -105,7 +110,8 @@ setup(
         'sphinx_rtd_theme >= 0.1.6, < 2'
     ],
     install_requires=[
-        'ftrack-connect >= 0.1, < 1'
+        'ftrack-connect >= 0.1, < 1',
+        'ftrack-connect-foundry >= 0.1.0, < 2'
     ],
     tests_require=[
         'pytest >= 2.3.5, < 3'
@@ -114,8 +120,9 @@ setup(
         'test': PyTest
     },
     dependency_links=[
-        'https://bitbucket.org/ftrack/ftrack-connect/get/0.1.3.zip'
-        '#egg=ftrack-connect-0.1.3'
+        'https://bitbucket.org/ftrack/ftrack-connect/get/0.1.7.zip'
+        '#egg=ftrack-connect-0.1.7',
+        connect_foundry_dependency_link
     ],
     data_files=data_files
 )
