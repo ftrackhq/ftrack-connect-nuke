@@ -70,7 +70,7 @@ def addPublishKnobsToGroupNode(g):
     tab = nuke.Tab_Knob('ftrackpub', 'ftrack Publish')
     g.addKnob(tab)
 
-    headerKnob = nuke.PyCustom_Knob("fheader", "", "%s.HeaderKnob()" % current_module)
+    headerKnob = nuke.PyCustom_Knob("fheader", "", "ftrack_connect_nuke.ui.knobs.HeaderKnob()")
     headerKnob.setFlag(nuke.STARTLINE)
     g.addKnob(headerKnob)
     
@@ -78,7 +78,7 @@ def addPublishKnobsToGroupNode(g):
     g.addKnob(whitespaceKnob)
     
 
-    browseKnob = nuke.PyCustom_Knob("fpubto", "Publish to:", "%s.BrowseKnob()" % current_module)
+    browseKnob = nuke.PyCustom_Knob("fpubto", "Publish to:", "ftrack_connect_nuke.ui.knobs.BrowseKnob()")
     browseKnob.setFlag(nuke.STARTLINE)
     g.addKnob(browseKnob)
 
@@ -96,7 +96,7 @@ def addPublishKnobsToGroupNode(g):
     typeKnob.setFlag(nuke.STARTLINE)
     g.addKnob(typeKnob)
 
-    tableKnob = nuke.PyCustom_Knob("ftable", "Components:", "%s.TableKnob()" % current_module)
+    tableKnob = nuke.PyCustom_Knob("ftable", "Components:", "ftrack_connect_nuke.ui.knobs.TableKnob()")
     tableKnob.setFlag(nuke.STARTLINE)
     g.addKnob(tableKnob)
 
@@ -111,11 +111,11 @@ def addPublishKnobsToGroupNode(g):
     commentKnob = nuke.Multiline_Eval_String_Knob('fcomment', 'Comment:', '')
     g.addKnob(commentKnob)
 
-    refreshKnob = nuke.PyScript_Knob('refreshknob', 'Refresh', '%s.ftrackPublishKnobChanged(forceRefresh=True)' %  current_module)
+    refreshKnob = nuke.PyScript_Knob('refreshknob', 'Refresh', 'ftrack_connect_nuke.ui.legacy.ftrackPublishKnobChanged(forceRefresh=True)')
     refreshKnob.setFlag(nuke.STARTLINE)
     g.addKnob(refreshKnob)
 
-    publishKnob = nuke.PyScript_Knob('pknob', 'Publish!', '%s.publishAssetKnob()' %  current_module)
+    publishKnob = nuke.PyScript_Knob('pknob', 'Publish!', 'track_connect_nuke.ui.knobs.publishAssetKnob()')
     g.addKnob(publishKnob)
     publishKnob.setEnabled(False)
 
@@ -473,9 +473,12 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
     
             assetEnums = ['New']
             if nodeAssetType != '':
-                assets = ftrackConnector.Connector.objectById(os.environ['FTRACK_SHOTID']).getAssets(assetTypes=[g['ftrackassettype'].value()])
+                # assets = ftrackConnector.Connector.objectById(os.environ['FTRACK_SHOTID']).getAssets(assetTypes=[g['ftrackassettype'].value()])
+                pubto = g.knob('fpubto').getObject().targetTask
+                assets = ftrackConnector.Connector.objectById(pubto).getAssets(assetTypes=[g['ftrackassettype'].value()])
                 assets = sorted(assets, key=lambda entry: entry.getName().lower())
                 assetEnums = assetEnums + [x.getName() for x in assets]
+                FnAssetAPI.logging.info(assetEnums)
                 g['fassetnameexisting'].setValues(assetEnums)
     
             g = nuke.toNode(thisNodeName)
@@ -494,7 +497,9 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
             #print nodeAssetType
             assetEnums = ['New']
             if nodeAssetType != '' and nodeAssetType != 'Missmatch inputs':
-                assets = ftrackConnector.Connector.objectById(os.environ['FTRACK_SHOTID']).getAssets(assetTypes=[nodeAssetType])
+                # assets = ftrackConnector.Connector.objectById(os.environ['FTRACK_SHOTID']).getAssets(assetTypes=[nodeAssetType])
+                pubto = g.knob('fpubto').getObject().targetTask
+                assets = ftrackConnector.Connector.objectById(pubto).getAssets(assetTypes=[nodeAssetType])
                 assetEnums = assetEnums + [x.getName() for x in assets]
                 g['fassetnameexisting'].setValues(assetEnums)
 
