@@ -39,7 +39,7 @@ class Delegate(delegate.Delegate):
             'ftrackDialogs.ftrackImportAssetDialog'
         )
         ftrackMenu.addCommand(
-            'ImportAsset',
+            'Import Asset',
             'pane = nuke.getPaneFor("Properties.1");'
             'panel = nukescripts.restorePanel("ftrackDialogs.ftrackImportAssetDialog");'
             'panel.addToPane(pane)'
@@ -52,7 +52,7 @@ class Delegate(delegate.Delegate):
             'ftrackDialogs.ftrackAssetManagerDialog'
         )
         ftrackMenu.addCommand(
-            'AssetManager',
+            'Asset Manager',
             'pane = nuke.getPaneFor("Properties.1");'
             'panel = nukescripts.restorePanel("ftrackDialogs.ftrackAssetManagerDialog");'
             'panel.addToPane(pane)'
