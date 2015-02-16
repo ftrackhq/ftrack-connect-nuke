@@ -194,7 +194,7 @@ class ImageSequenceAsset(GenericAsset):
 
         try:
             node = nuke.toNode(content[0][4])
-            thumbnail = ftrackplugin.ftrackConnector.Connector.createThumbNail(node)
+            thumbnail = ftrack_connect_nuke.ftrackConnector.Connector.createThumbNail(node)
             print thumbnail
             if thumbnail:
                 publishedComponents.append(FTComponent(componentname='thumbnail', path=thumbnail))
