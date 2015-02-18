@@ -32,7 +32,6 @@ class Notification(QtGui.QDialog):
             )
         )
 
-        self.central_widget = QtGui.QWidget(self)
         self.vertical_layout = QtGui.QVBoxLayout(self)
         self.horizontal_layout = QtGui.QHBoxLayout()
 
@@ -42,10 +41,58 @@ class Notification(QtGui.QDialog):
         self.vertical_layout.addWidget(self.header)
 
         self.notification_list = _notification_list.Notification(
-            self.central_widget
+            self
         )
 
+        # TODO: This styling should probably be done in a global stylesheet
+        # for the entire Nuke plugin.
+        self.notification_list.overlay.setStyleSheet('''
+            BlockingOverlay {
+                background-color: rgba(58, 58, 58, 200);
+                border: none;
+            }
+
+            BlockingOverlay QFrame#content {
+                padding: 0px;
+                border: 80px solid transparent;
+                background-color: transparent;
+                border-image: none;
+            }
+
+            BlockingOverlay QLabel {
+                background: transparent;
+            }
+        ''')
+
+        self.notification_list.setStyleSheet('''
+            QFrame {
+                background-color: #2A2A2A;
+                color: #969696;
+            }
+
+            QLabel {
+                background-color: #323232;
+            }
+
+            QFrame#notification-list {
+                border: 0;
+                margin: 20px 0 0 0;
+            }
+
+            QFrame#notification-list QTableWidget {
+                background-color: transparent;
+                border: 0;
+            }
+
+            QFrame#notification-list QTableWidget::item {
+                background-color: #323232;
+                border-bottom: 1px solid #282828;
+                padding: 0;
+            }
+        ''')
+
         self.horizontal_layout.addWidget(self.notification_list)
+        self.vertical_layout.setContentsMargins(0, 0, 0, 0)
         self.vertical_layout.addLayout(self.horizontal_layout)
 
         self.setObjectName('ftrackNotification')
