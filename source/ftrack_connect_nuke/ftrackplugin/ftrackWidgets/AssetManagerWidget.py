@@ -6,7 +6,7 @@ from ftrack_connect_nuke import ftrackConnector
 from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetObject
 from ftrack_connect_nuke.ftrackplugin.ftrackDialogs.ftrackInfoDialog import FtrackInfoDialog
 
-import ftrack
+import ftrack_legacy as ftrack
 
 
 class AssetManagerWidget(QtGui.QWidget):

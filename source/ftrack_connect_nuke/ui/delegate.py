@@ -1,10 +1,8 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2014 ftrack
 
-import functools
 
 import FnAssetAPI
-from FnAssetAPI.ui.toolkit import QtGui
 from ftrack_connect_foundry.ui import delegate
 
 
@@ -21,7 +19,7 @@ class Delegate(delegate.Delegate):
         from nukescripts import panels
         from ftrack_connect_nuke import ftrackConnector
         from ftrack_connect_nuke.ftrackplugin.ftrackDialogs import ftrackAssetManagerDialog, ftrackImportAssetDialog
-        
+        from ftrack_connect_nuke.ui.widget.notification import Notification
         ftrackConnector.Connector.registerAssets()
 
         # Populate the ui
@@ -44,7 +42,7 @@ class Delegate(delegate.Delegate):
             'panel = nukescripts.restorePanel("ftrackDialogs.ftrackImportAssetDialog");'
             'panel.addToPane(pane)'
         )
-        
+
         # Create the asset manager dialog entry in the menu
         panels.registerWidgetAsPanel(
             'ftrack_connect_nuke.ftrackplugin.ftrackDialogs.ftrackAssetManagerDialog.FtrackAssetManagerDialog', 
@@ -55,6 +53,19 @@ class Delegate(delegate.Delegate):
             'Asset Manager',
             'pane = nuke.getPaneFor("Properties.1");'
             'panel = nukescripts.restorePanel("ftrackDialogs.ftrackAssetManagerDialog");'
+            'panel.addToPane(pane)'
+        )
+
+        # Create the notification dialog entry in the menu
+        panels.registerWidgetAsPanel(
+            'ftrack_connect_nuke.ui.widget.notification.Notification',
+            'ftrackNotification',
+            'widget.ftrackNotification'
+        )
+        ftrackMenu.addCommand(
+            'Notification',
+            'pane = nuke.getPaneFor("Properties.1");'
+            'panel = nukescripts.restorePanel("widget.ftrackNotification");'
             'panel.addToPane(pane)'
         )
 

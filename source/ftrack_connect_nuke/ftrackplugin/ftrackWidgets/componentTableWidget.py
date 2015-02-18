@@ -3,7 +3,7 @@ import operator
 import os
 
 from PySide import QtCore, QtGui
-import ftrack
+import ftrack_legacy as ftrack
 from ftrack_connect_nuke import ftrackConnector
 
 from ..worker import Worker

@@ -3,7 +3,7 @@ import os
 
 from PySide import QtCore, QtGui
 
-import ftrack
+import ftrack_legacy as ftrack
 from ftrack_connect_nuke.ftrackConnector.maincon import HelpFunctions
 from ftrack_connect_nuke.ftrackConnector import Connector
 

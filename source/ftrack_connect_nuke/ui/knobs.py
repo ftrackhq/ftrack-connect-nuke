@@ -1,5 +1,5 @@
 import os
-import ftrack
+import ftrack_legacy as ftrack
 import FnAssetAPI
 from FnAssetAPI.ui.toolkit import QtGui, QtCore
 from FnAssetAPI import specifications

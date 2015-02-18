@@ -3,7 +3,7 @@ import re
 import glob
 
 import nuke
-import ftrack
+import ftrack_legacy as ftrack
 import panelcom
 import os
 import traceback
@@ -47,6 +47,8 @@ class GenericAsset(FTAssetType):
         resultingNode.addKnob(btn)
         btn = nuke.String_Knob('assetType')
         resultingNode.addKnob(btn)
+        btn = nuke.String_Knob('assetId')
+        resultingNode.addKnob(btn)
 
     def setFTab(self, resultingNode, iAObj):
         if 'assetmgr_nuke' in globals():
@@ -66,6 +68,7 @@ class GenericAsset(FTAssetType):
         resultingNode.knob('assetVersion').setValue(iAObj.assetVersion)
         resultingNode.knob('assetName').setValue(iAObj.assetName)
         resultingNode.knob('assetType').setValue(iAObj.assetType)
+        resultingNode.knob('assetId').setValue(iAObj.assetId)
 
 
 class ImageSequenceAsset(GenericAsset):

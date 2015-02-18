@@ -1,6 +1,6 @@
 import os
 import shutil
-import ftrack
+import ftrack_legacy as ftrack
 import clique
 import glob
 import tempfile

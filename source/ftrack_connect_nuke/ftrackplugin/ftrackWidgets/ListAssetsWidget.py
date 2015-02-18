@@ -1,6 +1,6 @@
 from PySide import QtCore, QtGui
 from ListAssets import Ui_ListAssets
-import ftrack
+import ftrack_legacy as ftrack
 
 
 class ListAssetsWidget(QtGui.QWidget):

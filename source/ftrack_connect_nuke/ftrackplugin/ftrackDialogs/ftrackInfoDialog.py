@@ -1,6 +1,6 @@
 from ftrack_connect_nuke import ftrackConnector
 import os
-import ftrack
+import ftrack_legacy as ftrack
 from PySide import QtGui
 
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.WebViewWidget import WebViewWidget

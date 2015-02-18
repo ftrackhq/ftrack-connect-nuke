@@ -1,6 +1,6 @@
 from PySide import QtCore, QtGui
 from ExportAssetOptions import Ui_ExportAssetOptions
-import ftrack
+import ftrack_legacy as ftrack
 import os
 from ftrack_connect_nuke import ftrackConnector
 

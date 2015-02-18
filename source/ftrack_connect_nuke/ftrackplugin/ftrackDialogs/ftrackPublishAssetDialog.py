@@ -7,7 +7,7 @@ from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.ExportOptionsWidget import E
 from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.HeaderWidget import HeaderWidget
 from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetObject
 
-import ftrack
+import ftrack_legacy as ftrack
 import os
 import shutil
 
