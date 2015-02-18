@@ -1,1 +1,4 @@
 *.pyc
+build
+.eggs
+source/ftrack_connect_nuke.egg-info
