@@ -2,11 +2,15 @@
 # :copyright: Copyright (c) 2014 ftrack
 
 import functools
-
 import FnAssetAPI
 from FnAssetAPI.ui.toolkit import QtGui
 from ftrack_connect_foundry.ui import delegate
 
+
+def wrapImportAssetDialog(*args, **kwargs):
+    from ftrack_connect_nuke.ftrackConnector import Connector
+    from ftrack_connect.ui.widget.ImportAssetDialog import FtrackImportAssetDialog
+    return FtrackImportAssetDialog(connector=Connector)
 
 class Delegate(delegate.Delegate):
     def __init__(self, bridge):
@@ -20,7 +24,7 @@ class Delegate(delegate.Delegate):
         import legacy
         from nukescripts import panels
         from ftrack_connect_nuke import ftrackConnector
-        from ftrack_connect_nuke.ftrackplugin.ftrackDialogs import ftrackAssetManagerDialog, ftrackImportAssetDialog
+        from ftrack_connect.ui.widget import AssetManagerDialog, ImportAssetDialog
         from ftrack_connect_nuke.millftrack_nuke.assets_manager import AssetsManager
         from ftrack_connect_nuke.millftrack_nuke.ui.gizmo_publisher_dialog import GizmoPublisherDialog
 
@@ -37,9 +41,10 @@ class Delegate(delegate.Delegate):
 
         ftrackMenu.addSeparator()
 
-        # Create the import asset dialog entry in the menu
+        globals()['ftrackImportAssetClass'] = wrapImportAssetDialog
+
         panels.registerWidgetAsPanel(
-            'ftrack_connect_nuke.ftrackplugin.ftrackDialogs.ftrackImportAssetDialog.FtrackImportAssetDialog', 
+            "%s.%s" % (__name__, 'ftrackImportAssetClass'),
             'ftrackImportAsset', 
             'ftrackDialogs.ftrackImportAssetDialog'
         )
@@ -52,7 +57,7 @@ class Delegate(delegate.Delegate):
         
         # Create the asset manager dialog entry in the menu
         panels.registerWidgetAsPanel(
-            'ftrack_connect_nuke.ftrackplugin.ftrackDialogs.ftrackAssetManagerDialog.FtrackAssetManagerDialog', 
+            'ftrack_connect.ui.widget.AssetManagerDialog.FtrackAssetManagerDialog', 
             'ftrackAssetManager', 
             'ftrackDialogs.ftrackAssetManagerDialog'
         )

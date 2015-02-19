@@ -1,4 +1,5 @@
 # Import to bootstrap foundry api.
-import assetmgr_nuke
 import ftrack_connect_nuke
+import ftrack_connect
+import assetmgr_nuke
 import nuke

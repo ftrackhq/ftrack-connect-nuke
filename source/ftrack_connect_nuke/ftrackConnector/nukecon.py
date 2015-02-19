@@ -9,9 +9,7 @@ import nukescripts
 import nuke
 
 import assetmgr_nuke
-import maincon
-from maincon import FTAssetHandlerInstance
-from maincon import HelpFunctions
+from ftrack_connect.connector import FTAssetHandlerInstance, HelpFunctions, Connector
 import nukeassets
 
 
@@ -22,7 +20,7 @@ def register_scheme(scheme):
 register_scheme('ftrack')
 
 
-class Connector(maincon.Connector):
+class Connector(Connector):
     def __init__(self):
         super(Connector, self).__init__()
 
