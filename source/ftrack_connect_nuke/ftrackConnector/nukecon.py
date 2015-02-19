@@ -10,8 +10,10 @@ import nuke
 
 import assetmgr_nuke
 from ftrack_connect.connector import FTAssetHandlerInstance, HelpFunctions, Connector
+
 import nukeassets
 
+import FnAssetAPI
 
 def register_scheme(scheme):
     for method in filter(lambda s: s.startswith('uses_'), dir(urlparse)):
@@ -60,7 +62,9 @@ class Connector(Connector):
         iAObj.assetName = Connector.getUniqueSceneName(iAObj.assetName)
 
         assetHandler = FTAssetHandlerInstance.instance()
+        FnAssetAPI.logging.info(assetHandler.getAssetTypes())
         importAsset = assetHandler.getAssetClass(iAObj.assetType)
+
         if importAsset:
             result = importAsset.importAsset(iAObj)
             return result

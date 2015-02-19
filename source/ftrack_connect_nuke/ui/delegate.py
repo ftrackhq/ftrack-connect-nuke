@@ -6,12 +6,6 @@ import FnAssetAPI
 from FnAssetAPI.ui.toolkit import QtGui
 from ftrack_connect_foundry.ui import delegate
 
-
-def wrapImportAssetDialog(*args, **kwargs):
-    from ftrack_connect_nuke.ftrackConnector import Connector
-    from ftrack_connect.ui.widget.ImportAssetDialog import FtrackImportAssetDialog
-    return FtrackImportAssetDialog(connector=Connector)
-
 class Delegate(delegate.Delegate):
     def __init__(self, bridge):
         super(Delegate, self).__init__(bridge)
@@ -23,12 +17,22 @@ class Delegate(delegate.Delegate):
         import nuke
         import legacy
         from nukescripts import panels
-        from ftrack_connect_nuke import ftrackConnector
+        from ftrack_connect_nuke.ftrackConnector import Connector
         from ftrack_connect.ui.widget import AssetManagerDialog, ImportAssetDialog
         from ftrack_connect_nuke.millftrack_nuke.assets_manager import AssetsManager
         from ftrack_connect_nuke.millftrack_nuke.ui.gizmo_publisher_dialog import GizmoPublisherDialog
+        
+        Connector.registerAssets()
 
-        ftrackConnector.Connector.registerAssets()
+        # wrappers for initializing the widgets with the correct connector object
+        def wrapImportAssetDialog(*args, **kwargs):
+            from ftrack_connect.ui.widget.ImportAssetDialog import FtrackImportAssetDialog
+            return FtrackImportAssetDialog(connector=Connector)
+
+        def wrapAssetManagerDialog(*args, **kwargs):
+            from ftrack_connect.ui.widget.AssetManagerDialog import FtrackAssetManagerDialog
+            return FtrackAssetManagerDialog(connector=Connector)
+
 
         millAssetManager = AssetsManager()
 
@@ -55,9 +59,11 @@ class Delegate(delegate.Delegate):
             'panel.addToPane(pane)'
         )
         
+        globals()['ftrackAssetManagerDialogClass'] = wrapAssetManagerDialog
+
         # Create the asset manager dialog entry in the menu
         panels.registerWidgetAsPanel(
-            'ftrack_connect.ui.widget.AssetManagerDialog.FtrackAssetManagerDialog', 
+            "%s.%s" % (__name__, 'ftrackAssetManagerDialogClass'),
             'ftrackAssetManager', 
             'ftrackDialogs.ftrackAssetManagerDialog'
         )
