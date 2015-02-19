@@ -121,8 +121,6 @@ setup(
         'test': PyTest
     },
     dependency_links=[
-        'https://bitbucket.org/ftrack/ftrack-connect/get/0.1.3.zip'
-        '#egg=ftrack-connect-0.1.3',
         ('https://bitbucket.org/ftrack/lowdown/get/0.1.0.zip'
          '#egg=lowdown-0.1.0'),
         ('https://bitbucket.org/ftrack/ftrack-connect/get/0.1.7.zip'
