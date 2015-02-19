@@ -6,6 +6,10 @@ import functools
 import FnAssetAPI
 from FnAssetAPI.ui.toolkit import QtGui
 from ftrack_connect_foundry.ui import delegate
+from ftrack_connect_foundry.ui.tasks_view import TasksView as _TasksView
+from ftrack_connect_foundry.ui.info_view import (
+    WorkingTaskInfoView as _WorkingTaskInfoView, InfoView as _InfoView
+)
 
 
 class Delegate(delegate.Delegate):
@@ -57,6 +61,18 @@ class Delegate(delegate.Delegate):
             'panel = nukescripts.restorePanel("ftrackDialogs.ftrackAssetManagerDialog");'
             'panel.addToPane(pane)'
         )
+
+        # Add Web Views located in the ftrack_connect_foundry package to the
+        # menu for easier access.
+        for widget in [_InfoView, _TasksView, _WorkingTaskInfoView]:
+            ftrackMenu.addCommand(
+                widget.getDisplayName(),
+                'pane = nuke.getPaneFor("Properties.1");'
+                'panel = nukescripts.restorePanel("{identifier}");'
+                'panel.addToPane(pane)'.format(
+                    identifier=widget.getIdentifier()
+                )
+            )
 
         # Add ftrack publish node
         toolbar = nuke.toolbar("Nodes")
