@@ -1,4 +1,30 @@
-*.pyc
+# General
+*.py[cod]
+
+# Packages
+*.egg
+*.egg-info
+dist
 build
 .eggs
-source/ftrack_connect_nuke.egg-info
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib64
+__pycache__
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+
+# Development
+.project
+.pydevproject
+.settings
+.idea/
