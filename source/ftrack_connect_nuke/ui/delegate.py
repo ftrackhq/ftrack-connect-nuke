@@ -32,6 +32,8 @@ class Delegate(delegate.Delegate):
         nukeMenu = nuke.menu("Nuke")
         ftrackMenu = nukeMenu.addMenu("&ftrack")
 
+        ftrackMenu.addSeparator()
+
         # add ftrack publish node to the menu
         ftrackMenu.addCommand('Create Publish Node', lambda: legacy.createFtrackPublish())
 
@@ -42,6 +44,9 @@ class Delegate(delegate.Delegate):
             'ftrackImportAsset', 
             'ftrackDialogs.ftrackImportAssetDialog'
         )
+
+        ftrackMenu.addSeparator()
+
         ftrackMenu.addCommand(
             'Import Asset',
             'pane = nuke.getPaneFor("Properties.1");'
@@ -61,10 +66,20 @@ class Delegate(delegate.Delegate):
             'panel = nukescripts.restorePanel("ftrackDialogs.ftrackAssetManagerDialog");'
             'panel.addToPane(pane)'
         )
+        ftrackMenu.addCommand(
+            _InfoView.getDisplayName(),
+            'pane = nuke.getPaneFor("Properties.1");'
+            'panel = nukescripts.restorePanel("{identifier}");'
+            'panel.addToPane(pane)'.format(
+                identifier=_InfoView.getIdentifier()
+            )
+        )
+
+        ftrackMenu.addSeparator()
 
         # Add Web Views located in the ftrack_connect_foundry package to the
         # menu for easier access.
-        for widget in [_InfoView, _TasksView, _WorkingTaskInfoView]:
+        for widget in [_TasksView, _WorkingTaskInfoView]:
             ftrackMenu.addCommand(
                 widget.getDisplayName(),
                 'pane = nuke.getPaneFor("Properties.1");'
