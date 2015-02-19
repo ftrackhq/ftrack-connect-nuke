@@ -14,7 +14,6 @@ you are working on or the currently selected node in the graph.
 
 .. image:: /image/info_pane.png
 
-The Tasks pane outlines all your current assignments. This is a quick way to
-change status or log time without leaving NUKE.
+The Tasks pane outlines all your current assignments.
 
 .. image:: /image/tasks_pane.png

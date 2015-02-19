@@ -102,7 +102,8 @@ setup(
     },
     setup_requires=[
         'sphinx >= 1.2.2, < 2',
-        'sphinx_rtd_theme >= 0.1.6, < 2'
+        'sphinx_rtd_theme >= 0.1.6, < 2',
+        'lowdown >= 0.1.0, < 1'
     ],
     install_requires=[
         'ftrack-connect >= 0.1, < 1'
@@ -115,7 +116,9 @@ setup(
     },
     dependency_links=[
         'https://bitbucket.org/ftrack/ftrack-connect/get/0.1.3.zip'
-        '#egg=ftrack-connect-0.1.3'
+        '#egg=ftrack-connect-0.1.3',
+        ('https://bitbucket.org/ftrack/lowdown/get/0.1.0.zip'
+         '#egg=lowdown-0.1.0'),
     ],
     data_files=data_files
 )

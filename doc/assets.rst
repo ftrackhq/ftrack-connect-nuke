@@ -1,14 +1,14 @@
 ..
     :copyright: Copyright (c) 2015 ftrack
 
-######
-Assets
-######
+#############
+Manage assets
+#############
 
 Importing assets
 ================
 
-Assets can be imported into NUKE from the Import Asset pane.
+Assets can be imported into Nuke from the Import Asset pane.
 
 .. image:: /image/import_asset_pane.jpg
 
@@ -43,7 +43,7 @@ You can also remove an asset from the script or select it in your node graph.
 Publishing assets
 =================
 
-To publish a rendered image sequence from NUKE, add a ftrack publish node after
+To publish a rendered image sequence from Nuke, add a ftrack publish node after
 it.
 
 .. image:: /image/publish_node.png
@@ -57,5 +57,5 @@ These options are available when publishing:
 
 :Copy files:            Publish will copy the files to another location and publish them
                         from there.
-:Attach NUKE script:    Attaches the NUKE script as a component on the published
+:Attach Nuke script:    Attaches the Nuke script as a component on the published
                         version.
