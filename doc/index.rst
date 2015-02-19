@@ -15,3 +15,4 @@ Foundry`'s :term:`Nuke`.
     assets
     panes
     glossary
+    release/index
