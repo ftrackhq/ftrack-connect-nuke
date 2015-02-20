@@ -18,8 +18,8 @@ from widgets.comment_widget import CommentWidget
 from task_widgets import TaskWidget
 
 from FnAssetAPI import logging
-from ftrack_connect_nuke.ftrackConnector.nukeassets import NukeSceneAsset
-from ftrack_connect_nuke.ftrackConnector.nukecon import Connector
+from ftrack_connect_nuke.connector.nukeassets import NukeSceneAsset
+from ftrack_connect_nuke.connector.nukecon import Connector
 
 
 class ScriptPublisherDialog(BaseIODialog):

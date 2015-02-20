@@ -13,8 +13,8 @@ from ui.warning_dialog import LockedSceneDialog
 from ui.assets_dialog import AssetsLoaderDialog
 
 from ftrack_connect.connector import FTAssetObject
-from ftrack_connect_nuke.ftrackConnector.nukeassets import GizmoAsset, NukeSceneAsset
-from ftrack_connect_nuke.ftrackConnector.nukecon import Connector
+from ftrack_connect_nuke.connector.nukeassets import GizmoAsset, NukeSceneAsset
+from ftrack_connect_nuke.connector.nukecon import Connector
 from ftrack_connect_nuke.ui.legacy import get_dependencies
 
 from ui.images import image_dir

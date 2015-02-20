@@ -7,18 +7,11 @@ import datetime
 
 from widgets.assets_tree import AssetsTree
 from generic.dockable_widget import BaseDockableWidget
+from ftrack_connect_nuke.connector.nukeassets import NukeSceneAsset
 
 from widgets.status_widget import StatusWidget
 
 from ..controller import Controller
-
-# from ..ftrack_io.asset import N_AssetFactory
-
-# from ..ftrack_io.task import TaskIO
-# from ..ftrack_io.asset import AssetVersionIO
-# from ..ftrack_io.asset import AssetIOError
-
-# from ..ftrack_io.assets.scene_io import SceneIO
 
 from FnAssetAPI import logging
 
@@ -382,7 +375,6 @@ class SingleTaskWidget(QtGui.QFrame):
         self.assets_widget.set_selection_mode(bool_value)
 
 
-from ftrack_connect_nuke.ftrackConnector.nukeassets import NukeSceneAsset
 
 
 class SceneAssetsWidget(QtGui.QWidget):

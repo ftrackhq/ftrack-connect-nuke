@@ -9,7 +9,7 @@ from ftrack_connect.connector import HelpFunctions
 from ftrack_connect.ui.widget import HeaderWidget
 
 from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
-from ftrack_connect_nuke import ftrackConnector
+from ftrack_connect_nuke import connector
 
 from ftrack_connect_nuke.millftrack_nuke.ui.browser_dialog import BrowserDialog
 
@@ -93,7 +93,7 @@ class BrowseKnob():
             # self.set_task(browser.task)
 
             self.targetTask = browser.task.getId()
-            obj = ftrackConnector.Connector.objectById(self.targetTask)
+            obj = connector.Connector.objectById(self.targetTask)
 
             # FnAssetAPI.logging.info(obj)
             # FnAssetAPI.logging.info(self.targetTask)

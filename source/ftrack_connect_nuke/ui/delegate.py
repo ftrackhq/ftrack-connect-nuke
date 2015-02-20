@@ -17,7 +17,7 @@ class Delegate(delegate.Delegate):
         import nuke
         import legacy
         from nukescripts import panels
-        from ftrack_connect_nuke.ftrackConnector import Connector
+        from ftrack_connect_nuke.connector import Connector
         from ftrack_connect.ui.widget import AssetManagerDialog, ImportAssetDialog
         from ftrack_connect_nuke.millftrack_nuke.assets_manager import AssetsManager
         from ftrack_connect_nuke.millftrack_nuke.ui.gizmo_publisher_dialog import GizmoPublisherDialog

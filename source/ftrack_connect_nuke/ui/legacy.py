@@ -13,9 +13,10 @@ import nuke
 import nukescripts
 import ftrack_connect
 import ftrack_connect_nuke
+
 from ftrack_connect.connector import FTComponent, FTAssetObject, HelpFunctions, PanelComInstance
-from ftrack_connect_nuke import ftrackConnector
-from ftrack_connect_nuke.ftrackConnector import nukeassets
+from ftrack_connect_nuke import connector
+from ftrack_connect_nuke.connector import nukeassets
 
 from knobs import TableKnob, BrowseKnob, HeaderKnob
 
@@ -40,7 +41,7 @@ def refAssetManager():
 
 
 def checkForNewAssets():
-    allAssets = ftrackConnector.Connector.getAssets()
+    allAssets = connector.Connector.getAssets()
     message = ''
     for ftNode in allAssets:
         n = nuke.toNode(ftNode[1])
@@ -51,7 +52,7 @@ def checkForNewAssets():
         n.knob('assetName').value()
         n.knob('assetType').value()
 
-        assetVersion = ftrackConnector.Connector.objectById(assetVersionId)
+        assetVersion = connector.Connector.objectById(assetVersionId)
         if assetVersion:
             asset = assetVersion.getAsset()
             versions = asset.getVersions(componentNames=[componentName])
@@ -114,7 +115,7 @@ def addPublishKnobsToGroupNode(g):
     refreshKnob.setFlag(nuke.STARTLINE)
     g.addKnob(refreshKnob)
 
-    publishKnob = nuke.PyScript_Knob('pknob', 'Publish!', 'track_connect_nuke.ui.knobs.publishAssetKnob()')
+    publishKnob = nuke.PyScript_Knob('pknob', 'Publish!', 'ftrack_connect_nuke.ui.legacy.publishAssetKnob()')
     g.addKnob(publishKnob)
     publishKnob.setEnabled(False)
 
@@ -125,7 +126,7 @@ def createFtrackPublish():
     inputNode = nuke.createNode("Input", inpanel=False)
     g.end()
     nodeName = 'ftrackPublish'
-    nodeName = ftrackConnector.Connector.getUniqueSceneName(nodeName)
+    nodeName = connector.Connector.getUniqueSceneName(nodeName)
     g['name'].setValue(nodeName)
     addPublishKnobsToGroupNode(g)
 
@@ -167,14 +168,14 @@ def publishAssetKnob():
     
     if os.getenv('FTRACK_MODE','') == 'Shot':
         currentTask = None
-        shot = ftrackConnector.Connector.objectById(os.environ['FTRACK_SHOTID'])
+        shot = connector.Connector.objectById(os.environ['FTRACK_SHOTID'])
         tasks = shot.getTasks()
         selectedTask = n['ftask'].value()
         for task in tasks:
             if task.getName() == selectedTask:
                 currentTask = task
     else:
-        currentTask = ftrackConnector.Connector.objectById(n.knob('fpubto').getObject().targetTask)
+        currentTask = connector.Connector.objectById(n.knob('fpubto').getObject().targetTask)
 
     
     shot = currentTask.getParent()
@@ -251,7 +252,7 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
                 pubObj = FTAssetObject(
                     assetVersionId=assetVersion.getId()
                 )
-                ftrackConnector.Connector.publishAssetFiles(
+                connector.Connector.publishAssetFiles(
                     publishedComponents,
                     assetVersion,
                     pubObj,
@@ -472,9 +473,9 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
     
             assetEnums = ['New']
             if nodeAssetType != '':
-                # assets = ftrackConnector.Connector.objectById(os.environ['FTRACK_SHOTID']).getAssets(assetTypes=[g['ftrackassettype'].value()])
+                # assets = connector.Connector.objectById(os.environ['FTRACK_SHOTID']).getAssets(assetTypes=[g['ftrackassettype'].value()])
                 pubto = g.knob('fpubto').getObject().targetTask
-                assets = ftrackConnector.Connector.objectById(pubto).getAssets(assetTypes=[g['ftrackassettype'].value()])
+                assets = connector.Connector.objectById(pubto).getAssets(assetTypes=[g['ftrackassettype'].value()])
                 assets = sorted(assets, key=lambda entry: entry.getName().lower())
                 assetEnums = assetEnums + [x.getName() for x in assets]
                 FnAssetAPI.logging.info(assetEnums)
@@ -496,9 +497,9 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
             #print nodeAssetType
             assetEnums = ['New']
             if nodeAssetType != '' and nodeAssetType != 'Missmatch inputs':
-                # assets = ftrackConnector.Connector.objectById(os.environ['FTRACK_SHOTID']).getAssets(assetTypes=[nodeAssetType])
+                # assets = connector.Connector.objectById(os.environ['FTRACK_SHOTID']).getAssets(assetTypes=[nodeAssetType])
                 pubto = g.knob('fpubto').getObject().targetTask
-                assets = ftrackConnector.Connector.objectById(pubto).getAssets(assetTypes=[nodeAssetType])
+                assets = connector.Connector.objectById(pubto).getAssets(assetTypes=[nodeAssetType])
                 assetEnums = assetEnums + [x.getName() for x in assets]
                 g['fassetnameexisting'].setValues(assetEnums)
 
