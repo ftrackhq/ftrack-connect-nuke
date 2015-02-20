@@ -4,10 +4,6 @@ from PySide import QtGui, QtCore
 
 from generic.base_dialog import BaseDialog
 
-# from ..ftrack_io.asset import N_AssetFactory
-# from ..ftrack_io.assets.scene_io import SceneIO
-
-
 class LockedSceneDialog(BaseDialog):
 
     def __init__(self, scenes_ids, parent=None):

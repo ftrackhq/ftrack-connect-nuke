@@ -6,7 +6,7 @@ from FnAssetAPI import specifications
 
 import ftrack_connect_nuke
 from ftrack_connect.connector import HelpFunctions
-from ftrack_connect.ui.widget import HeaderWidget
+from ftrack_connect.ui.widget import header
 
 from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
 from ftrack_connect_nuke import connector
@@ -103,7 +103,7 @@ class BrowseKnob():
 
 class HeaderKnob():
     def makeUI(self):
-        self.headerWidget = HeaderWidget.HeaderWidget(parent=None)
+        self.headerWidget = header.HeaderWidget(parent=None)
         self.headerWidget.setTitle('Publish')
 
         self.headerWidget.updateValue = self.updateValue

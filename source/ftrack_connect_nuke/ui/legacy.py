@@ -275,7 +275,6 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
     
         nuke.message('Asset published')
 
-
 def getMetaData(nodeName):
     n = nuke.toNode(nodeName)
     metaData = []
@@ -283,7 +282,6 @@ def getMetaData(nodeName):
     metaData.append(('res_y', str(n.height())))
 
     return metaData
-
 
 def ftrackPublishKnobChanged(forceRefresh=False, g=None):
     if not g:

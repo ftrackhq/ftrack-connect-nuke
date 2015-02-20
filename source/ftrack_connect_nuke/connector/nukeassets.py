@@ -77,7 +77,7 @@ class ImageSequenceAsset(GenericAsset):
         if component.getSystemType() == 'sequence':
             # Find out frame start and end from members if component
             # system type is sequence.
-            members = component.getMembers()
+            members = component.getMembers(location=None)
             frames = [int(member.getName()) for member in members]
             start = min(frames)
             end = max(frames)
@@ -285,8 +285,6 @@ class GeometryAsset(GenericAsset):
     def publishAsset(self, iAObj=None):
         return [], "Publish function not implemented for geometry asset"
 
-import FnAssetAPI
-
 # new gizmo asset (mill) # not used atm
 class GizmoAsset(GenericAsset):
     def __init__(self):
@@ -303,7 +301,6 @@ class GizmoAsset(GenericAsset):
     def changeVersion(self, iAObj=None, applicationObject=None):
 
         old_gizmo = nuke.toNode(applicationObject)
-        FnAssetAPI.logging.info(old_gizmo)
 
         gizmo_path = os.path.dirname(iAObj.filePath)
         nuke.pluginAddPath(gizmo_path)
