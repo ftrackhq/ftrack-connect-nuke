@@ -59,9 +59,10 @@ class BrowserDialog(BaseDialog):
     project_frame = QtGui.QFrame(self)
     project_frame.setMaximumWidth(340)
     css_project = """
-    QFrame { padding: 3px; border-radius: 4px; background: #252525; }
-    QLabel { padding: 0px; background: none; font-size: 13px; }
+        QFrame { padding: 3px; border-radius: 4px; background: #252525; }
+        QLabel { padding: 0px; background: none; font-size: 13px; }
     """
+    
     project_frame.setStyleSheet(css_project)
     projects_layout = QtGui.QVBoxLayout(project_frame)
     projects_lbl = QtGui.QLabel("PROJECTS", project_frame)
