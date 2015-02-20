@@ -110,9 +110,6 @@ class Delegate(delegate.Delegate):
         fn_publish_new = file_menu.removeItem("Publish Script to a New Version")
 
         
-        
-
-
     def populateUI(self, uiElement, specification, context):
         super(Delegate, self).populateUI(uiElement, specification, context)
 

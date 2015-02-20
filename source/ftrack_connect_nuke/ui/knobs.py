@@ -5,8 +5,9 @@ from FnAssetAPI.ui.toolkit import QtGui, QtCore
 from FnAssetAPI import specifications
 
 import ftrack_connect_nuke
-from ftrack_connect_nuke.ftrackConnector.maincon import HelpFunctions
-from ftrack_connect_nuke.ftrackplugin.ftrackWidgets import HeaderWidget
+from ftrack_connect.connector import HelpFunctions
+from ftrack_connect.ui.widget import HeaderWidget
+
 from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
 from ftrack_connect_nuke import ftrackConnector
 

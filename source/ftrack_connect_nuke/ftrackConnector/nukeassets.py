@@ -4,18 +4,16 @@ import glob
 
 import nuke
 import ftrack
-import panelcom
 import os
 import traceback
 
-from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetHandlerInstance
-from ftrack_connect_nuke.ftrackConnector.maincon import HelpFunctions
-from maincon import FTAssetObject
-from maincon import FTAssetType
-from maincon import FTComponent
-
-import assetmgr_nuke
-import ftrack_connect_nuke.ftrackplugin.worker
+from ftrack_connect.connector import (
+    FTAssetHandlerInstance, 
+    HelpFunctions, 
+    FTAssetType, 
+    FTAssetObject, 
+    FTComponent
+)
 
 
 class GenericAsset(FTAssetType):
