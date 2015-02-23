@@ -10,7 +10,7 @@ from ftrack_connect_foundry.ui.tasks_view import TasksView as _TasksView
 from ftrack_connect_foundry.ui.info_view import (
     WorkingTaskInfoView as _WorkingTaskInfoView, InfoView as _InfoView
 )
-
+from ftrack_connect_nuke.ui.widget.presence import Presence
 
 class Delegate(delegate.Delegate):
     def __init__(self, bridge):
@@ -88,6 +88,20 @@ class Delegate(delegate.Delegate):
                     identifier=widget.getIdentifier()
                 )
             )
+
+                # Create the notification dialog entry in the menu
+        panels.registerWidgetAsPanel(
+            'ftrack_connect_nuke.ui.widget.presence.Presence',
+            'Crew',
+            'widget.ftrackPresence'
+        )
+        ftrackMenu.addCommand(
+            'Crew',
+            'pane = nuke.getPaneFor("Properties.1");'
+            'panel = nukescripts.restorePanel("widget.ftrackPresence");'
+            'panel.addToPane(pane)'
+        )
+
 
         # Add ftrack publish node
         toolbar = nuke.toolbar("Nodes")
