@@ -1,15 +1,14 @@
-###################
-ftrack-connect-nuke
-###################
+##########################
+ftrack connect NUKE
+##########################
 
-Repository for ftrack connect nuke plugins.
+ftrack integration with NUKE.
 
 *************
 Documentation
 *************
 
-Full documentation, including installation and setup guides, can be found at
-https://doc.ftrack.com/ftrack-connect-nuke
+Full documentation can be found at https://doc.ftrack.com/ftrack-connect-nuke
 
 *********************
 Copyright and license
