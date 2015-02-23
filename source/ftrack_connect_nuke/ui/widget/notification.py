@@ -36,7 +36,7 @@ class Notification(QtGui.QDialog):
         self.horizontal_layout = QtGui.QHBoxLayout()
 
         self.header = HeaderWidget(self)
-        self.header.setTitle('ftrack Notifications')
+        self.header.setTitle('Notifications')
 
         self.vertical_layout.addWidget(self.header)
 

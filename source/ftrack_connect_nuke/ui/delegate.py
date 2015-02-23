@@ -87,6 +87,8 @@ class Delegate(delegate.Delegate):
                 )
             )
 
+        ftrackMenu.addSeparator()
+
         # Create the notification dialog entry in the menu
         panels.registerWidgetAsPanel(
             'ftrack_connect_nuke.ui.widget.notification.Notification',
@@ -94,7 +96,7 @@ class Delegate(delegate.Delegate):
             'widget.ftrackNotification'
         )
         ftrackMenu.addCommand(
-            'Notification',
+            'Notifications',
             'pane = nuke.getPaneFor("Properties.1");'
             'panel = nukescripts.restorePanel("widget.ftrackNotification");'
             'panel.addToPane(pane)'
