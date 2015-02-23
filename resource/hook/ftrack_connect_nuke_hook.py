@@ -71,6 +71,12 @@ class LaunchApplicationAction(object):
 
     def discover(self, event):
         '''Return discovered applications.'''
+
+        if not self.is_valid_selection(
+            event['data'].get('selection', [])
+        ):
+            return
+
         items = []
         applications = self.application_store.applications
         applications = sorted(
