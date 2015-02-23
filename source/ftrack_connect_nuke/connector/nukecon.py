@@ -8,7 +8,6 @@ from nukescripts import panels
 import nukescripts
 import nuke
 
-import assetmgr_nuke
 from ftrack_connect.connector import FTAssetHandlerInstance, HelpFunctions, Connector
 
 import nukeassets

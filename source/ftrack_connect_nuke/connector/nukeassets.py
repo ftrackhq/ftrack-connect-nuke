@@ -47,17 +47,8 @@ class GenericAsset(FTAssetType):
         resultingNode.addKnob(btn)
 
     def setFTab(self, resultingNode, iAObj):
-        if 'assetmgr_nuke' in globals():
-            componentId = ftrack.Component(iAObj.componentId).getEntityRef()
-            assetVersionId = ftrack.AssetVersion(iAObj.assetVersionId).getEntityRef()
-        #    resultingNode.knob('file').setValue(componentId)
-        else:
-            componentId = iAObj.componentId
-            assetVersionId = iAObj.assetVersionId
-            
-        #componentId = iAObj.componentId
-        #assetVersionId = iAObj.assetVersionId
-            
+        componentId = ftrack.Component(iAObj.componentId).getEntityRef()
+        assetVersionId = ftrack.AssetVersion(iAObj.assetVersionId).getEntityRef()
         resultingNode.knob('componentId').setValue(componentId)
         resultingNode.knob('componentName').setValue(iAObj.componentName)
         resultingNode.knob('assetVersionId').setValue(assetVersionId)
