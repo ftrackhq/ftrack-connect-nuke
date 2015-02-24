@@ -249,6 +249,14 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
             self.plugin_path, 'FOUNDRY_ASSET_PLUGIN_PATH', environment
         )
 
+        # Set the FTRACK_EVENT_PLUGIN_PATH to include the notification callback
+        # hooks.
+        environment = ftrack_connect.application.appendPath(
+            os.path.join(
+                self.plugin_path, 'crew_hook'
+            ), 'FTRACK_EVENT_PLUGIN_PATH', environment
+        )
+
         return environment
 
 
