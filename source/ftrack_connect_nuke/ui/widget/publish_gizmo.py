@@ -71,12 +71,12 @@ class GizmoPublisherDialog(BaseDialog):
             QtGui.QApplication.activeWindow()
         )
 
-        self.setupUI()
-
         self.setStyleSheet(style)
+        self.setupUI()
         self.exec_()
 
     def setupUI(self):
+        super(GizmoPublisherDialog, self).setupUI()
         css_label = "color: #c3cfa4; font-size: 12px; font-weight: bold;"
         
         gizmo_widget = QtGui.QWidget()
@@ -163,7 +163,8 @@ class GizmoPublisherDialog(BaseDialog):
         self._save_btn.setText("Publish Gizmo")
         self._save_btn.setMinimumWidth(150)
         self._save_btn.setEnabled(False)
-    
+        self.set_task(self.current_task)
+
     @property
     def comment(self):
         return self._comment_widget.text
