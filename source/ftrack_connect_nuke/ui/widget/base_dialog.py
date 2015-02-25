@@ -44,7 +44,6 @@ class BaseDialog(QtGui.QDialog):
         self._save_btn = QtGui.QPushButton("Save", self)
         self._cancel_btn = QtGui.QPushButton("Cancel", self)
 
-        # self._save_btn.clicked.connect(self.accept)
         self._cancel_btn.clicked.connect(self.reject)
         
         spacer = QtGui.QSpacerItem( 40, 20,
@@ -54,6 +53,9 @@ class BaseDialog(QtGui.QDialog):
         layout_buttons.addItem(spacer)
         layout_buttons.addWidget(self._cancel_btn)
         layout_buttons.addWidget(self._save_btn)
+
+        self.content_layout = QtGui.QVBoxLayout()
+        self.layout().addLayout(self.content_layout)
 
     def _get_task_parents(self, task):
         task = ftrack.Task(task)

@@ -18,8 +18,6 @@ class Delegate(delegate.Delegate):
         import legacy
         from nukescripts import panels
         from ftrack_connect_nuke.connector import Connector
-        from ftrack_connect_nuke.millftrack_nuke.assets_manager import AssetsManager
-
         from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
 
         Connector.registerAssets()
@@ -33,8 +31,6 @@ class Delegate(delegate.Delegate):
             from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
             return FtrackAssetManagerDialog(connector=Connector)
 
-
-        millAssetManager = AssetsManager()
 
         # Populate the ui
         nukeMenu = nuke.menu("Nuke")
@@ -97,12 +93,12 @@ class Delegate(delegate.Delegate):
         nuke.addKnobChanged(legacy.ftrackPublishKnobChanged, nodeClass="Group")
         nuke.addOnCreate(legacy.ftrackPublishHieroInit)
 
-        file_menu = nukeMenu.menu('File')
-        file_menu.addSeparator(index=7)
-        file_menu.addCommand('FTrack - Open Script...', millAssetManager.open_script_panel, index=8)
-        file_menu.addCommand('FTrack - Publish Script...', millAssetManager.publish_script_panel, index=8)
-        file_menu.addCommand('FTrack - Publish a gizmo...', millAssetManager.publish_gizmo_panel, index=8)
-        file_menu.addSeparator(index=8)
+        # file_menu = nukeMenu.menu('File')
+        # file_menu.addSeparator(index=7)
+        # file_menu.addCommand('FTrack - Open Script...', millAssetManager.open_script_panel, index=8)
+        # file_menu.addCommand('FTrack - Publish Script...', millAssetManager.publish_script_panel, index=8)
+        # file_menu.addCommand('FTrack - Publish a gizmo...', millAssetManager.publish_gizmo_panel, index=8)
+        # file_menu.addSeparator(index=8)
 
         # remove foundy ones
         fn_publish = file_menu.removeItem("Publish Script...")

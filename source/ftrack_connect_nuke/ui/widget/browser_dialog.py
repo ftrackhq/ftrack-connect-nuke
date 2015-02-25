@@ -74,7 +74,7 @@ class BrowserDialog(BaseDialog):
     layout_content.setContentsMargins(0,0,0,0)
     layout_content.addLayout(self._stackLayout)
     main_layout.addWidget(content_widget)
-    # self.layout().addLayout(main_layout)
+    # self.content_layout.addLayout(main_layout)
 
     self._save_btn.setText("Open")
     self.set_enabled(False)
