@@ -4,6 +4,7 @@ import ftrack
 from PySide import QtGui, QtCore
 import os
 
+from ftrack_connect.ui.widget.header import HeaderWidget
 from base_dialog import BaseDialog
 from FnAssetAPI import logging
 
@@ -20,36 +21,41 @@ TYPE_DICT = {
 
 class BrowserDialog(BaseDialog):
   def __init__(self, task=None, parent=None):
-    super(BrowserDialog, self).__init__(parent)
-    self.setupUI()
-
+    super(BrowserDialog, self).__init__(parent=parent, disable_tasks_list=True)
     self._projects_browsers = dict()
-    self.set_projects()
 
     self._tasks_per_path = dict()
 
+    self.setupUI()
+    self.set_projects()
+
     if task != None:
       self.set_task(task)
-
+    
     self.exec_()
 
   def setupUI(self):
-    self.resize(1100,670)
+    super(BrowserDialog, self).setupUI()
 
+    self.resize(1100,670)
     location_frame = QtGui.QFrame(self)
     location_frame.setStyleSheet("QFrame{background: #222; border:0px;}")
-    location_layout = QtGui.QGridLayout(location_frame)
+
+    location_layout = QtGui.QHBoxLayout(location_frame)
     location_layout.setContentsMargins(10,10,10,10)
     location_layout.setSpacing(6)
     location_lbl = QtGui.QLabel("Task", location_frame)
     location_lbl.setMaximumWidth(65)
+
     self._location_cbbx = QtGui.QComboBox(location_frame)
     self._location_cbbx.currentIndexChanged.connect(self.update_browser)
-    location_layout.addWidget(location_lbl,0,0,1,1)
-    location_layout.addWidget(self._location_cbbx,0,1,1,1)
+    location_layout.addWidget(location_lbl)
+    location_layout.addWidget(self._location_cbbx)
+    self.layout().addLayout(location_layout)
 
     main_widget = QtGui.QWidget(self)
     main_layout = QtGui.QHBoxLayout(main_widget)
+    self.setLayout(main_layout)
     main_layout.setSpacing(6)
     project_frame = QtGui.QFrame(self)
     project_frame.setMaximumWidth(340)
@@ -74,7 +80,7 @@ class BrowserDialog(BaseDialog):
     layout_content.setContentsMargins(0,0,0,0)
     layout_content.addLayout(self._stackLayout)
     main_layout.addWidget(content_widget)
-    # self.content_layout.addLayout(main_layout)
+    self.layout().addWidget(main_widget)
 
     self._save_btn.setText("Open")
     self.set_enabled(False)
@@ -110,7 +116,6 @@ class BrowserDialog(BaseDialog):
     self.set_task(task)
 
   def set_task(self, task):
-
     item = self._projects_list.findItems( task.getProject().getName(),
                                           QtCore.Qt.MatchFixedString )[0]
     self._projects_list.setCurrentItem(item)
