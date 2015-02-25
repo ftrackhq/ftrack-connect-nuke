@@ -9,8 +9,7 @@ from FnAssetAPI import logging
 
 from script_editor_widget import ScriptEditorWidget
 from comment_widget import CommentWidget
-from ftrack_connect.ui.widget.header import HeaderWidget
-
+from base_dialog import BaseDialog
 
 style = '''
 /*consistent base widgets size*/
@@ -64,52 +63,25 @@ QLabel#ftrack-header-message-warning {
 
 
 
-class GizmoPublisherDialog(QtGui.QDialog):
+class GizmoPublisherDialog(BaseDialog):
 
     def __init__(self):
-        # logging.debug('version id: %s' % version_id)
 
         super(GizmoPublisherDialog, self).__init__(
-            QtGui.QApplication.activeWindow())
-
-        self.current_task = ftrack.Task(
-            os.getenv('FTRACK_TASKID', os.getenv('FTRACK_SHOTID'))
+            QtGui.QApplication.activeWindow()
         )
-    
+
         self.setupUI()
 
         self.setStyleSheet(style)
         self.exec_()
 
     def setupUI(self):
-        css_task_global = """
-        QFrame { padding: 3px; border-radius: 4px;
-                 background: #252525; color: #FFF; }
-        """
-        main_layout = QtGui.QVBoxLayout()
-        self.setLayout(main_layout)
-        self.header = HeaderWidget()
-        main_layout.addWidget(self.header)
-
-        layout_buttons = QtGui.QHBoxLayout()
-        layout_buttons.setSpacing(10)
-        spacer = QtGui.QSpacerItem( 40, 20,
-                                    QtGui.QSizePolicy.Expanding,
-                                    QtGui.QSizePolicy.Minimum )
-        
-        self._save_btn = QtGui.QPushButton("Save", self)
-        self._cancel_btn = QtGui.QPushButton("Cancel", self)
-
-        layout_buttons.addItem(spacer)
-        layout_buttons.addWidget(self._cancel_btn)
-        layout_buttons.addWidget(self._save_btn)
-
         css_label = "color: #c3cfa4; font-size: 12px; font-weight: bold;"
-
-
-        right_widget = QtGui.QWidget()
-        right_layout = QtGui.QVBoxLayout(right_widget)
-        right_layout.setContentsMargins(5, 0, 0, 0)
+        
+        gizmo_widget = QtGui.QWidget()
+        gizmo_layout = QtGui.QVBoxLayout(gizmo_widget)
+        gizmo_layout.setContentsMargins(5, 0, 0, 0)
 
         css_asset_global = """
             QFrame { padding: 3px; border-radius: 4px;
@@ -139,7 +111,7 @@ class GizmoPublisherDialog(QtGui.QDialog):
         asset_main_frame_layout.addWidget(self._asset_name)
         asset_main_frame_layout.addWidget(asset_version_lbl)
         asset_main_frame_layout.addWidget(self._asset_version)
-        right_layout.addWidget(asset_main_frame)
+        gizmo_layout.addWidget(asset_main_frame)
 
         file_layout = QtGui.QVBoxLayout()
         file_layout.setContentsMargins(0, 0, 0, 0)
@@ -148,15 +120,15 @@ class GizmoPublisherDialog(QtGui.QDialog):
         browser_layout.setContentsMargins(0, 0, 0, 0)
         browser_layout.setSpacing(8)
 
-        browser_label = QtGui.QLabel("Gizmo file", right_widget)
+        browser_label = QtGui.QLabel("Gizmo file", gizmo_widget)
         browser_edit_css = """
-    QLineEdit { border-radius: 4px; border: 1px solid #666;
-                background: #555; color: #000; }
-    """
-        self._browser_edit = QtGui.QLineEdit(right_widget)
+            QLineEdit { border-radius: 4px; border: 1px solid #666;
+                        background: #555; color: #000; }
+        """
+        self._browser_edit = QtGui.QLineEdit(gizmo_widget)
         self._browser_edit.setStyleSheet(browser_edit_css)
         self._browser_edit.textChanged.connect(self.set_gizmo_file)
-        completer = QtGui.QCompleter(right_widget)
+        completer = QtGui.QCompleter(gizmo_widget)
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
         completer.setCompletionMode(QtGui.QCompleter.InlineCompletion)
         dir = QtGui.QDirModel(completer)
@@ -164,7 +136,7 @@ class GizmoPublisherDialog(QtGui.QDialog):
             QtCore.QDir.Dirs | QtCore.QDir.NoDot | QtCore.QDir.NoDotDot)
         completer.setModel(dir)
         self._browser_edit.setCompleter(completer)
-        self._browser_btn = QtGui.QToolButton(right_widget)
+        self._browser_btn = QtGui.QToolButton(gizmo_widget)
         self._browser_btn.setText("...")
         self._browser_btn.clicked.connect(self._browse_gizmo)
         browser_layout.addWidget(browser_label)
@@ -172,18 +144,19 @@ class GizmoPublisherDialog(QtGui.QDialog):
         browser_layout.addWidget(self._browser_btn)
         file_layout.addItem(browser_layout)
 
-        self._gizmo_file_content = ScriptEditorWidget(right_widget)
+        self._gizmo_file_content = ScriptEditorWidget(gizmo_widget)
         file_layout.addWidget(self._gizmo_file_content)
         self._gizmo_file_content.file_dropped.connect(
             self._initiate_dropped_file)
-        right_layout.addItem(file_layout)
+        gizmo_layout.addItem(file_layout)
 
-        self._comment_widget = CommentWidget(right_widget)
+        self._comment_widget = CommentWidget(gizmo_widget)
         self._comment_widget.changed.connect(self._validate_gizmo)
-        right_layout.addWidget(self._comment_widget)
+        gizmo_layout.addWidget(self._comment_widget)
 
-        self.layout().addWidget(right_widget)
-        # self.addContentWidget(right_widget)
+        self._save_btn.clicked.connect(self._publish)
+
+        self.layout().addWidget(gizmo_widget)
         self.layout().addWidget(self._save_btn)
         self.layout().addWidget(self._cancel_btn)
 
@@ -212,6 +185,31 @@ class GizmoPublisherDialog(QtGui.QDialog):
 
             self._validate_asset_name()
             self._validate_gizmo()
+    
+    def _publish(self):
+        task = self.current_task
+        asset_name = self.asset_name
+        comment = self.comment
+        file_path = self.gizmo_path
+
+        task = self.current_task
+        parent = task.getParent()
+        asset_id = parent.createAsset(
+            name=asset_name,
+            assetType='nuke_gizmo'
+        ).getId()
+
+        asset = ftrack.Asset(asset_id)
+        version = asset.createVersion(comment=comment, taskid=task.getId())
+        version.createComponent(
+            name='gizmo',
+            path=file_path
+        )
+
+        result = version.publish()
+        if result:
+            message = 'Asset %s correctly published' % asset.getName()
+            self.header.setMessage(message, 'info')
 
     def _browse_gizmo(self):
         import nuke
@@ -379,3 +377,6 @@ validity of these layers before publishing the gizmos" % len(layers)
         
         else:
             self.header.dismissMessage()
+
+        if len(errors) == 0 and len(warnings) == 0 and len(self.comment) > 0:
+            self._save_btn.setEnabled(True)

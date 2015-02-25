@@ -4,9 +4,7 @@ import ftrack
 from PySide import QtGui, QtCore
 import os
 
-from generic.base_dialog import BaseDialog
-
-from images import image_dir
+from base_dialog import BaseDialog
 from FnAssetAPI import logging
 
 TYPE_DICT = {
@@ -20,11 +18,9 @@ TYPE_DICT = {
 }
 
 
-
-class BrowserDialog(QtGui.QDialog):
+class BrowserDialog(BaseDialog):
   def __init__(self, task=None, parent=None):
     super(BrowserDialog, self).__init__(parent)
-    self.setFTrackTitle("Browse to a task...")
     self.setupUI()
 
     self._projects_browsers = dict()
@@ -51,7 +47,6 @@ class BrowserDialog(QtGui.QDialog):
     self._location_cbbx.currentIndexChanged.connect(self.update_browser)
     location_layout.addWidget(location_lbl,0,0,1,1)
     location_layout.addWidget(self._location_cbbx,0,1,1,1)
-    self.addHeaderWidget(location_frame)
 
     main_widget = QtGui.QWidget(self)
     main_layout = QtGui.QHBoxLayout(main_widget)
@@ -79,8 +74,7 @@ class BrowserDialog(QtGui.QDialog):
     layout_content.setContentsMargins(0,0,0,0)
     layout_content.addLayout(self._stackLayout)
     main_layout.addWidget(content_widget)
-
-    self.addContentWidget(main_widget)
+    # self.layout().addLayout(main_layout)
 
     self._save_btn.setText("Open")
     self.set_enabled(False)
@@ -200,15 +194,15 @@ class TaskList(QtGui.QListWidget):
     super(TaskList, self).__init__(parent)
     self.setupUI()
 
-    self._icones_per_type_name = {
-      'Project' : os.path.join(image_dir, "project.png"),
-      'Sequence' : os.path.join(image_dir, "sequence.png"),
-      'Episode' : os.path.join(image_dir, "episode.png"),
-      'Build' : os.path.join(image_dir, "build_group.png"),
-      'Asset' : os.path.join(image_dir, "build.png"),
-      'Shot' : os.path.join(image_dir, "shot.png"),
-      'Task' : os.path.join(image_dir, "task.png")
-    }
+    # self._icones_per_type_name = {
+    #   'Project' : os.path.join(image_dir, "project.png"),
+    #   'Sequence' : os.path.join(image_dir, "sequence.png"),
+    #   'Episode' : os.path.join(image_dir, "episode.png"),
+    #   'Build' : os.path.join(image_dir, "build_group.png"),
+    #   'Asset' : os.path.join(image_dir, "build.png"),
+    #   'Shot' : os.path.join(image_dir, "shot.png"),
+    #   'Task' : os.path.join(image_dir, "task.png")
+    # }
 
     self._level = level
     self._element_per_item = dict()
@@ -257,9 +251,9 @@ class TaskList(QtGui.QListWidget):
 
       item_type = TYPE_DICT.get(item_type_id)
 
-      if item_type in self._icones_per_type_name.keys():
-        icon = QtGui.QIcon(self._icones_per_type_name[item_type])
-        item.setIcon(icon)
+      # if item_type in self._icones_per_type_name.keys():
+      #   icon = QtGui.QIcon(self._icones_per_type_name[item_type])
+      #   item.setIcon(icon)
 
       self.addItem(item)
 

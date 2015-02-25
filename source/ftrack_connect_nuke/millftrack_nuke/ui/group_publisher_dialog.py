@@ -302,3 +302,7 @@ class GroupPublisherDialog(BaseIODialog):
             self.set_group_warning("<br/><br/>".join(warnings))
         else:
             self.initiate_group_warning()
+
+        if len(warnings) == 0 and len(errors) == 0 :
+            self._save_btn.setEnabled(True)
+
