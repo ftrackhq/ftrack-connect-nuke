@@ -4,8 +4,6 @@
 from PySide import QtGui, QtCore, QtWebKit
 import re, os
 
-from ..images import image_dir
-
 from FnAssetAPI import logging
 
 
@@ -342,29 +340,29 @@ class ScriptEditorTreeView(QtGui.QTreeView):
   def __init__(self, parent=None):
     super(ScriptEditorTreeView, self).__init__(parent)
 
-    css_tree = """
-    QTreeView { border-top-right-radius: 4px;
-                border-top-left-radius: 4px;
-                background: #444; border: 1px solid #555; }
-    QTreeView::branch:has-siblings:!adjoins-item { background: transparent; }
-    QTreeView::branch:has-siblings:adjoins-item { background: transparent; }
-    QTreeView::branch:!has-children:!has-siblings:adjoins-item { background: transparent; }
-    QTreeView::branch:has-children:!has-siblings:closed,
-    QTreeView::branch:closed:has-children:has-siblings
-      { border-image: none;
-        image: url(""" + os.path.join(image_dir, "branch-closed.png") + """); }
-    QTreeView::branch:open:has-children:!has-siblings,
-    QTreeView::branch:open:has-children:has-siblings
-      { border-image: none;
-        image: url(""" + os.path.join(image_dir, "branch-open.png") + """); }
-    QScrollArea { padding: 3px; border: 0px; border-radius: 4px;
-                  background: #252525; }
-    QScrollBar { border: 0; border-radius: 6px;background-color: #333;
-                 margin: 1px; }
-    QScrollBar::handle { background: #222; border: 1px solid #111; }
-    QScrollBar::sub-line, QScrollBar::add-line { height: 0px; width: 0px; }
-    """
-    self.setStyleSheet(css_tree)
+    # css_tree = """
+    # QTreeView { border-top-right-radius: 4px;
+    #             border-top-left-radius: 4px;
+    #             background: #444; border: 1px solid #555; }
+    # QTreeView::branch:has-siblings:!adjoins-item { background: transparent; }
+    # QTreeView::branch:has-siblings:adjoins-item { background: transparent; }
+    # QTreeView::branch:!has-children:!has-siblings:adjoins-item { background: transparent; }
+    # QTreeView::branch:has-children:!has-siblings:closed,
+    # QTreeView::branch:closed:has-children:has-siblings
+    #   { border-image: none;
+    #     image: url(""" + os.path.join(image_dir, "branch-closed.png") + """); }
+    # QTreeView::branch:open:has-children:!has-siblings,
+    # QTreeView::branch:open:has-children:has-siblings
+    #   { border-image: none;
+    #     image: url(""" + os.path.join(image_dir, "branch-open.png") + """); }
+    # QScrollArea { padding: 3px; border: 0px; border-radius: 4px;
+    #               background: #252525; }
+    # QScrollBar { border: 0; border-radius: 6px;background-color: #333;
+    #              margin: 1px; }
+    # QScrollBar::handle { background: #222; border: 1px solid #111; }
+    # QScrollBar::sub-line, QScrollBar::add-line { height: 0px; width: 0px; }
+    # """
+    # self.setStyleSheet(css_tree)
 
     self.setAcceptDrops(True)
     self.setDragDropMode(QtGui.QAbstractItemView.DropOnly)

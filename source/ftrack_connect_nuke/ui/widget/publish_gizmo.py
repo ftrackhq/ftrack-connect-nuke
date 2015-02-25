@@ -7,11 +7,8 @@ import re
 import ftrack
 from FnAssetAPI import logging
 
-from generic.base_dialog import BaseIODialog
-
-from widgets.script_editor_widget import ScriptEditorWidget
-from widgets.comment_widget import CommentWidget
-from widgets.assets_tree import AssetsTree
+from script_editor_widget import ScriptEditorWidget
+from comment_widget import CommentWidget
 from ftrack_connect.ui.widget.header import HeaderWidget
 
 
@@ -75,8 +72,9 @@ class GizmoPublisherDialog(QtGui.QDialog):
         super(GizmoPublisherDialog, self).__init__(
             QtGui.QApplication.activeWindow())
 
-        self._current_scene = ftrack.Task(version_id)
-
+        self.current_task = ftrack.Task(
+            os.getenv('FTRACK_TASKID', os.getenv('FTRACK_SHOTID'))
+        )
     
         self.setupUI()
 
@@ -371,10 +369,13 @@ validity of these layers before publishing the gizmos" % len(layers)
         if len(errors) == 0 and len(self.comment) == 0:
             self.header.setMessage("You must comment before publishing", 'error')
 
-        if len(errors) > 0:
+        elif len(errors) > 0:
             error = "<br/><br/>".join(errors)
             self.header.setMessage(error, 'error')
-
-        if len(warnings) > 0:
+        
+        elif len(warnings) > 0:
             error = "<br/><br/>".join(warnings)
             self.header.setMessage(error, 'warning')
+        
+        else:
+            self.header.dismissMessage()

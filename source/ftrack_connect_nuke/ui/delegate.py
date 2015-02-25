@@ -19,8 +19,9 @@ class Delegate(delegate.Delegate):
         from nukescripts import panels
         from ftrack_connect_nuke.connector import Connector
         from ftrack_connect_nuke.millftrack_nuke.assets_manager import AssetsManager
-        from ftrack_connect_nuke.millftrack_nuke.ui.gizmo_publisher_dialog import GizmoPublisherDialog
-        
+
+        from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
+
         Connector.registerAssets()
 
         # wrappers for initializing the widgets with the correct connector object
@@ -76,9 +77,9 @@ class Delegate(delegate.Delegate):
 
         # add new entries in the ftrack menu
         ftrackMenu.addSeparator()
-        ftrackMenu.addCommand('Publish a gizmo...', millAssetManager.publish_gizmo_panel)
-        ftrackMenu.addCommand('Publish script...', millAssetManager.publish_script_panel)
-        ftrackMenu.addCommand('Load script...', millAssetManager.open_script_panel)
+        ftrackMenu.addCommand('Publish a gizmo...', GizmoPublisherDialog)
+        # ftrackMenu.addCommand('Publish script...', millAssetManager.publish_script_panel)
+        # ftrackMenu.addCommand('Load script...', millAssetManager.open_script_panel)
 
         # ftrackMenu.addCommand('Publish a group of nodes...', millAssetManager.publish_group_panel)
 
