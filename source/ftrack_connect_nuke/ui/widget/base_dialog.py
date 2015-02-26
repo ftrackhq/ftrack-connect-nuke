@@ -55,11 +55,12 @@ class BaseDialog(QtGui.QDialog):
                                     QtGui.QSizePolicy.Minimum )
     
         layout_buttons.addItem(spacer)
-        layout_buttons.addWidget(self._cancel_btn)
-        layout_buttons.addWidget(self._save_btn)
 
         self.content_layout = QtGui.QVBoxLayout()
         self.layout().addLayout(self.content_layout)
+
+        # layout_buttons.addWidget(self._cancel_btn)
+        # layout_buttons.addWidget(self._save_btn)
 
 
     def _get_task_parents(self, task):
