@@ -12,6 +12,7 @@ from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
 from ftrack_connect_nuke import connector
 
 from ftrack_connect_nuke.millftrack_nuke.ui.browser_dialog import BrowserDialog
+from ftrack_connect.ui.theme import applyTheme
 
 class TableKnob():
     def makeUI(self):
@@ -46,28 +47,30 @@ class FtrackPublishLocale(specifications.LocaleSpecification):
 class BrowseKnob():
     def makeUI(self):
         self.mainWidget = QtGui.QWidget()
+        applyTheme(self.mainWidget, 'integration')
+
         self.mainWidget.setContentsMargins(0, 0, 0, 0)
         self.hlayout = QtGui.QHBoxLayout()
         self.hlayout.setContentsMargins(0, 0, 0, 0)
         self.mainWidget.setLayout(self.hlayout)
-        
+
         task = ftrack.Task(os.environ['FTRACK_TASKID'])
         self._lineEdit = QtGui.QLineEdit()
         self._lineEdit.setText(HelpFunctions.getPath(task, slash=True))
         self.hlayout.addWidget(self._lineEdit)
-    
+
         self._browse = QtGui.QPushButton("Browse")
         self.hlayout.addWidget(self._browse)
-        
+
         QtCore.QObject.connect(self._browse, QtCore.SIGNAL('clicked()'), self.openBrowser)
-        
+
         self.targetTask = task.getEntityRef()
-                
+
         return self.mainWidget
-    
+
     def updateValue(self):
         pass
-    
+
     # def _get_task_parents(self, task):
     #     parents = [t.getName() for t in task.getParents()]
     #     parents.reverse()
@@ -97,9 +100,9 @@ class BrowseKnob():
 
             # FnAssetAPI.logging.info(obj)
             # FnAssetAPI.logging.info(self.targetTask)
-            
+
             self._lineEdit.setText(HelpFunctions.getPath(obj, slash=True))
-        
+
 
 class HeaderKnob():
     def makeUI(self):
