@@ -10,57 +10,7 @@ from FnAssetAPI import logging
 from script_editor_widget import ScriptEditorWidget
 from comment_widget import CommentWidget
 from base_dialog import BaseDialog
-
-style = '''
-/*consistent base widgets size*/
-QSpinBox {
-  max-height: 25px;
-  min-height: 25px;
-}
-
-QComboBox {
-  max-height: 25px;
-  min-height: 25px;
-}
-
-QPushButton {
-  max-height: 25px;
-  min-height: 25px;
-}
-
-
-QLineEdit {
-  max-height: 25px;
-  min-height: 25px;
-}
-
-/*header messages*/
-QLabel#ftrack-header-message-error {
-  background-color: rgba(255,0,0, 200);
-  padding: 10px;
-  border: none;
-}
-
-QLabel#ftrack-header-message-info {
-  background-color: rgba(50, 147, 198, 200);
-  padding: 10px;
-  border: none;
-}
-
-QLabel#ftrack-header-message-warning {
-  background-color: rgba(238, 99, 76, 200);
-  padding: 10px;
-  border: none;
-}
-
-# QLabel#ftrac-user-icon {
-#     border-radius: 10px;
-#     width: 35;
-#     height: 35;
-# }
-
-'''
-
+from ftrack_connect.ui.theme import applyTheme
 
 
 class GizmoPublisherDialog(BaseDialog):
@@ -70,15 +20,14 @@ class GizmoPublisherDialog(BaseDialog):
         super(GizmoPublisherDialog, self).__init__(
             QtGui.QApplication.activeWindow()
         )
-
-        self.setStyleSheet(style)
+        applyTheme(self, 'integration')
         self.setupUI()
         self.exec_()
 
     def setupUI(self):
         super(GizmoPublisherDialog, self).setupUI()
         css_label = "color: #c3cfa4; font-size: 12px; font-weight: bold;"
-        
+
         gizmo_widget = QtGui.QWidget()
         gizmo_layout = QtGui.QVBoxLayout(gizmo_widget)
         gizmo_layout.setContentsMargins(5, 0, 0, 0)
@@ -186,7 +135,7 @@ class GizmoPublisherDialog(BaseDialog):
 
             self._validate_asset_name()
             self._validate_gizmo()
-    
+
     def _publish(self):
         task = self.current_task
         asset_name = self.asset_name
@@ -371,11 +320,11 @@ validity of these layers before publishing the gizmos" % len(layers)
         elif len(errors) > 0:
             error = "<br/><br/>".join(errors)
             self.header.setMessage(error, 'error')
-        
+
         elif len(warnings) > 0:
             error = "<br/><br/>".join(warnings)
             self.header.setMessage(error, 'warning')
-        
+
         else:
             self.header.dismissMessage()
 
