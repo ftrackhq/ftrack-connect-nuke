@@ -2,6 +2,7 @@ import os
 import ftrack
 from PySide import QtGui, QtCore
 from ftrack_connect.ui.widget.header import HeaderWidget
+from ftrack_connect_nuke.millftrack_nuke.controller import Controller
 
 class BaseDialog(QtGui.QDialog):
     def __init__(self, parent=None, disable_tasks_list=False):
@@ -11,6 +12,7 @@ class BaseDialog(QtGui.QDialog):
         )
         self._tasks_dict = {}
         self.disable_tasks_list = disable_tasks_list
+        self._user = ftrack.User(os.getenv('LOGNAME'))
 
     def setupUI(self):
         css_task_global = """
@@ -49,11 +51,11 @@ class BaseDialog(QtGui.QDialog):
         self._cancel_btn = QtGui.QPushButton("Cancel", self)
 
         self._cancel_btn.clicked.connect(self.reject)
-        
+
         spacer = QtGui.QSpacerItem( 40, 20,
                                     QtGui.QSizePolicy.Expanding,
                                     QtGui.QSizePolicy.Minimum )
-    
+
         layout_buttons.addItem(spacer)
 
         self.content_layout = QtGui.QVBoxLayout()
@@ -61,6 +63,16 @@ class BaseDialog(QtGui.QDialog):
 
         # layout_buttons.addWidget(self._cancel_btn)
         # layout_buttons.addWidget(self._save_btn)
+
+    def _get_tasks(self):
+        for task in self._user.getTasks():
+            parent = self._get_task_parents(task)
+            self._tasks_dict[parent] = task
+
+        if self.current_task != None:
+          current_parents = self._get_task_parents(self.current_task.getId())
+          if current_parents not in self._tasks_dict.keys():
+            self._tasks_dict[current_parents] = self.current_task
 
 
     def _get_task_parents(self, task):
@@ -76,7 +88,7 @@ class BaseDialog(QtGui.QDialog):
 
         browser = BrowserDialog(self.current_task, self)
         if browser.result():
-            self.set_task(browser.task)    
+            self.set_task(browser.task)
 
     def update_task_global(self):
         if self.current_task == None:
@@ -104,3 +116,13 @@ class BaseDialog(QtGui.QDialog):
             self._tasks_dict[parents] = task
             self._tasks_cbbx.insertItem(0,parents)
             self._tasks_cbbx.setCurrentIndex(0)
+
+    def initiate_tasks(self):
+        self._tasks_dict = dict()
+
+        # self.set_loading_mode(True)
+
+        # Thread that...
+        self._controller = Controller(self._get_tasks)
+        self._controller.completed.connect(self.set_tasks)
+        self._controller.start()

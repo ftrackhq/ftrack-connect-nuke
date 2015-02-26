@@ -18,7 +18,10 @@ class Delegate(delegate.Delegate):
         import legacy
         from nukescripts import panels
         from ftrack_connect_nuke.connector import Connector
+
         from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
+
+        from ftrack_connect_nuke.ui.widget.publish_script import ScriptPublisherDialog
 
         Connector.registerAssets()
 
@@ -45,7 +48,7 @@ class Delegate(delegate.Delegate):
 
         panels.registerWidgetAsPanel(
             "%s.%s" % (__name__, 'ftrackImportAssetClass'),
-            'ftrackImportAsset', 
+            'ftrackImportAsset',
             'ftrackDialogs.ftrackImportAssetDialog'
         )
         ftrackMenu.addCommand(
@@ -54,13 +57,13 @@ class Delegate(delegate.Delegate):
             'panel = nukescripts.restorePanel("ftrackDialogs.ftrackImportAssetDialog");'
             'panel.addToPane(pane)'
         )
-        
+
         globals()['ftrackAssetManagerDialogClass'] = wrapAssetManagerDialog
 
         # Create the asset manager dialog entry in the menu
         panels.registerWidgetAsPanel(
             "%s.%s" % (__name__, 'ftrackAssetManagerDialogClass'),
-            'ftrackAssetManager', 
+            'ftrackAssetManager',
             'ftrackDialogs.ftrackAssetManagerDialog'
         )
         ftrackMenu.addCommand(
@@ -74,7 +77,7 @@ class Delegate(delegate.Delegate):
         # add new entries in the ftrack menu
         ftrackMenu.addSeparator()
         ftrackMenu.addCommand('Publish a gizmo...', GizmoPublisherDialog)
-        # ftrackMenu.addCommand('Publish script...', millAssetManager.publish_script_panel)
+        ftrackMenu.addCommand('Publish script...', ScriptPublisherDialog)
         # ftrackMenu.addCommand('Load script...', millAssetManager.open_script_panel)
 
         # ftrackMenu.addCommand('Publish a group of nodes...', millAssetManager.publish_group_panel)
@@ -105,11 +108,11 @@ class Delegate(delegate.Delegate):
         fn_open_publish = file_menu.removeItem("Open Published Script...")
         fn_publish_new = file_menu.removeItem("Publish Script to a New Version")
 
-        
+
     def populateUI(self, uiElement, specification, context):
         super(Delegate, self).populateUI(uiElement, specification, context)
 
         host = FnAssetAPI.SessionManager.currentSession().getHost()
 
-        if host and host.getIdentifier() == 'uk.co.foundry.nuke': 
+        if host and host.getIdentifier() == 'uk.co.foundry.nuke':
             self.populate_ftrack()
