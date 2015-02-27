@@ -512,7 +512,7 @@ class SnapshotsEditButtons(QtGui.QWidget):
                 hover_background = "rgba(255,255,255,80)"
             if icon_name != None:
                 btn_css = "background: url(%s) rgba(255,255,255,50); " % self._icones[
-                    icon_name + "_ts"]
+                    icon_name]
                 btn_css += "border-radius: 5px; border: none;"
                 btn_hover_css = "background: url(%s) %s;" % (
                     self._icones[icon_name], hover_background)
