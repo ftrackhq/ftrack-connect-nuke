@@ -59,7 +59,7 @@ class BaseDialog(QtGui.QDialog):
         layout_buttons.addItem(spacer)
 
         self.content_layout = QtGui.QVBoxLayout()
-        self.layout().addLayout(self.content_layout)
+        main_layout.addLayout(self.content_layout)
 
         # layout_buttons.addWidget(self._cancel_btn)
         # layout_buttons.addWidget(self._save_btn)
