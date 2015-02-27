@@ -5,6 +5,7 @@ from PySide import QtGui, QtCore
 import ftrack
 import datetime
 # from ...ftrack_io.asset import N_AssetFactory, AssetVersionIO
+from ftrack_connect.ui import resource
 
 # from ..images import image_dir
 from ftrack_connect_nuke.millftrack_nuke.controller import Controller
@@ -841,7 +842,7 @@ class AssetsTree(QtGui.QTreeView):
             mime_data.setData(
                 "text/plain", ":".join([id_ftrack, asset_name, version_id]))
 
-            pixmap = QtGui.QPixmap(os.path.join(image_dir, "drag.png"))
+            pixmap = QtGui.QPixmap('ftrack/image/studio/drag')
             drag.setPixmap(pixmap)
 
             drag.setMimeData(mime_data)

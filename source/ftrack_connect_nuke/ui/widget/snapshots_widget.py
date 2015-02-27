@@ -5,7 +5,7 @@ from PySide import QtGui, QtCore, QtOpenGL
 
 from ftrack_connect_nuke.millftrack_nuke import utilities
 
-# from ..images import image_dir
+from ftrack_connect.ui import resource
 
 import os
 
@@ -230,10 +230,9 @@ class SnapshotsView(QtGui.QGraphicsView):
 
         self._drawings = []
 
-        # image_pen = os.path.join(image_dir, "pencil.png")
-        # image_pen_px = QtGui.QPixmap(image_pen)
-        # image_pen_px.setMask(image_pen_px.mask())
-        # self._image_pen_cursor = QtGui.QCursor(image_pen_px)
+        image_pen_px = QtGui.QPixmap(':ftrack/image/studio/pencil')
+        image_pen_px.setMask(image_pen_px.mask())
+        self._image_pen_cursor = QtGui.QCursor(image_pen_px)
 
         self._pen_color = QtCore.Qt.red
 
@@ -349,16 +348,12 @@ class SnapshotsEditButtons(QtGui.QWidget):
         self._drawing_mode = drawing_mode
         self._handscroll_mode = handscroll_mode
         self._icones = {}
-        # self._icones = {
-        #     'fitscreen': os.path.join(image_dir, "fit_screen.png"),
-        #     'fitscreen_ts': os.path.join(image_dir, "fit_screen_trans.png"),
-        #     'move': os.path.join(image_dir, "handscroll.png"),
-        #     'move_ts': os.path.join(image_dir, "handscroll_trans.png"),
-        #     'draw': os.path.join(image_dir, "pencil.png"),
-        #     'draw_ts': os.path.join(image_dir, "pencil_trans.png"),
-        #     'eraser': os.path.join(image_dir, "eraser.png"),
-        #     'eraser_ts': os.path.join(image_dir, "eraser_trans.png"),
-        # }
+        self._icones = {
+            'fitscreen': ':ftrack/image/studio/fit-screen',
+            'move': ':ftrack/image/studio/hand-scroll',
+            'draw': ':ftrack/image/studio/pencil',
+            'eraser': ':ftrack/image/studio/eraser',
+        }
 
         self.setupUI(parent)
 
@@ -366,23 +361,23 @@ class SnapshotsEditButtons(QtGui.QWidget):
         self._refresh = QtGui.QToolButton(parent)
         self._refresh.setMaximumSize(QtCore.QSize(45, 15))
         button_css_refresh = """
-      QToolButton{background:transparent; border:none; color: rgba(255,255,255,80);}
-      QToolButton:hover{color: rgba(255,255,255,200);}
-      QToolButton:pressed{color: rgba(255,255,255,255);}
-    """
+          QToolButton{background:transparent; border:none; color: rgba(255,255,255,80);}
+          QToolButton:hover{color: rgba(255,255,255,200);}
+          QToolButton:pressed{color: rgba(255,255,255,255);}
+        """
         self._refresh.setStyleSheet(button_css_refresh)
         self._refresh.move(parent.width() - self._refresh.width() - 10, 5)
         self._refresh.setText("refresh")
         self._refresh.clicked.connect(self.refresh)
 
         button_css = """
-      QToolButton{ background:rgba(255,255,255,50); border:none;
-                   color: rgba(255,255,255,80); border-radius: 5px; }
-      QToolButton:hover{ background:rgba(255,255,255,120);
-                         color: rgba(255,255,255,200); }
-      QToolButton:pressed{ background:rgba(255,255,255,80);
-                           color: rgba(255,255,255,255); }
-    """
+          QToolButton{ background:rgba(255,255,255,50); border:none;
+                       color: rgba(255,255,255,80); border-radius: 5px; }
+          QToolButton:hover{ background:rgba(255,255,255,120);
+                             color: rgba(255,255,255,200); }
+          QToolButton:pressed{ background:rgba(255,255,255,80);
+                               color: rgba(255,255,255,255); }
+        """
 
         # Colors buttons
 
@@ -515,19 +510,20 @@ class SnapshotsEditButtons(QtGui.QWidget):
                 hover_background = "rgba(230,120,120,150)"
             else:
                 hover_background = "rgba(255,255,255,80)"
-            # if icon_name != None:
-            #     btn_css = "background: url(%s) rgba(255,255,255,50); " % self._icones[
-            #         icon_name + "_ts"]
-            #     btn_css += "border-radius: 5px; border: none;"
-            #     btn_hover_css = "background: url(%s) %s;" % (
-            #         self._icones[icon_name], hover_background)
-            # else:
-            #     btn_css = "background: rgba(255,255,255,50); "
-            #     btn_css += "border-radius: 5px; border: none;"
-            #     btn_hover_css = "background: %s;" % hover_background
-            # global_css = "QToolButton{%s} QToolButton:hover{%s}" % (
-            #     btn_css, btn_hover_css)
-            # button.setStyleSheet(global_css)
+            if icon_name != None:
+                btn_css = "background: url(%s) rgba(255,255,255,50); " % self._icones[
+                    icon_name + "_ts"]
+                btn_css += "border-radius: 5px; border: none;"
+                btn_hover_css = "background: url(%s) %s;" % (
+                    self._icones[icon_name], hover_background)
+            else:
+                btn_css = "background: rgba(255,255,255,50); "
+                btn_css += "border-radius: 5px; border: none;"
+                btn_hover_css = "background: %s;" % hover_background
+            global_css = "QToolButton{%s} QToolButton:hover{%s}" % (
+                btn_css, btn_hover_css)
+            button.setStyleSheet(global_css)
+
         button.setIconSize(QtCore.QSize(18, 18))
 
     def set_drawing_mode(self, bool_value):
