@@ -31,7 +31,7 @@ class BrowserDialog(BaseDialog):
 
     if task != None:
       self.set_task(task)
-    
+
     self.exec_()
 
   def setupUI(self):
@@ -63,7 +63,7 @@ class BrowserDialog(BaseDialog):
         QFrame { padding: 3px; border-radius: 4px; background: #252525; }
         QLabel { padding: 0px; background: none; font-size: 13px; }
     """
-    
+
     project_frame.setStyleSheet(css_project)
     projects_layout = QtGui.QVBoxLayout(project_frame)
     projects_lbl = QtGui.QLabel("PROJECTS", project_frame)
@@ -81,7 +81,7 @@ class BrowserDialog(BaseDialog):
     layout_content.addLayout(self._stackLayout)
     main_layout.addWidget(content_widget)
     self.main_container_layout.addWidget(main_widget)
-    
+
     # self.main_container_layout.addWidget(self._save_btn)
 
     self._save_btn.setText("Open")
@@ -203,15 +203,15 @@ class TaskList(QtGui.QListWidget):
     super(TaskList, self).__init__(parent)
     self.setupUI()
 
-    # self._icones_per_type_name = {
-    #   'Project' : os.path.join(image_dir, "project.png"),
-    #   'Sequence' : os.path.join(image_dir, "sequence.png"),
-    #   'Episode' : os.path.join(image_dir, "episode.png"),
-    #   'Build' : os.path.join(image_dir, "build_group.png"),
-    #   'Asset' : os.path.join(image_dir, "build.png"),
-    #   'Shot' : os.path.join(image_dir, "shot.png"),
-    #   'Task' : os.path.join(image_dir, "task.png")
-    # }
+    self._icones_per_type_name = {
+      'Project' : ':ftrack/image/studio/home',
+      'Sequence' : ':ftrack/image/studio/folder',
+      'Episode' : ':ftrack/image/studio/episode',
+      'Build' : ':ftrack/image/studio/episode',
+      'Asset' :  ':ftrack/image/studio/episode',
+      'Shot' :  ':ftrack/image/studio/shot',
+      'Task' :  ':ftrack/image/studio/task',
+    }
 
     self._level = level
     self._element_per_item = dict()
@@ -251,8 +251,8 @@ class TaskList(QtGui.QListWidget):
     for child in list_children:
       self._element_per_item[child.getName()] = child
       item = QtGui.QListWidgetItem(child.getName(), self)
-    
-      # TODO: FIX ICONS FOR BROWSER 
+
+      # TODO: FIX ICONS FOR BROWSER
       try:
         item_type_id = child.get('object_typeid')
       except:
@@ -260,9 +260,9 @@ class TaskList(QtGui.QListWidget):
 
       item_type = TYPE_DICT.get(item_type_id)
 
-      # if item_type in self._icones_per_type_name.keys():
-      #   icon = QtGui.QIcon(self._icones_per_type_name[item_type])
-      #   item.setIcon(icon)
+      if item_type in self._icones_per_type_name.keys():
+        icon = QtGui.QIcon(self._icones_per_type_name[item_type])
+        item.setIcon(icon)
 
       self.addItem(item)
 
