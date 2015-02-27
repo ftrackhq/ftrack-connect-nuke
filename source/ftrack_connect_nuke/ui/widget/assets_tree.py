@@ -687,7 +687,11 @@ class AssetItem(TreeItem):
         self.setData(self._asset_version.get('comment'), self.comment_role)
         # self.setData(self._asset_version.asset.locker != None, self.is_locked_role)
         # self.setData(self._asset_version.is_available, self.is_available_role)
-        location = self._asset_version.getComponent('scene').getLocation().getName()
+        location = self._asset_version.getComponent('scene').getLocation()
+        if location:
+            location = location.getName()
+        else:
+            location = 'unmanaged'
         self.setData([location], self.location_role)
 
         # if not self._asset_version.is_available:

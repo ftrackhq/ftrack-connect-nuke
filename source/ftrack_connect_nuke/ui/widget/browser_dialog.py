@@ -51,7 +51,7 @@ class BrowserDialog(BaseDialog):
     self._location_cbbx.currentIndexChanged.connect(self.update_browser)
     location_layout.addWidget(location_lbl)
     location_layout.addWidget(self._location_cbbx)
-    self.layout().addWidget(location_frame)
+    self.main_container_layout.addWidget(location_frame)
 
     main_widget = QtGui.QWidget(self)
     main_layout = QtGui.QHBoxLayout(main_widget)
@@ -80,13 +80,14 @@ class BrowserDialog(BaseDialog):
     layout_content.setContentsMargins(0,0,0,0)
     layout_content.addLayout(self._stackLayout)
     main_layout.addWidget(content_widget)
-    self.layout().addWidget(main_widget)
+    self.main_container_layout.addWidget(main_widget)
     
-    self.layout().addWidget(self._save_btn)
+    # self.main_container_layout.addWidget(self._save_btn)
 
     self._save_btn.setText("Open")
     self._cancel_btn.setVisible(False)
     self.set_enabled(False)
+
 
   @property
   def task(self):
