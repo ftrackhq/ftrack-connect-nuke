@@ -5,7 +5,6 @@ from ftrack_connect.ui.widget.header import HeaderWidget
 from ftrack_connect_nuke.millftrack_nuke.controller import Controller
 from ftrack_connect.ui.widget import overlay as _overlay
 
-
 class BaseDialog(QtGui.QDialog):
     def __init__(self, parent=None, disable_tasks_list=False):
         super(BaseDialog, self).__init__(parent=parent)

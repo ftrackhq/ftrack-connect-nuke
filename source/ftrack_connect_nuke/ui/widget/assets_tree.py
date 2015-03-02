@@ -1,21 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-from PySide import QtGui, QtCore
-import ftrack
-import datetime
-# from ...ftrack_io.asset import N_AssetFactory, AssetVersionIO
-from ftrack_connect.ui import resource
-
-# from ..images import image_dir
-from ftrack_connect_nuke.millftrack_nuke.controller import Controller
-
 import os
 import re
+import datetime
+import urllib
 
+from PySide import QtGui, QtCore
+from ftrack_connect_nuke.millftrack_nuke.controller import Controller
+
+import ftrack
+
+from ftrack_connect.ui import resource
 from FnAssetAPI import logging
-
-from ftrack_connect_nuke.millftrack_nuke import utilities
 
 
 ###############################################################################
@@ -62,19 +58,6 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
         self._btn_color = QtGui.QColor(255, 255, 255, 80)
         self._btn_color_hover = QtGui.QColor(255, 255, 255, 200)
         self._btn_color_pressed = QtGui.QColor(255, 255, 255, 255)
-
-        # Pixmaps...
-        # self._background_not_available = QtGui.QPixmap(
-        #     os.path.join(image_dir, "asset_unavail.png"))
-        # self._background_child_not_available = QtGui.QPixmap(
-        #     os.path.join(image_dir, "version_unavail.png"))
-
-        # self._thumnbail_default = utilities.get_url_file(
-        #     os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
-        # )
-
-        # self._icon_locked = QtGui.QPixmap(
-        #     os.path.join(image_dir, "locked.png"))
 
         # Flags...
         self._comment_flags = QtCore.Qt.TextWordWrap | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
@@ -499,7 +482,7 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
         return (r_comment, r_comment_text)
 
     def _format_date(self, date):
-        time = utilities.current_time() - date
+        time = datetime.datetime.now() - date
         second_diff = time.seconds
         day_diff = time.days
         if day_diff == 0:
@@ -621,9 +604,9 @@ class TreeItem(QtGui.QStandardItem):
 
         self.setEditable(False)
 
-        self._thumnbail_default = utilities.get_url_file(
-            os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
-        )
+        self._thumnbail_default = QtGui.QImage()
+        default_thumb = os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
+        self._thumnbail_default.loadFromData(urllib.urlopen(default_thumb).read())
 
         # initiate data
         self.setData(None, self.asset_version_role)
@@ -700,7 +683,8 @@ class AssetItem(TreeItem):
 
         thumbnail = self._asset_version.getThumbnail()
         if thumbnail:
-            image_path = utilities.get_url_file(thumbnail)
+            image_path = QtGui.QImage()
+            image_path.loadFromData(urllib.urlopen(thumbnail).read())
         else:
             image_path = self._thumnbail_default
 
