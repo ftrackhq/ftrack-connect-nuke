@@ -3,7 +3,7 @@
 
 from PySide import QtGui
 import ftrack
-
+import os
 from base_dialog import BaseDialog
 from task_widgets import TaskWidget
 from scene_widgets import SceneVersionWidget
@@ -86,7 +86,6 @@ class ScriptOpenerDialog(BaseDialog):
         if scene_version is None:
             self._scene_version_widget.set_empty()
             self.set_enabled(False)
-
         else:
             self._scene_version_widget.set_scene_version(scene_version)
             self._validate(scene_version)
@@ -95,7 +94,6 @@ class ScriptOpenerDialog(BaseDialog):
         self._scene_version_widget.set_empty()
 
     def _validate(self, scene_version=None):
-
         self._validate_task()
         error = None
 
@@ -107,9 +105,17 @@ class ScriptOpenerDialog(BaseDialog):
 
         elif scene_version == None:
             self.set_enabled(False)
+        else:
+            self.set_enabled(True)
 
     def load_scene(self):
+        import nuke
         current_scene_version = self.current_scene_version
         path = current_scene_version.getComponent(name='scene').getFilesystemPath()
+        if not os.path.exists(path):
+            self.header.setMessage('file %s does not exist!', 'error')
+            return
         nuke.nodePaste(path)
-        self.setMessage('Asset %s loaded' % current_scene_version.getName() , 'info')
+        asset_name = current_scene_version.getParent().getName()
+        asset_version = current_scene_version.get('version')
+        self.header.setMessage('Asset %s version %s loaded.' % (asset_name, asset_version) , 'info')
