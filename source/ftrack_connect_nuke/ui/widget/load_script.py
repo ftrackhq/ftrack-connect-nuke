@@ -70,6 +70,7 @@ class ScriptOpenerDialog(BaseDialog):
 
         self._save_btn.setText("Open script")
         self._save_btn.setMinimumWidth(150)
+        self._save_btn.clicked.connect(self.load_scene)
 
     @property
     def current_scene_version(self):
@@ -90,8 +91,6 @@ class ScriptOpenerDialog(BaseDialog):
             self._scene_version_widget.set_empty()
             self.set_enabled(False)
 
-        # elif not scene_version.is_being_cached:
-        # logging.debug(scene_version.name)
         else:
             self._scene_version_widget.set_scene_version(scene_version)
             self.validate(scene_version)
@@ -100,12 +99,8 @@ class ScriptOpenerDialog(BaseDialog):
         self._scene_version_widget.set_empty()
 
     def validate(self, scene_version=None):
-        # self.initiate_warning_box()
-        # self.initiate_error_box()
 
         self._validate_task()
-
-        # Error check
         error = None
 
         if self.current_task == None:
@@ -117,11 +112,8 @@ class ScriptOpenerDialog(BaseDialog):
         elif scene_version == None:
             self.set_enabled(False)
 
-        elif self._scene_version_widget.is_being_loaded():
-            self.set_enabled(False)
-
-        elif self._scene_version_widget.is_error():
-            self.set_enabled(False)
-
-        elif self._scene_version_widget.is_locked():
-            self.set_enabled(False)
+    def load_scene(self):
+        current_scene_version = self.current_scene_version
+        path = current_scene_version.getComponent(name='scene').getFilesystemPath()
+        nuke.nodePaste(path)
+        self.setMessage('Asset %s loaded' % current_scene_version.getName() , 'info')
