@@ -26,7 +26,7 @@ class Delegate(delegate.Delegate):
         from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
 
         from ftrack_connect_nuke.ui.widget.publish_script import ScriptPublisherDialog
-
+        from ftrack_connect_nuke.ui.widget.load_script import ScriptOpenerDialog
         Connector.registerAssets()
 
         # wrappers for initializing the widgets with the correct connector object
@@ -109,7 +109,7 @@ class Delegate(delegate.Delegate):
         ftrackMenu.addSeparator()
         ftrackMenu.addCommand('Publish a gizmo...', GizmoPublisherDialog)
         ftrackMenu.addCommand('Publish script...', ScriptPublisherDialog)
-        # ftrackMenu.addCommand('Load script...', millAssetManager.open_script_panel)
+        ftrackMenu.addCommand('Load script...', ScriptOpenerDialog)
 
         # ftrackMenu.addCommand('Publish a group of nodes...', millAssetManager.publish_group_panel)
 
@@ -134,10 +134,10 @@ class Delegate(delegate.Delegate):
         # file_menu.addCommand('FTrack - Publish a gizmo...', millAssetManager.publish_gizmo_panel, index=8)
         # file_menu.addSeparator(index=8)
 
-        # remove foundy ones
-        fn_publish = file_menu.removeItem("Publish Script...")
-        fn_open_publish = file_menu.removeItem("Open Published Script...")
-        fn_publish_new = file_menu.removeItem("Publish Script to a New Version")
+        # # remove foundy ones
+        # fn_publish = file_menu.removeItem("Publish Script...")
+        # fn_open_publish = file_menu.removeItem("Open Published Script...")
+        # fn_publish_new = file_menu.removeItem("Publish Script to a New Version")
 
 
     def populateUI(self, uiElement, specification, context):
