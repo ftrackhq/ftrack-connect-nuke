@@ -134,10 +134,10 @@ class Delegate(delegate.Delegate):
         # file_menu.addCommand('FTrack - Publish a gizmo...', millAssetManager.publish_gizmo_panel, index=8)
         # file_menu.addSeparator(index=8)
 
-        # remove foundy ones
-        fn_publish = file_menu.removeItem("Publish Script...")
-        fn_open_publish = file_menu.removeItem("Open Published Script...")
-        fn_publish_new = file_menu.removeItem("Publish Script to a New Version")
+        # # remove foundy ones
+        # fn_publish = file_menu.removeItem("Publish Script...")
+        # fn_open_publish = file_menu.removeItem("Open Published Script...")
+        # fn_publish_new = file_menu.removeItem("Publish Script to a New Version")
 
 
     def populateUI(self, uiElement, specification, context):
