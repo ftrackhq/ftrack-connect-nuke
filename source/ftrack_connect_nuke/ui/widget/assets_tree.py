@@ -854,13 +854,9 @@ class AssetsTree(QtGui.QTreeView):
         self.initiate()
 
         # Thread that...
-        self._controller = Controller(self._get_versions, args=(assets,))
-        self._controller.completed.connect(self.set_assets)
-        self._controller.completed.connect(
-            lambda: self.update_display(asset_types, filter))
-        self._controller.start()
-
-        self.setCursor(QtCore.Qt.WaitCursor)
+        self._get_versions(assets)
+        self.set_assets()
+        self.update_display(asset_types, filter)
 
     def _get_versions(self, assets):
         self._assets.clear()

@@ -4,6 +4,8 @@ from PySide import QtGui, QtCore
 from ftrack_connect.ui.widget.header import HeaderWidget
 from ftrack_connect_nuke.ui.controller import Controller
 from ftrack_connect.ui.widget import overlay as _overlay
+from ftrack_connect.worker import Worker
+
 
 class BaseDialog(QtGui.QDialog):
     def __init__(self, parent=None, disable_tasks_list=False):

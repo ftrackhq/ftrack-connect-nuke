@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import ftrack
-from PySide import QtGui, QtCore, QtWebKit
-import os
-import datetime
+from PySide import QtGui, QtCore
 
 from assets_tree import AssetsTree
 from ftrack_connect_nuke.connector.nukeassets import NukeSceneAsset
@@ -11,83 +9,10 @@ from ftrack_connect_nuke.connector.nukeassets import NukeSceneAsset
 from status_widget import StatusWidget
 
 from ftrack_connect_nuke.ui.controller import Controller
+from ftrack_connect_nuke.ui.widget.base_dialog import LoadingOverlay
+from ftrack_connect.worker import Worker
 
 from FnAssetAPI import logging
-
-import nuke
-from base_dialog import BaseDialog
-
-
-class TaskManagerWidget(BaseDialog):
-
-    def __init__(self, parent=None):
-        super(TaskManagerWidget, self).__init__(parent)
-        self.setupUI()
-
-        nuke.addOnScriptLoad(self.refresh)
-        nuke.addOnScriptSave(self.refresh)
-
-        self.refresh()
-
-    def setupUI(self):
-        self.setMinimumWidth(400)
-
-        widget = QtGui.QWidget(self)
-        main_layout = QtGui.QVBoxLayout(widget)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(0)
-
-        self._webview = QtWebKit.QWebView()
-        self._webview_empty = QtWebKit.QWebView()
-
-        self._stackLayout = QtGui.QStackedLayout()
-        self._stackLayout.addWidget(self._webview)
-        self._stackLayout.addWidget(self._webview_empty)
-        main_layout.addLayout(self._stackLayout)
-
-        self._stackLayout.setCurrentWidget(self._webview_empty)
-        self.addContentWidget(widget)
-
-        self._refresh_btn = QtGui.QPushButton("Refresh", widget)
-        self._refresh_btn.clicked.connect(self.refresh)
-        self.addContentWidget(self._refresh_btn)
-
-    def _get_meta(self, knob_name):
-        if knob_name in nuke.root().knobs().keys():
-            return nuke.root()[knob_name].value()
-
-    def refresh(self):
-        self.initiate_error_box()
-
-        version_id = self._get_meta("ftrack_version_id")
-        if version_id == None:
-            msg = "This script is not an asset and does not belong to any tasks. "
-            msg += "Please publish it in order to manage the corresponding task. "
-            detail = "File > Mill Ftrack - Publish Script"
-            self.set_error(msg, detail)
-            self._stackLayout.setCurrentWidget(self._webview_empty)
-            return
-
-        try:
-            current_scene = N_AssetFactory.get_asset_from_version_id(
-                version_id, SceneIO)
-        except AssetIOError as err:
-            msg = "The Version Asset ID of this script is incorrect. Please contact RnD."
-            detail = "Version Asset ID : %s\nError: %s" % (
-                version_id, str(err))
-            self.set_error(msg, detail)
-            self._stackLayout.setCurrentWidget(self._webview_empty)
-            return
-
-        url = QtCore.QUrl(current_scene.task.web_widget_infos_Url)
-        if not url.isValid():
-            msg = "The task Url 'info' is incorrect."
-            self.set_error(msg)
-            self._stackLayout.setCurrentWidget(self._webview_empty)
-            return
-
-        self._webview.load(url)
-        self._stackLayout.setCurrentWidget(self._webview)
 
 
 class TaskWidget(QtGui.QWidget):
@@ -151,13 +76,6 @@ class TaskWidget(QtGui.QWidget):
         self._selection_mode = bool_value
         for widget in self._tasks_dict.values():
             widget.set_selection_mode(bool_value)
-
-    def _get_task_parents(self, task):
-        parents = [t.getName() for t in task.getParents()]
-        parents.reverse()
-        parents.append(task.getName())
-        parents = ' / '.join(parents)
-        return parents
 
     def set_task(self, task, current_scene=None):
         parents = self._get_task_parents(task)
@@ -302,12 +220,27 @@ class SingleTaskWidget(QtGui.QFrame):
 
         # Display Nuke Assets from this task
 
-        tab_asset_tree = QtGui.QWidget()
-        tab_asset_tree_layout = QtGui.QVBoxLayout(tab_asset_tree)
+        self.tab_asset_tree = QtGui.QWidget()
+
+        self.tab_asset_tree.busy_overlay = LoadingOverlay(self.tab_asset_tree)
+        self.tab_asset_tree.busy_overlay.hide()
+
+        tab_asset_tree_layout = QtGui.QVBoxLayout(self.tab_asset_tree)
         tab_asset_tree_layout.setContentsMargins(0, 8, 0, 0)
         self.assets_widget = SceneAssetsWidget(self)
+
+        self.assets_widget.worker_started.connect(
+            self.tab_asset_tree.busy_overlay.show
+        )
+        self.assets_widget.worker_started.connect(
+            self.tab_asset_tree.busy_overlay.raise_
+        )
+
+        self.assets_widget.worker_stopped.connect(
+            self.tab_asset_tree.busy_overlay.hide
+        )
         tab_asset_tree_layout.addWidget(self.assets_widget)
-        self._tab_widget.addTab(tab_asset_tree, "All Scene Assets")
+        self._tab_widget.addTab(self.tab_asset_tree, "All Scene Assets")
 
         # Display Notes from this task
 
@@ -319,7 +252,7 @@ class SingleTaskWidget(QtGui.QFrame):
         task_frame_layout.addWidget(self._tab_widget)
 
     def _get_task_infos(self):
-        if self._task == None:
+        if self._task is None:
             return
         self._t_project_name = self._task.getProject().getName()
         self._t_name = self._task.getName()
@@ -337,7 +270,7 @@ class SingleTaskWidget(QtGui.QFrame):
             self._t_due_date = None
 
     def initiate_task(self):
-        if self._task == None:
+        if self._task is None:
             return
 
         self._project_name.setText(self._t_project_name)
@@ -376,9 +309,9 @@ class SingleTaskWidget(QtGui.QFrame):
         self.assets_widget.set_selection_mode(bool_value)
 
 
-
-
 class SceneAssetsWidget(QtGui.QWidget):
+    worker_started = QtCore.Signal()
+    worker_stopped = QtCore.Signal()
 
     def __init__(self, parent=None):
         super(SceneAssetsWidget, self).__init__(parent)
@@ -439,11 +372,6 @@ class SceneAssetsWidget(QtGui.QWidget):
 
         self.assets_tree = AssetsTree(self)
 
-        assets_colors = dict()
-        # for connector_name, connector in self._connectors_per_type.iteritems():
-        #   assets_colors[connector_name] = connector.color
-        # self.assets_tree.add_assets_colors(assets_colors)
-
         main_layout.addWidget(self.assets_tree)
 
     def initiate_task(self, task, current_scene=None):
@@ -455,7 +383,15 @@ class SceneAssetsWidget(QtGui.QWidget):
         if self._asset_connectors_cbbox.currentIndex() == 0:
             asset_types = None
 
-        self.assets_tree.import_assets(self._task.getId(), asset_types)
+        args = (self._task.getId(), asset_types,)
+        self.worker = Worker(self.assets_tree.import_assets, args=args)
+        self.worker.started.connect(self.worker_started.emit)
+        self.worker.finished.connect(self.worker_stopped.emit)
+        self.worker.start()
+
+        while self.worker.isRunning():
+            app = QtGui.QApplication.instance()
+            app.processEvents()
 
     def _update_tree(self):
         asset_type = self._asset_connectors_cbbox.currentText()
