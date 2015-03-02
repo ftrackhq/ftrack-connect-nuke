@@ -191,7 +191,7 @@ class BaseDialog(QtGui.QDialog):
         self.current_task = self._tasks_dict.get(
             self.tasks_combo.currentText()
         )
-        self._validate(soft_validation=True)
+        self._validate_task()
 
     def set_enabled(self, bool_result):
         self._save_btn.setEnabled(bool_result)
@@ -301,30 +301,3 @@ class LoadWidget(QtGui.QWidget):
         )
 
         self.layout.addWidget(self.frame_loading)
-
-        # return
-
-        # frame_loading = QtGui.QFrame(self)
-        # frame_loading.setMaximumSize(QtCore.QSize(250,200))
-        # frame_loading.setStyleSheet(css_frame)
-        # frame_loading.setFrameShape(QtGui.QFrame.StyledPanel)
-        # frame_loading.setFrameShadow(QtGui.QFrame.Raised)
-        # frame_loading_layout = QtGui.QVBoxLayout(frame_loading)
-
-        # loading_gif = os.path.join(image_dir, "mill_logo_light.gif")
-        # self.movie_loading = QtGui.QMovie(loading_gif, QtCore.QByteArray(), frame_loading)
-
-        # movie_screen_loading = QtGui.QLabel(frame_loading)
-        # movie_screen_loading.setSizePolicy( QtGui.QSizePolicy.Expanding,
-        #                                  QtGui.QSizePolicy.Expanding )
-        # movie_screen_loading.setAlignment(QtCore.Qt.AlignCenter)
-
-        # self._loading_lbl = QtGui.QLabel(frame_loading)
-        # self._loading_lbl.setText("Loading user tasks...")
-        # self._loading_lbl.setWordWrap(True)
-        # self._loading_lbl.setAlignment(QtCore.Qt.AlignCenter)
-
-        # frame_loading_layout.addWidget(movie_screen_loading)
-        # frame_loading_layout.addWidget(self._loading_lbl)
-
-        # loading_layout.addWidget(frame_loading)

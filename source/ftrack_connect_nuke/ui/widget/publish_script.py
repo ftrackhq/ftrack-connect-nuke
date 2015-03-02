@@ -175,57 +175,7 @@ class ScriptPublisherDialog(BaseDialog):
 
         self._connect_script_signals()
         self._save_btn.setText("Publish and Save script")
-        # return
 
-        # right_widget = QtGui.QWidget(splitter)
-        # right_layout = QtGui.QVBoxLayout(right_widget)
-        # right_layout.setContentsMargins(5, 0, 0, 0)
-        # asset_frame = QtGui.QFrame(self)
-        # asset_frame_layout = QtGui.QVBoxLayout(asset_frame)
-        # asset_frame_layout.setContentsMargins(0, 0, 0, 0)
-        # asset_frame_layout.setSpacing(10)
-
-        # asset_main_frame = QtGui.QFrame(self)
-        # asset_main_frame.setStyleSheet(css_asset_global)
-        # asset_main_frame_layout = QtGui.QHBoxLayout(asset_main_frame)
-        # asset_main_frame_layout.setSpacing(10)
-        # asset_name_lbl = QtGui.QLabel("Asset", self)
-        # self._asset_name = QtGui.QLabel("...", asset_frame)
-        # self._asset_name.setStyleSheet(css_asset_name)
-        # spacer_asset = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Expanding,
-        #                                  QtGui.QSizePolicy.Minimum)
-
-        # asset_version_lbl = QtGui.QLabel("Version", asset_frame)
-        # self._asset_version = QtGui.QLabel("...", asset_frame)
-        # self._asset_version.setStyleSheet(css_asset_version)
-        # asset_main_frame_layout.addWidget(asset_name_lbl)
-        # asset_main_frame_layout.addWidget(self._asset_name)
-        # asset_main_frame_layout.addItem(spacer_asset)
-        # asset_main_frame_layout.addWidget(asset_version_lbl)
-        # asset_main_frame_layout.addWidget(self._asset_version)
-        # asset_frame_layout.addWidget(asset_main_frame)
-
-        # asset_setting_layout = QtGui.QVBoxLayout()
-        # asset_setting_layout.setContentsMargins(0, 0, 0, 0)
-        # asset_setting_layout.setSpacing(10)
-        # self._snapshotWidget = SnapshotsWidget(asset_frame)
-        # asset_setting_layout.addWidget(self._snapshotWidget)
-
-        # self._comment_widget = CommentWidget(asset_frame)
-        # self._comment_widget.changed.connect(self._validate)
-        # asset_setting_layout.addWidget(self._comment_widget)
-        # asset_frame_layout.addItem(asset_setting_layout)
-
-        # spacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum,
-        #                            QtGui.QSizePolicy.Expanding)
-        # asset_frame_layout.addItem(spacer)
-
-        # right_layout.addWidget(asset_frame)
-        # splitter.addWidget(right_widget)
-
-        # self.layout().addWidget(splitter)
-
-        # self._save_btn.setMinimumWidth(150)
 
     def _connect_script_signals(self):
         self.asset_conn_combo.currentIndexChanged.connect(
@@ -274,38 +224,10 @@ class ScriptPublisherDialog(BaseDialog):
         self.update_asset()
         self._validate()
 
-    def set_tasks(self):
-        if self.current_task is not None:
-            self.asset_conn_combo.blockSignals(True)
-
-            # for i in range(self.asset_conn_combo.count()):
-            #     asset_type = self.asset_conn_combo.itemText(i)
-            #     connector = self._connectors_per_type[asset_type]
-
-            #     #if connector.asset_type == self.current_task.getAsset():
-            #     # self.asset_conn_combo.setCurrentIndex(i)
-
-            self.asset_conn_combo.blockSignals(False)
-
-            # If we are versioning a known asset, we can't set it on another
-            # task
-            # self.display_tasks_frame(False)   
-            # self.set_header_command(
-            #     "Show task list",
-            #     "Hide task list",
-            #     command=self.display_tasks_frame
-            # )
-
-        super(ScriptPublisherDialog, self).set_tasks()
-
     def update_task(self, *args):
-        # task = self.current_task
-        # if task is not None:
-        #     logging.debug("current: %s" % task.getName())
-        #     self.left_tasks_widget.set_task(task, self.current_task)
-        #     self.update_asset()
-
         super(ScriptPublisherDialog, self).update_task(*args)
+        self.left_tasks_widget.set_task(self.current_task)
+        self._validate(soft_validation=True)
         self._comment_widget.setFocus()
 
     def update_asset(self):
@@ -331,10 +253,6 @@ class ScriptPublisherDialog(BaseDialog):
         logging.debug("soft_validation: %s" % soft_validation)
 
         self.asset_conn_combo.setEnabled(True)
-        # self.initiate_error_box()
-        # self.initiate_warning_box()
-
-        # Warning check
 
         warning = None
 
