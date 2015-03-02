@@ -44,7 +44,7 @@ def checkForNewAssets():
     allAssets = ftrackConnector.Connector.getAssets()
     message = ''
     for ftNode in allAssets:
-        n = nuke.toNode(ftNode[1])
+        n = nuke.toNode(HelpFunctions.safeString(ftNode[1]))
         n.knob('componentId').value()
         componentName = n.knob('componentName').value()
         assetVersionId = n.knob('assetVersionId').value()
@@ -277,7 +277,7 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
 
 
 def getMetaData(nodeName):
-    n = nuke.toNode(nodeName)
+    n = nuke.toNode(HelpFunctions.safeString(nodeName))
     metaData = []
     metaData.append(('res_x', str(n.width())))
     metaData.append(('res_y', str(n.height())))
@@ -294,7 +294,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
         if nuke.thisKnob().name() in ['inputChange', 'fscript'] or forceRefresh == True:
             thisNodeName = g['name'].value()
     
-            g = nuke.toNode(thisNodeName)
+            g = nuke.toNode(HelpFunctions.safeString(thisNodeName))
             # Add new labels
             cmdString = ''
             assetType = None
@@ -412,7 +412,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                 tableWidget.setCellWidget(rowCntr, 0, cb)
                 
                 componentItem = QtGui.QTableWidgetItem()
-                componentItem.setText(unicode(comp[0]))
+                componentItem.setText(comp[0])
                 componentItem.setToolTip(comp[0])
                 tableWidget.setItem(rowCntr, 1, componentItem)
                 componentItem = QtGui.QTableWidgetItem()
@@ -454,14 +454,12 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                 tableWidget.setItem(rowCntr, 3, componentItem)
     
                 rowCntr += 1
-    
             if assetType == 'img':
                 assetTypes = ['img']
             elif assetType == 'geo':
                 assetTypes = ['geo', 'cam']
             else:
                 assetTypes = ['']
-    
             g['ftrackassettype'].setValues(assetTypes)
     
             if inputMissmatch:
@@ -477,11 +475,11 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                 pubto = g.knob('fpubto').getObject().targetTask
                 assets = ftrackConnector.Connector.objectById(pubto).getAssets(assetTypes=[g['ftrackassettype'].value()])
                 assets = sorted(assets, key=lambda entry: entry.getName().lower())
-                assetEnums = assetEnums + [x.getName() for x in assets]
+                assetEnums = assetEnums + [HelpFunctions.safeString(x.getName()) for x in assets]
                 FnAssetAPI.logging.info(assetEnums)
                 g['fassetnameexisting'].setValues(assetEnums)
     
-            g = nuke.toNode(thisNodeName)
+            g = nuke.toNode(HelpFunctions.safeString(thisNodeName))
             g.begin()
     
             # Add more inputs if full
@@ -500,7 +498,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                 # assets = ftrackConnector.Connector.objectById(os.environ['FTRACK_SHOTID']).getAssets(assetTypes=[nodeAssetType])
                 pubto = g.knob('fpubto').getObject().targetTask
                 assets = ftrackConnector.Connector.objectById(pubto).getAssets(assetTypes=[nodeAssetType])
-                assetEnums = assetEnums + [x.getName() for x in assets]
+                assetEnums = assetEnums + [HelpFunctions.safeString(x.getName()) for x in assets]
                 g['fassetnameexisting'].setValues(assetEnums)
 
 
