@@ -43,7 +43,7 @@ class BaseDialog(QtGui.QDialog):
         self.footer_container_layout = QtGui.QHBoxLayout()
 
         # Main Container wrapper for loading scree
-        self.busy_overlay = TagTreeOverlay(self)
+        self.busy_overlay = LoadingOverlay(self)
         self.busy_overlay.hide()
 
         self.header_container_layout.setContentsMargins(4, 0, 4, 0)
@@ -262,12 +262,12 @@ class BaseDialog(QtGui.QDialog):
         self.busy_overlay.setVisible(active)
 
 
-class TagTreeOverlay(_overlay.BusyOverlay):
+class LoadingOverlay(_overlay.BusyOverlay):
     '''Custom reimplementation for style purposes'''
 
     def __init__(self, parent=None):
         '''Initiate and set style sheet.'''
-        super(TagTreeOverlay, self).__init__(parent=parent)
+        super(LoadingOverlay, self).__init__(parent=parent)
 
         self.setStyleSheet('''
             BlockingOverlay {
