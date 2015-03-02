@@ -9,6 +9,8 @@ from task_widgets import TaskWidget
 from scene_widgets import SceneVersionWidget
 
 from FnAssetAPI import logging
+from ftrack_connect.ui import resource
+from ftrack_connect.ui.theme import applyTheme
 
 
 class ScriptOpenerDialog(BaseDialog):
@@ -16,9 +18,9 @@ class ScriptOpenerDialog(BaseDialog):
     def __init__(self):
         super(ScriptOpenerDialog, self).__init__(
             QtGui.QApplication.activeWindow())
-
+        applyTheme(self, 'integration')
         self.initiate_tasks()
-
+        self.setupUI()
         self.exec_()
 
     def setupUI(self):
@@ -62,8 +64,7 @@ class ScriptOpenerDialog(BaseDialog):
         self._scene_version_widget = SceneVersionWidget(self)
         right_layout.addWidget(self._scene_version_widget)
         splitter.addWidget(right_widget)
-
-        self.addContentWidget(splitter)
+        self.main_container_layout.addWidget(splitter)
 
         self._save_btn.setText("Open script")
         self._save_btn.setMinimumWidth(150)
@@ -97,8 +98,8 @@ class ScriptOpenerDialog(BaseDialog):
         self._scene_version_widget.set_empty()
 
     def validate(self, scene_version=None):
-        self.initiate_warning_box()
-        self.initiate_error_box()
+        # self.initiate_warning_box()
+        # self.initiate_error_box()
 
         self._validate_task()
 
@@ -109,7 +110,7 @@ class ScriptOpenerDialog(BaseDialog):
             error = "You don't have any task assigned to you."
 
         if error != None:
-            self.set_error(error)
+            self.header.setMessage(error, 'error')
 
         elif scene_version == None:
             self.set_enabled(False)

@@ -114,11 +114,11 @@ class SceneVersionWidget(QtGui.QWidget):
 
     def initiate(self):
         self._stackLayout.setCurrentWidget(self._loading_asset_version)
-        self._loading_asset_version.start_anim()
+        # self._loading_asset_version.start_anim()
 
     def set_empty(self):
         self._stackLayout.setCurrentWidget(self._empty_asset_version)
-        self._loading_asset_version.stop_anim()
+        # self._loading_asset_version.stop_anim()
 
     def set_scene_version(self, scene_version):
         # if scene_version.is_being_cached:
@@ -234,11 +234,11 @@ class LoadingSceneVersionWidget(QtGui.QWidget):
         # self.movie.setSpeed(100)
         # movie_screen.setMovie(self.movie)
 
-    def start_anim(self):
-        self.movie.start()
+    # def start_anim(self):
+    #     self.movie.start()
 
-    def stop_anim(self):
-        self.movie.stop()
+    # def stop_anim(self):
+    #     self.movie.stop()
 
 
 class ThumbnailWidget(QtGui.QLabel):
@@ -275,8 +275,6 @@ class SingleSceneVersionWidget(QtGui.QWidget):
     def __init__(self, scene_version=None, parent=None):
         super(SingleSceneVersionWidget, self).__init__(parent)
         self.scene_version = scene_version
-
-        # self._scenes_connectors = SceneIO.connectors()
 
         self.error = False
         self.locked = False
@@ -593,11 +591,9 @@ class SingleSceneVersionWidget(QtGui.QWidget):
                 errors.append(error)
 
         if len(errors) > 0:
-            self.set_scene_error("<br/><br/>".join(errors))
-        else:
-            self.initiate_scene_error()
+            self.parent().parent().header.setMessage("<br/><br/>".join(errors), 'error')
 
-        if len(warnings) > 0:
-            self.set_scene_warning("<br/><br/>".join(warnings))
+        elif len(warnings) > 0:
+            self.parent().parent().header.setMessage("<br/><br/>".join(errors), 'warnings')
         else:
-            self.initiate_scene_warning()
+            self.parent().parent().header.dismissMessage()
