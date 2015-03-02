@@ -166,6 +166,9 @@ class NoSceneVersionWidget(QtGui.QWidget):
         padding:10px; border: 0px;
         """
 
+        css_image = """
+        background: url(':ftrack/image/studio/no-asset') no-repeat center center;
+        """
         main_layout = QtGui.QHBoxLayout(self)
 
         frame = QtGui.QFrame(self)
@@ -177,10 +180,10 @@ class NoSceneVersionWidget(QtGui.QWidget):
 
         movie_screen = QtGui.QFrame(frame)
         movie_screen.setMinimumSize(QtCore.QSize(300, 300))
-        # movie_screen.setStyleSheet(css_image)
+        movie_screen.setStyleSheet(css_image)
 
         warning = QtGui.QLabel(frame)
-        warning.setText("No scene asset found for this task...")
+        warning.setText("No scene asset found for the selected task")
         warning.setWordWrap(True)
         warning.setAlignment(QtCore.Qt.AlignCenter)
 

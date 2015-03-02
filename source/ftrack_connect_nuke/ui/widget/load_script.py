@@ -18,6 +18,7 @@ class ScriptOpenerDialog(BaseDialog):
     def __init__(self):
         super(ScriptOpenerDialog, self).__init__(
             QtGui.QApplication.activeWindow())
+
         applyTheme(self, 'integration')
         self.initiate_tasks()
         self.setupUI()
@@ -77,14 +78,9 @@ class ScriptOpenerDialog(BaseDialog):
         return self._scene_version_widget.current_scene_version
 
     def update_task(self, *args):
-        task = self.current_task
-        self._scene_version_widget.initiate()
-
-        if task != None:
-            self._task_widget.set_task(task, self.current_task)
-
-        if self._task_widget.current_asset_version == None:
-            self.validate()
+        super(ScriptOpenerDialog, self).update_task(*args)
+        self._task_widget.set_task(self.current_task)
+        self._validate()
 
     def set_scene_version(self, scene_version):
         if scene_version is None:
@@ -93,12 +89,12 @@ class ScriptOpenerDialog(BaseDialog):
 
         else:
             self._scene_version_widget.set_scene_version(scene_version)
-            self.validate(scene_version)
+            self._validate(scene_version)
 
     def set_no_asset_version(self):
         self._scene_version_widget.set_empty()
 
-    def validate(self, scene_version=None):
+    def _validate(self, scene_version=None):
 
         self._validate_task()
         error = None
