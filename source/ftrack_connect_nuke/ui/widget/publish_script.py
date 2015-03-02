@@ -299,13 +299,13 @@ class ScriptPublisherDialog(BaseDialog):
         super(ScriptPublisherDialog, self).set_tasks()
 
     def update_task(self, *args):
-        task = self.current_task
-        if task is not None:
-            logging.debug("current: %s" % task.getName())
-            self.left_tasks_widget.set_task(task, self.current_task)
-            self.update_asset()
+        # task = self.current_task
+        # if task is not None:
+        #     logging.debug("current: %s" % task.getName())
+        #     self.left_tasks_widget.set_task(task, self.current_task)
+        #     self.update_asset()
 
-        self._validate(soft_validation=True)
+        super(ScriptPublisherDialog, self).update_task(*args)
         self._comment_widget.setFocus()
 
     def update_asset(self):

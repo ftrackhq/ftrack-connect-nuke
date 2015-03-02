@@ -3,6 +3,8 @@ import ftrack
 from PySide import QtGui, QtCore
 from ftrack_connect.ui.widget.header import HeaderWidget
 from ftrack_connect_nuke.millftrack_nuke.controller import Controller
+from FnAssetAPI import logging
+from pprint import pformat
 
 
 class BaseDialog(QtGui.QDialog):
@@ -14,6 +16,8 @@ class BaseDialog(QtGui.QDialog):
         self._tasks_dict = {}
         self.disable_tasks_list = disable_tasks_list
         self._user = ftrack.User(os.getenv('LOGNAME'))
+        self.initiate_tasks()
+        logging.debug(self._tasks_dict)
 
         self._current_scene = None
 
@@ -143,7 +147,9 @@ class BaseDialog(QtGui.QDialog):
     def _connect_base_signals(self):
         self._tasks_btn.clicked.connect(self.browse_all_tasks)
         self.tasks_combo.currentIndexChanged.connect(self.update_task_global)
-        self._tasks_btn.clicked.connect(self.browse_all_tasks)
+
+        self._save_btn.clicked.connect(self.accept)
+        self._cancel_btn.clicked.connect(self.reject)
 
     def display_tasks_frame(self, toggled):
         self.tasks_frame.setVisible(toggled)
@@ -175,15 +181,17 @@ class BaseDialog(QtGui.QDialog):
             self.set_task(browser.task)
 
     def update_task_global(self):
-        if self.current_task is None:
+        self.update_task()
+        if not self.current_task:
             error = "You don't have any task assigned to you."
             self.header.setMessage(error, 'error')
             self.set_empty_task_mode(True)
 
-        self.update_task()
-
     def update_task(self):
-        raise NotImplementedError
+        self.current_task = self._tasks_dict.get(
+            self.tasks_combo.currentText()
+        )
+        self._validate(soft_validation=True)
 
     def set_enabled(self, bool_result):
         self._save_btn.setEnabled(bool_result)
@@ -191,6 +199,8 @@ class BaseDialog(QtGui.QDialog):
     def set_task(self, task):
         if task is None:
             return
+        self.current_task = task
+        self._validate_task()
         parents = self._get_task_parents(task)
 
         if parents in self._tasks_dict.keys():
@@ -244,20 +254,20 @@ class BaseDialog(QtGui.QDialog):
         self.header.setMessage(msg + (detail or ''), 'warning')
 
     def _validate_task(self):
-        warning = None
-        if self.current_task is not None:
-            user_tasks = [t.getId() for t in self._user.getTasks()]
-            self._not_my_task = self.current_task.getId() not in user_tasks
+        if not self.current_task:
+            return
+        user_tasks = [t.getId() for t in self._user.getTasks()]
+        task_in_user = self.current_task.getId() in user_tasks
 
-        if self._not_my_task:
+        if not task_in_user:
             warning = (
                 'This task is not assigned to you. You might need to ask your'
                 'supervisor to assign you to this task before publishing'
                 ' any asset. This action will be reported.'
             )
-
-        if warning is not None:
             self.set_warning(warning)
+        else:
+            self.header.dismissMessage()
 
 
 class LoadWidget(QtGui.QWidget):
