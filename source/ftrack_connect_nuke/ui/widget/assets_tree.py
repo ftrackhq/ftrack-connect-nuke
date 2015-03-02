@@ -27,6 +27,10 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
         self._minimum_width = minimum_width
         self._show_thumbnail = show_thumbnail
 
+        self._thumnbail_default = QtGui.QImage()
+        default_thumb = os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
+        self._thumnbail_default.loadFromData(urllib.urlopen(default_thumb).read())
+
         # Fonts...
         self._font_name = QtGui.QFont()
         self._font_name.setPixelSize(12)
