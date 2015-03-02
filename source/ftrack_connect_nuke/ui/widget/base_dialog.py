@@ -3,8 +3,9 @@ import ftrack
 from PySide import QtGui, QtCore
 from ftrack_connect.ui.widget.header import HeaderWidget
 from ftrack_connect_nuke.ui.controller import Controller
-from FnAssetAPI import logging
-from pprint import pformat
+from ftrack_connect.ui.widget import overlay as _overlay
+from ftrack_connect.worker import Worker
+
 
 class BaseDialog(QtGui.QDialog):
     def __init__(self, parent=None, disable_tasks_list=False):
@@ -16,7 +17,6 @@ class BaseDialog(QtGui.QDialog):
         self.disable_tasks_list = disable_tasks_list
         self._user = ftrack.User(os.getenv('LOGNAME'))
         self.initiate_tasks()
-        logging.debug(self._tasks_dict)
 
         self._current_scene = None
 
@@ -35,15 +35,6 @@ class BaseDialog(QtGui.QDialog):
         self.main_container = QtGui.QFrame(self)
         self.footer_container = QtGui.QFrame(self)
 
-        # Main Container wrapper for loading scree
-        self.main_stacked_container = QtGui.QFrame(self)
-        self.main_stacked_layout = QtGui.QStackedLayout()
-        self.main_stacked_container.setLayout(self.main_stacked_layout)
-
-        self.loading_widget = LoadWidget(self)
-        self.main_stacked_layout.addWidget(self.main_container)
-        self.main_stacked_layout.addWidget(self.loading_widget)
-
         # self.header_container.setStyleSheet("background-color:red;")
         # self.main_container.setStyleSheet("background-color:green;")
         # self.footer_container.setStyleSheet("background-color:blue;")
@@ -52,6 +43,10 @@ class BaseDialog(QtGui.QDialog):
         self.header_container_layout = QtGui.QVBoxLayout()
         self.main_container_layout = QtGui.QVBoxLayout()
         self.footer_container_layout = QtGui.QHBoxLayout()
+
+        # Main Container wrapper for loading scree
+        self.busy_overlay = LoadingOverlay(self)
+        self.busy_overlay.hide()
 
         self.header_container_layout.setContentsMargins(4, 0, 4, 0)
         self.header_container_layout.setAlignment(QtCore.Qt.AlignTop)
@@ -67,7 +62,7 @@ class BaseDialog(QtGui.QDialog):
 
         # -- CONTAINER ASSIGNMENT TO MAIN -- #
         self.global_layout.addWidget(self.header_container)
-        self.global_layout.addWidget(self.main_stacked_container)
+        self.global_layout.addWidget(self.main_container)
         self.global_layout.addWidget(self.footer_container)
 
         # -- HEADER -- #
@@ -142,6 +137,7 @@ class BaseDialog(QtGui.QDialog):
         self.footer_container_layout.addWidget(self._save_btn)
 
         self._connect_base_signals()
+        self.set_loading_screen(True)
 
     def _connect_base_signals(self):
         self._tasks_btn.clicked.connect(self.browse_all_tasks)
@@ -193,7 +189,8 @@ class BaseDialog(QtGui.QDialog):
         self._validate_task()
 
     def set_enabled(self, bool_result):
-        self._save_btn.setEnabled(bool_result)
+        if not self._save_btn.isEnabled() == bool_result:
+            self._save_btn.setEnabled(bool_result)
 
     def set_task(self, task):
         if task is None:
@@ -237,17 +234,9 @@ class BaseDialog(QtGui.QDialog):
 
         self.tasks_combo.blockSignals(False)
 
-        self.set_loading_mode(False)
+        # self.set_loading_mode(False)
         self.update_task_global()
-
-    def set_loading_mode(self, bool_value):
-        if bool_value:
-            self.loading_widget.movie_loading.start()
-            self.main_stacked_layout.setCurrentWidget(self.loading_widget)
-        else:
-            self.main_stacked_layout.setCurrentWidget(self.main_container)
-            self.loading_widget.movie_loading.stop()
-            self.set_enabled(not bool_value)
+        self.set_loading_screen(False)
 
     def set_warning(self, msg, detail=None):
         self.header.setMessage(msg + (detail or ''), 'warning')
@@ -265,38 +254,37 @@ class BaseDialog(QtGui.QDialog):
                 ' any asset. This action will be reported.'
             )
             self.set_warning(warning)
+            return False
         else:
             self.header.dismissMessage()
+            self.set_enabled(True)
+            return True
+
+    def set_loading_screen(self, active=False):
+        self.busy_overlay.setVisible(active)
 
 
-class LoadWidget(QtGui.QWidget):
-    def __init__(self, parent):
-        super(LoadWidget, self).__init__(parent=parent)
+class LoadingOverlay(_overlay.BusyOverlay):
+    '''Custom reimplementation for style purposes'''
 
-        css_frame = """
-        background:#222; border-radius: 4px;
-        padding:10px; border: 0px;
-        """
+    def __init__(self, parent=None):
+        '''Initiate and set style sheet.'''
+        super(LoadingOverlay, self).__init__(parent=parent)
 
-        self.layout = QtGui.QHBoxLayout(self)
-        self.setLayout(self.layout)
+        self.setStyleSheet('''
+            BlockingOverlay {
+                background-color: rgba(58, 58, 58, 200);
+                border: none;
+            }
 
-        self.frame_loading = QtGui.QFrame(self)
-        self.frame_loading.setMaximumSize(QtCore.QSize(250, 200))
-        self.frame_loading.setStyleSheet(css_frame)
-        self.frame_loading.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.frame_loading.setFrameShadow(QtGui.QFrame.Raised)
+            BlockingOverlay QFrame#content {
+                padding: 0px;
+                border: 80px solid transparent;
+                background-color: transparent;
+                border-image: none;
+            }
 
-        self.frame_loading_layout = QtGui.QVBoxLayout(self.frame_loading)
-        loading_gif = (
-            '/home/salva/efesto/ftrack/ftrack-connect/'
-            'resource/image/ftrack_logo_dark.svg'
-        )
-
-        self.movie_loading = QtGui.QMovie(
-            loading_gif,
-            QtCore.QByteArray(),
-            self.frame_loading
-        )
-
-        self.layout.addWidget(self.frame_loading)
+            BlockingOverlay QLabel {
+                background: transparent;
+            }
+        ''')

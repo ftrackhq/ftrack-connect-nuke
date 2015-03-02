@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import ftrack
-from PySide import QtGui, QtCore, QtWebKit
-import os
-import datetime
+from PySide import QtGui, QtCore
 
 from assets_tree import AssetsTree
 from ftrack_connect_nuke.connector.nukeassets import NukeSceneAsset
@@ -11,11 +9,10 @@ from ftrack_connect_nuke.connector.nukeassets import NukeSceneAsset
 from status_widget import StatusWidget
 
 from ftrack_connect_nuke.ui.controller import Controller
+from ftrack_connect_nuke.ui.widget.base_dialog import LoadingOverlay
+from ftrack_connect.worker import Worker
 
 from FnAssetAPI import logging
-
-import nuke
-from base_dialog import BaseDialog
 
 
 class TaskWidget(QtGui.QWidget):
@@ -80,26 +77,20 @@ class TaskWidget(QtGui.QWidget):
         for widget in self._tasks_dict.values():
             widget.set_selection_mode(bool_value)
 
-    def _get_task_parents(self, task):
-        parents = [t.getName() for t in task.getParents()]
-        parents.reverse()
-        parents.append(task.getName())
-        parents = ' / '.join(parents)
-        return parents
-
     def set_task(self, task, current_scene=None):
         parents = self._get_task_parents(task)
+        self._current_task = task
         if parents not in self._tasks_dict.keys():
-            single_task_widget = SingleTaskWidget(task, current_scene, self)
+            single_task_widget = SingleTaskWidget(task=task, parent=self)
             single_task_widget.assets_widget.assets_tree.asset_version_selected.connect(
-                self._emit_asset_version_selected)
+                self._emit_asset_version_selected
+            )
             single_task_widget.set_read_only(self._read_only)
             single_task_widget.set_selection_mode(self._selection_mode)
             self._tasks_dict[parents] = single_task_widget
             self._stackLayout.addWidget(single_task_widget)
 
         self._stackLayout.setCurrentWidget(self._tasks_dict[parents])
-        self._current_task = task
 
     def current_shot_status_changed(self):
         single_task_widget = self._stackLayout.currentWidget()
@@ -229,12 +220,27 @@ class SingleTaskWidget(QtGui.QFrame):
 
         # Display Nuke Assets from this task
 
-        tab_asset_tree = QtGui.QWidget()
-        tab_asset_tree_layout = QtGui.QVBoxLayout(tab_asset_tree)
+        self.tab_asset_tree = QtGui.QWidget()
+
+        self.tab_asset_tree.busy_overlay = LoadingOverlay(self.tab_asset_tree)
+        self.tab_asset_tree.busy_overlay.hide()
+
+        tab_asset_tree_layout = QtGui.QVBoxLayout(self.tab_asset_tree)
         tab_asset_tree_layout.setContentsMargins(0, 8, 0, 0)
         self.assets_widget = SceneAssetsWidget(self)
+
+        self.assets_widget.worker_started.connect(
+            self.tab_asset_tree.busy_overlay.show
+        )
+        self.assets_widget.worker_started.connect(
+            self.tab_asset_tree.busy_overlay.raise_
+        )
+
+        self.assets_widget.worker_stopped.connect(
+            self.tab_asset_tree.busy_overlay.hide
+        )
         tab_asset_tree_layout.addWidget(self.assets_widget)
-        self._tab_widget.addTab(tab_asset_tree, "All Scene Assets")
+        self._tab_widget.addTab(self.tab_asset_tree, "All Scene Assets")
 
         # Display Notes from this task
 
@@ -246,7 +252,7 @@ class SingleTaskWidget(QtGui.QFrame):
         task_frame_layout.addWidget(self._tab_widget)
 
     def _get_task_infos(self):
-        if self._task == None:
+        if self._task is None:
             return
         self._t_project_name = self._task.getProject().getName()
         self._t_name = self._task.getName()
@@ -264,7 +270,7 @@ class SingleTaskWidget(QtGui.QFrame):
             self._t_due_date = None
 
     def initiate_task(self):
-        if self._task == None:
+        if self._task is None:
             return
 
         self._project_name.setText(self._t_project_name)
@@ -303,12 +309,21 @@ class SingleTaskWidget(QtGui.QFrame):
         self.assets_widget.set_selection_mode(bool_value)
 
 
-
-
 class SceneAssetsWidget(QtGui.QWidget):
+    worker_started = QtCore.Signal()
+    worker_stopped = QtCore.Signal()
 
     def __init__(self, parent=None):
         super(SceneAssetsWidget, self).__init__(parent)
+
+        # self._scenes_connectors = SceneIO.connectors()
+
+        self._connectors_per_type = dict()
+        # for scene_connector in self._scenes_connectors:
+        self._connectors_per_type['nuke_comp_scene'] = NukeSceneAsset()
+        self._connectors_per_type['nuke_precomp_scene'] = NukeSceneAsset()
+        self._connectors_per_type['nuke_roto_scene'] = NukeSceneAsset()
+
         self._task = None
 
         self.setupUI()
@@ -357,9 +372,6 @@ class SceneAssetsWidget(QtGui.QWidget):
 
         self.assets_tree = AssetsTree(self)
 
-        assets_colors = dict()
-
-
         main_layout.addWidget(self.assets_tree)
 
     def initiate_task(self, task, current_scene=None):
@@ -371,7 +383,15 @@ class SceneAssetsWidget(QtGui.QWidget):
         if self._asset_connectors_cbbox.currentIndex() == 0:
             asset_types = None
 
-        self.assets_tree.import_assets(self._task.getId(), asset_types)
+        args = (self._task.getId(), asset_types,)
+        self.worker = Worker(self.assets_tree.import_assets, args=args)
+        self.worker.started.connect(self.worker_started.emit)
+        self.worker.finished.connect(self.worker_stopped.emit)
+        self.worker.start()
+
+        while self.worker.isRunning():
+            app = QtGui.QApplication.instance()
+            app.processEvents()
 
     def _update_tree(self):
         asset_type = self._asset_connectors_cbbox.currentText()
