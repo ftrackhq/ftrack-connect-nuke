@@ -98,7 +98,7 @@ class StatusWidgetDisplay(QtGui.QLabel):
 
   def set_status(self, status):
     self.setText(status.getName())
-    # self.set_status_css(status.get("color"))
+    self.set_status_css(status.get("color"))
     self.status = status
 
   def set_status_css(self, color=None):
@@ -128,21 +128,19 @@ class StatusComboBox(QtGui.QComboBox):
     for status in status_list:
       self.addItem(status.getName())
 
-    # arrow = os.path.join(image_dir, "branch-open.png")
-
-    # css_combobox = """
-    # QComboBox { padding: 2px 18px 2px 3px; border-radius: 4px;
-    #             background: #AAA; color: #333; }
-    # QComboBox::on { background: #DDD; color: #333; }
-    # QComboBox::drop-down { subcontrol-origin: padding;
-    #                        subcontrol-position: top right;
-    #                        width: 15px; border: 0px;
-    #                        border-top-right-radius: 3px;
-    #                        border-bottom-right-radius: 3px; }
-    # QComboBox::down-arrow { image: url(""" + arrow + """) }
-    # QAbstractItemView { background: #888; border: 0px; }
-    # """
-    # self.setStyleSheet(css_combobox)
+    css_combobox = """
+    QComboBox { padding: 2px 18px 2px 3px; border-radius: 4px;
+                background: #AAA; color: #333; }
+    QComboBox::on { background: #DDD; color: #333; }
+    QComboBox::drop-down { subcontrol-origin: padding;
+                           subcontrol-position: top right;
+                           width: 15px; border: 0px;
+                           border-top-right-radius: 3px;
+                           border-bottom-right-radius: 3px; }
+    QComboBox::down-arrow { image: url(':ftrack/image/studio/branch-open') }
+    QAbstractItemView { background: #888; border: 0px; }
+    """
+    self.setStyleSheet(css_combobox)
     self.activated.connect(self._changed_text)
 
   def set_status(self, status_name):
