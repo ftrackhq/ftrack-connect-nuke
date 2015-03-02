@@ -1,14 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PySide import QtGui, QtCore, QtOpenGL
-
-from ftrack_connect_nuke.millftrack_nuke import utilities
-
-from ftrack_connect.ui import resource
-
 import os
-
+from PySide import QtGui, QtCore, QtOpenGL
+from ftrack_connect.ui import resource
 
 class SnapshotsWidget(QtGui.QWidget):
 
@@ -118,8 +113,19 @@ class SnapshotsWidget(QtGui.QWidget):
         widget = self._current_view()
         if widget != None:
             pixmap = QtGui.QPixmap.grabWidget(widget)
-            return utilities.get_pixmap_file(widget.name(), pixmap,
+            return self.get_pixmap_file(widget.name(), pixmap,
                                              overwrite=True)
+
+    def get_pixmap_file(self, name_file, pixmap, overwrite=False):
+        ''' Save a pixmap into the nuke temp if necessary
+        '''
+        file_path = os.path.join(dir_temp(), name_file + ".png")
+        if not overwrite and os.path.isfile(file_path):
+            return file_path
+
+        pixmap.save(file_path, format="PNG", quality=100)
+        logging.debug(file_path)
+        return file_path
 
     def chooseSource(self):
         source = self.sender()

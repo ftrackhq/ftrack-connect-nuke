@@ -6,7 +6,6 @@ from ftrack_connect_nuke.millftrack_nuke.controller import Controller
 from FnAssetAPI import logging
 from pprint import pformat
 
-
 class BaseDialog(QtGui.QDialog):
     def __init__(self, parent=None, disable_tasks_list=False):
         super(BaseDialog, self).__init__(parent=parent)

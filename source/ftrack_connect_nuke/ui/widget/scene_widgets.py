@@ -6,13 +6,11 @@ import ftrack
 from base_dialog import BaseDialog
 from scene_stats_widget import StatisticWidget
 from status_widget import StatusWidget
-
+import urllib
 
 # from images import image_dir
 
 from FnAssetAPI import logging
-
-from ftrack_connect_nuke.millftrack_nuke import utilities
 
 import nuke
 import os
@@ -232,12 +230,6 @@ class ThumbnailWidget(QtGui.QLabel):
         self.update_image(image)
 
     def update_image(self, image_path=None):
-        if image_path is None:
-            thumnbail_ftrack_url = os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
-            image_path = utilities.get_url_file(thumnbail_ftrack_url)
-
-        logging.info(image_path)
-
         self._pixmap = QtGui.QPixmap(image_path)
         pixmap_scaled = self._pixmap.scaled(
             self.size, QtCore.Qt.KeepAspectRatio)
@@ -413,15 +405,11 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         self._status.set_status(self.scene_version.getStatus())
         self._asset_version.setText("%03d" % self.scene_version.get('version'))
 
-        thumbnail = self.scene_version.getThumbnail()
-        if thumbnail:
-            image_path = utilities.get_url_file(thumbnail)
-        else:
-            image_path = utilities.get_url_file(
-                os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
-            )
-
-        self._thumbnail_widget.update_image(image_path)
+        default_thumbnail =  os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
+        thumbnail = self.scene_version.getThumbnail() or default_thumbnail
+        image = QtGui.QImage()
+        image.loadFromData(urllib.urlopen(thumbnail).read())
+        self._thumbnail_widget.update_image(image)
 
         self.set_owner(self.scene_version.getOwner())
         self._date.setText(str(self.scene_version.getDate()))
@@ -449,54 +437,15 @@ class SingleSceneVersionWidget(QtGui.QWidget):
     def set_owner(self, owner):
         name = owner.getName()
         email = owner.getEmail()
-        thumbnail = owner.getThumbnail()
-        if thumbnail == None:
-            thumbnail = os.environ["FTRACK_SERVER"] + \
-                "/img/userplaceholder.png"
-        image = utilities.get_url_file(thumbnail)
-
         self._owner.setText(
             "<a style='" + self._css_value + "' href='mailto:" + email + "'>" + name + "</a>")
-        self._owner.setToolTip("<html><img src=" + image + "/></html>")
 
     def set_editor(self, editor):
         name = editor.getName()
         email = editor.getEmail()
-        thumbnail = editor.getThumbnail()
-        if thumbnail == None:
-            thumbnail = os.environ["FTRACK_SERVER"] + \
-                "/img/userplaceholder.png"
-        image = utilities.get_url_file(thumbnail)
 
         self._editor.setText(
             "<a style='" + self._css_value + "' href='mailto:" + email + "'>" + name + "</a>")
-        self._editor.setToolTip("<html><img src=" + image + "/></html>")
-
-    def set_locker(self):
-        name = self.scene_version.asset.locker.getName()
-        email = self.scene_version.asset.locker.getEmail()
-        thumbnail = self.scene_version.asset.locker.getThumbnail()
-        if thumbnail == None:
-            thumbnail = os.environ["FTRACK_SERVER"] + \
-                "/img/userplaceholder.png"
-        image = utilities.get_url_file(thumbnail)
-
-        locker_css = "color: #DC2800; text-decoration: none;"
-        locker_lbl = QtGui.QLabel("Locked by", self)
-        locker_lbl.setStyleSheet(locker_css)
-
-        locker = QtGui.QLabel(self)
-        locker.setText(
-            "<a style='" + locker_css + "' href='mailto:" + email + "'>" + name + "</a>")
-        locker.setTextFormat(QtCore.Qt.RichText)
-        locker.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
-        locker.setOpenExternalLinks(True)
-        locker.setToolTip("<html><img src=" + image + "/></html>")
-        logging.debug("name: %s" % image)
-
-        self._infos_layout.insertRow(0, locker_lbl, locker)
-
-        self.locked = True
 
     def _validate(self):
         errors = []
