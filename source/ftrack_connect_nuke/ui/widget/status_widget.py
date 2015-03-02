@@ -3,7 +3,6 @@
 
 from PySide import QtGui, QtCore
 from FnAssetAPI import logging
-# from ..images import image_dir
 import os
 
 class StatusWidget(QtGui.QWidget):

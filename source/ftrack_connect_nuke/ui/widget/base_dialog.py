@@ -2,7 +2,7 @@ import os
 import ftrack
 from PySide import QtGui, QtCore
 from ftrack_connect.ui.widget.header import HeaderWidget
-from ftrack_connect_nuke.millftrack_nuke.controller import Controller
+from ftrack_connect_nuke.ui.controller import Controller
 from FnAssetAPI import logging
 from pprint import pformat
 

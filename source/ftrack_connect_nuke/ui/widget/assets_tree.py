@@ -6,7 +6,7 @@ import datetime
 import urllib
 
 from PySide import QtGui, QtCore
-from ftrack_connect_nuke.millftrack_nuke.controller import Controller
+from ftrack_connect_nuke.ui.controller import Controller
 
 import ftrack
 
@@ -644,14 +644,6 @@ class AssetItem(TreeItem):
         self.setData(self._asset_version.get('version'), self.version_nb_role)
 
         self.setData(False, self.is_button_role)
-
-        # if self._asset_version.is_being_cached:
-        #   self.setDragEnabled(False)
-
-        # Thread that...
-        #   self._controller = Controller(self._asset_version.regen_cache)
-        #   self._controller.completed.connect(self.set_version)
-        #   self._controller.start()
 
         # else:
         self.set_version()
