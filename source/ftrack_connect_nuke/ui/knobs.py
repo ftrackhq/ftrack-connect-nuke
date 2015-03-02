@@ -11,7 +11,7 @@ from ftrack_connect.ui.widget import header
 from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
 from ftrack_connect_nuke import connector
 
-from ftrack_connect_nuke.millftrack_nuke.ui.browser_dialog import BrowserDialog
+from widget.browser_dialog import BrowserDialog
 from ftrack_connect.ui.theme import applyTheme
 
 class TableKnob():

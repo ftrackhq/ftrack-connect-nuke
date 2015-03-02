@@ -8,84 +8,10 @@ from scene_stats_widget import StatisticWidget
 from status_widget import StatusWidget
 import urllib
 
-# from images import image_dir
-
 from FnAssetAPI import logging
-
+from ftrack_connect_nuke.ui.controller import Controller
 import nuke
 import os
-
-
-class SceneManagerWidget(BaseDialog):
-
-    def __init__(self, parent=None):
-        super(SceneManagerWidget, self).__init__(parent)
-        self.setupUI()
-
-        nuke.addOnScriptLoad(self.refresh)
-        nuke.addOnScriptSave(self.refresh)
-
-        self.refresh()
-
-    def setupUI(self):
-        self.setMinimumWidth(400)
-
-        widget = QtGui.QWidget(self)
-        main_layout = QtGui.QVBoxLayout(widget)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(0)
-
-        self._webview = QtWebKit.QWebView()
-        self._webview_empty = QtWebKit.QWebView()
-
-        self._stackLayout = QtGui.QStackedLayout()
-        self._stackLayout.addWidget(self._webview)
-        self._stackLayout.addWidget(self._webview_empty)
-        main_layout.addLayout(self._stackLayout)
-
-        self._stackLayout.setCurrentWidget(self._webview_empty)
-        self.addContentWidget(widget)
-
-        self._refresh_btn = QtGui.QPushButton("Refresh", widget)
-        self._refresh_btn.clicked.connect(self.refresh)
-        self.addContentWidget(self._refresh_btn)
-
-    def _get_meta(self, knob_name):
-        if knob_name in nuke.root().knobs().keys():
-            return nuke.root()[knob_name].value()
-
-    def refresh(self):
-        self.initiate_error_box()
-
-        version_id = self._get_meta("ftrack_version_id")
-        if version_id == None:
-            msg = "This script is not an asset and does not belong to any tasks. "
-            msg += "Please publish it in order to manage the corresponding task. "
-            detail = "File > Mill Ftrack - Publish Script"
-            self.set_error(msg, detail)
-            self._stackLayout.setCurrentWidget(self._webview_empty)
-            return
-
-        try:
-            current_scene_version = N_AssetFactory.get_version_from_id(
-                version_id, SceneIO)
-        except AssetIOError as err:
-            msg = "The Version Asset ID of this script is incorrect. Please contact RnD."
-            detail = "Version Asset ID : %s\nError: %s" % (
-                version_id, str(err))
-            self.set_error(msg, detail)
-            self._stackLayout.setCurrentWidget(self._webview_empty)
-            return
-
-        url = QtCore.QUrl(current_scene_version.web_widget_infos_Url)
-        if not url.isValid():
-            msg = "The asset version Url 'info' is incorrect."
-            self.set_error(msg)
-            self._stackLayout.setCurrentWidget(self._webview_empty)
-            return
-
-        self._webview.load(url)
-        self._stackLayout.setCurrentWidget(self._webview)
 
 
 class SceneVersionWidget(QtGui.QWidget):
@@ -113,15 +39,11 @@ class SceneVersionWidget(QtGui.QWidget):
 
     def initiate(self):
         self._stackLayout.setCurrentWidget(self._loading_asset_version)
-        # self._loading_asset_version.start_anim()
 
     def set_empty(self):
         self._stackLayout.setCurrentWidget(self._empty_asset_version)
-        # self._loading_asset_version.stop_anim()
 
     def set_scene_version(self, scene_version):
-        # if scene_version.is_being_cached:
-        #     return
 
         if scene_version.getId() not in self._scene_versions_dict.keys():
             widget = SingleSceneVersionWidget(scene_version, self)
@@ -131,7 +53,6 @@ class SceneVersionWidget(QtGui.QWidget):
 
         self._stackLayout.setCurrentWidget(
             self._scene_versions_dict[scene_version.getId()])
-        # self._loading_asset_version.stop_anim()
 
     @property
     def current_scene_version(self):
@@ -397,7 +318,14 @@ class SingleSceneVersionWidget(QtGui.QWidget):
                                           QtGui.QSizePolicy.Expanding)
         asset_frame_layout.addItem(spacer_global)
 
+    def _load_image(self, image):
+        default_thumbnail =  os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
+        thumbnail = self.scene_version.getThumbnail() or default_thumbnail
+        image.loadFromData(urllib.urlopen(thumbnail).read())
+        return image
+
     def initiate_scene_version(self):
+
         if self.scene_version == None:
             return
 
@@ -405,11 +333,12 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         self._status.set_status(self.scene_version.getStatus())
         self._asset_version.setText("%03d" % self.scene_version.get('version'))
 
-        default_thumbnail =  os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
-        thumbnail = self.scene_version.getThumbnail() or default_thumbnail
+
         image = QtGui.QImage()
-        image.loadFromData(urllib.urlopen(thumbnail).read())
-        self._thumbnail_widget.update_image(image)
+
+        self._controller = Controller(self._load_image, [image])
+        self._controller.completed.connect(self._thumbnail_widget.update_image)
+        self._controller.start()
 
         self.set_owner(self.scene_version.getOwner())
         self._date.setText(str(self.scene_version.getDate()))

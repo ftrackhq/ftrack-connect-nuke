@@ -5,19 +5,18 @@ from PySide import QtGui, QtCore, QtWebKit
 import os
 import datetime
 
-# from generic.dockable_widget import BaseDockableWidget
-
 from assets_tree import AssetsTree
 from ftrack_connect_nuke.connector.nukeassets import NukeSceneAsset
 
 from status_widget import StatusWidget
 
-from ftrack_connect_nuke.millftrack_nuke.controller import Controller
+from ftrack_connect_nuke.ui.controller import Controller
 
 from FnAssetAPI import logging
 
 import nuke
 from base_dialog import BaseDialog
+
 
 class TaskManagerWidget(BaseDialog):
 
