@@ -18,78 +18,6 @@ import nuke
 from base_dialog import BaseDialog
 
 
-class TaskManagerWidget(BaseDialog):
-
-    def __init__(self, parent=None):
-        super(TaskManagerWidget, self).__init__(parent)
-        self.setupUI()
-
-        nuke.addOnScriptLoad(self.refresh)
-        nuke.addOnScriptSave(self.refresh)
-
-        self.refresh()
-
-    def setupUI(self):
-        self.setMinimumWidth(400)
-
-        widget = QtGui.QWidget(self)
-        main_layout = QtGui.QVBoxLayout(widget)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(0)
-
-        self._webview = QtWebKit.QWebView()
-        self._webview_empty = QtWebKit.QWebView()
-
-        self._stackLayout = QtGui.QStackedLayout()
-        self._stackLayout.addWidget(self._webview)
-        self._stackLayout.addWidget(self._webview_empty)
-        main_layout.addLayout(self._stackLayout)
-
-        self._stackLayout.setCurrentWidget(self._webview_empty)
-        self.addContentWidget(widget)
-
-        self._refresh_btn = QtGui.QPushButton("Refresh", widget)
-        self._refresh_btn.clicked.connect(self.refresh)
-        self.addContentWidget(self._refresh_btn)
-
-    def _get_meta(self, knob_name):
-        if knob_name in nuke.root().knobs().keys():
-            return nuke.root()[knob_name].value()
-
-    def refresh(self):
-        self.initiate_error_box()
-
-        version_id = self._get_meta("ftrack_version_id")
-        if version_id == None:
-            msg = "This script is not an asset and does not belong to any tasks. "
-            msg += "Please publish it in order to manage the corresponding task. "
-            detail = "File > Mill Ftrack - Publish Script"
-            self.set_error(msg, detail)
-            self._stackLayout.setCurrentWidget(self._webview_empty)
-            return
-
-        try:
-            current_scene = N_AssetFactory.get_asset_from_version_id(
-                version_id, SceneIO)
-        except AssetIOError as err:
-            msg = "The Version Asset ID of this script is incorrect. Please contact RnD."
-            detail = "Version Asset ID : %s\nError: %s" % (
-                version_id, str(err))
-            self.set_error(msg, detail)
-            self._stackLayout.setCurrentWidget(self._webview_empty)
-            return
-
-        url = QtCore.QUrl(current_scene.task.web_widget_infos_Url)
-        if not url.isValid():
-            msg = "The task Url 'info' is incorrect."
-            self.set_error(msg)
-            self._stackLayout.setCurrentWidget(self._webview_empty)
-            return
-
-        self._webview.load(url)
-        self._stackLayout.setCurrentWidget(self._webview)
-
-
 class TaskWidget(QtGui.QWidget):
     asset_version_selected = QtCore.Signal(object)
     no_asset_version = QtCore.Signal()
@@ -381,27 +309,18 @@ class SceneAssetsWidget(QtGui.QWidget):
 
     def __init__(self, parent=None):
         super(SceneAssetsWidget, self).__init__(parent)
-
-        # self._scenes_connectors = SceneIO.connectors()
-
-        self._connectors_per_type = dict()
-        # for scene_connector in self._scenes_connectors:
-        self._connectors_per_type['nuke_comp_scene'] = NukeSceneAsset()
-        self._connectors_per_type['nuke_precomp_scene'] = NukeSceneAsset()
-        self._connectors_per_type['nuke_roto_scene'] = NukeSceneAsset()
-
         self._task = None
 
         self.setupUI()
 
     def setupUI(self):
         css_settings_global = """
-    QFrame { border: none; color: #FFF; }
-    QCheckBox { color: #DDD; padding: 0px; background: none; }
-    QComboBox { color: #DDD; padding: 2px; background: #333; }
-    QComboBox::drop-down { border-radius: 0px; }
-    QToolButton { color: #DDD; padding: 0px; background: #333; }
-    """
+        QFrame { border: none; color: #FFF; }
+        QCheckBox { color: #DDD; padding: 0px; background: none; }
+        QComboBox { color: #DDD; padding: 2px; background: #333; }
+        QComboBox::drop-down { border-radius: 0px; }
+        QToolButton { color: #DDD; padding: 0px; background: #333; }
+        """
         self.setStyleSheet(css_settings_global)
 
         main_layout = QtGui.QVBoxLayout(self)
@@ -439,27 +358,12 @@ class SceneAssetsWidget(QtGui.QWidget):
         self.assets_tree = AssetsTree(self)
 
         assets_colors = dict()
-        # for connector_name, connector in self._connectors_per_type.iteritems():
-        #   assets_colors[connector_name] = connector.color
-        # self.assets_tree.add_assets_colors(assets_colors)
+
 
         main_layout.addWidget(self.assets_tree)
 
     def initiate_task(self, task, current_scene=None):
         self._task = task
-
-        if current_scene != None:
-            self._asset_connectors_cbbox.blockSignals(True)
-
-            # for i in range(1, self._asset_connectors_cbbox.count()):
-            #   asset_type = self._asset_connectors_cbbox.itemText(i)
-            #   connector = self._connectors_per_type[asset_type]
-            #   if connector.asset_type == current_scene.getType():
-            #     self._asset_connectors_cbbox.setCurrentIndex(i)
-            #     break
-
-            self._asset_connectors_cbbox.blockSignals(False)
-
         self.initiate_assets_tree()
 
     def initiate_assets_tree(self):
