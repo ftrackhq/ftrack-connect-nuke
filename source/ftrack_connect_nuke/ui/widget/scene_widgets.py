@@ -91,6 +91,7 @@ class SceneManagerWidget(BaseDialog):
 
 
 class SceneVersionWidget(QtGui.QWidget):
+    notify = QtCore.Signal((str, str))
 
     def __init__(self, parent=None):
         super(SceneVersionWidget, self).__init__(parent)
@@ -114,11 +115,11 @@ class SceneVersionWidget(QtGui.QWidget):
 
     def initiate(self):
         self._stackLayout.setCurrentWidget(self._loading_asset_version)
-        self._loading_asset_version.start_anim()
+        # self._loading_asset_version.start_anim()
 
     def set_empty(self):
         self._stackLayout.setCurrentWidget(self._empty_asset_version)
-        self._loading_asset_version.stop_anim()
+        # self._loading_asset_version.stop_anim()
 
     def set_scene_version(self, scene_version):
         # if scene_version.is_being_cached:
@@ -126,12 +127,13 @@ class SceneVersionWidget(QtGui.QWidget):
 
         if scene_version.getId() not in self._scene_versions_dict.keys():
             widget = SingleSceneVersionWidget(scene_version, self)
+            widget.notify.connect(self.notify.emit)
             self._scene_versions_dict[scene_version.getId()] = widget
             self._stackLayout.addWidget(widget)
 
         self._stackLayout.setCurrentWidget(
             self._scene_versions_dict[scene_version.getId()])
-        self._loading_asset_version.stop_anim()
+        # self._loading_asset_version.stop_anim()
 
     @property
     def current_scene_version(self):
@@ -153,6 +155,7 @@ class SceneVersionWidget(QtGui.QWidget):
 
 
 class NoSceneVersionWidget(QtGui.QWidget):
+    notify = QtCore.Signal((str, str))
 
     def __init__(self, parent=None):
         super(NoSceneVersionWidget, self).__init__(parent)
@@ -163,10 +166,9 @@ class NoSceneVersionWidget(QtGui.QWidget):
         padding:10px; border: 0px;
         """
 
-        # image = os.path.join(image_dir, "no_asset.png")
-        # css_image = """
-        # background: url(""" + image + """) no-repeat center center;
-        # """
+        css_image = """
+        background: url(':ftrack/image/studio/no-asset') no-repeat center center;
+        """
         main_layout = QtGui.QHBoxLayout(self)
 
         frame = QtGui.QFrame(self)
@@ -178,10 +180,10 @@ class NoSceneVersionWidget(QtGui.QWidget):
 
         movie_screen = QtGui.QFrame(frame)
         movie_screen.setMinimumSize(QtCore.QSize(300, 300))
-        # movie_screen.setStyleSheet(css_image)
+        movie_screen.setStyleSheet(css_image)
 
         warning = QtGui.QLabel(frame)
-        warning.setText("No scene asset found for this task...")
+        warning.setText("No scene asset found for the selected task")
         warning.setWordWrap(True)
         warning.setAlignment(QtCore.Qt.AlignCenter)
 
@@ -210,35 +212,7 @@ class LoadingSceneVersionWidget(QtGui.QWidget):
         frame.setFrameShape(QtGui.QFrame.StyledPanel)
         frame.setFrameShadow(QtGui.QFrame.Raised)
         frame_layout = QtGui.QVBoxLayout(frame)
-
-        # loading_gif = os.path.join(image_dir, "mill_logo_light.gif")
-        # self.movie = QtGui.QMovie(loading_gif, QtCore.QByteArray(), frame)
-
-        # movie_screen = QtGui.QLabel(frame)
-        # movie_screen.setSizePolicy(QtGui.QSizePolicy.Expanding,
-        #                            QtGui.QSizePolicy.Expanding)
-        # movie_screen.setAlignment(QtCore.Qt.AlignCenter)
-
-        # warning = QtGui.QLabel(frame)
-        # warning.setText("Loading scene asset...")
-        # warning.setWordWrap(True)
-        # warning.setAlignment(QtCore.Qt.AlignCenter)
-
-        # frame_layout.addWidget(movie_screen)
-        # frame_layout.addWidget(warning)
-
         main_layout.addWidget(frame)
-
-        # # Add the QMovie object to the label
-        # self.movie.setCacheMode(QtGui.QMovie.CacheAll)
-        # self.movie.setSpeed(100)
-        # movie_screen.setMovie(self.movie)
-
-    def start_anim(self):
-        self.movie.start()
-
-    def stop_anim(self):
-        self.movie.stop()
 
 
 class ThumbnailWidget(QtGui.QLabel):
@@ -271,12 +245,11 @@ class ThumbnailWidget(QtGui.QLabel):
 
 
 class SingleSceneVersionWidget(QtGui.QWidget):
+    notify = QtCore.Signal((str, str))
 
     def __init__(self, scene_version=None, parent=None):
         super(SingleSceneVersionWidget, self).__init__(parent)
         self.scene_version = scene_version
-
-        # self._scenes_connectors = SceneIO.connectors()
 
         self.error = False
         self.locked = False
@@ -426,20 +399,6 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         tab_asset_history_layout.addWidget(self._graph_widget)
         self._tab_widget.addTab(tab_asset_history, "Asset history")
 
-        # # Display Dependencies from this asset
-
-        # tab_inputs = QtGui.QWidget()
-        # tab_inputs_layout = QtGui.QVBoxLayout(tab_inputs)
-        # tab_inputs_layout.setContentsMargins(0, 8, 0, 0)
-        # self._tab_widget.addTab(tab_inputs, "Dependencies")
-
-        # # Display Renders from this asset
-
-        # tab_renders = QtGui.QWidget()
-        # tab_renders_layout = QtGui.QVBoxLayout(tab_renders)
-        # tab_renders_layout.setContentsMargins(0, 8, 0, 0)
-        # self._tab_widget.addTab(tab_renders, "Asset Renders")
-
         asset_frame_layout.addWidget(self._tab_widget)
 
         spacer_global = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum,
@@ -470,30 +429,6 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         # self.set_asset_type(self.scene_version.asset.connector.asset_type)
         self._comment.setText(self.scene_version.getComment())
 
-        # tuple_editor = self.scene_version.editor()
-        # if tuple_editor is not None:
-        #     user_edit, date_edit = tuple_editor
-
-        #     editor_lbl = QtGui.QLabel("Last Edit by", self)
-        #     editor_lbl.setStyleSheet(self._css_lbl)
-        #     self._editor = QtGui.QLabel(self)
-        #     self.set_editor(user_edit)
-        #     self._editor.setTextFormat(QtCore.Qt.RichText)
-        #     self._editor.setTextInteractionFlags(
-        #         QtCore.Qt.TextBrowserInteraction)
-        #     self._editor.setOpenExternalLinks(True)
-        #     date_edit_lbl = QtGui.QLabel("on", self)
-        #     date_edit_lbl.setStyleSheet(self._css_lbl)
-        #     self._date_edit = QtGui.QLabel(
-        #         date_edit.strftime("%A, %d. %B %Y %I:%M%p"), self)
-        #     self._date_edit.setStyleSheet(self._css_value)
-
-        #     self._infos_layout.insertRow(4, date_edit_lbl, self._date_edit)
-        #     self._infos_layout.insertRow(4, editor_lbl, self._editor)
-
-        # if self.scene_version.asset.locker != None:
-        #     self.set_locker()
-
         self._validate()
 
     def set_asset_type(self, current_asset_type):
@@ -504,12 +439,12 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         #         color = scene_connector.color
         #         asset_type_name = scene_connector.name
 
-        # css_asset_type = """
-        #     border-radius: 2px; border: 0px; color: #f0f0f0;
-        #     padding: 3px; background: """ + color + """;
-        # """
+        css_asset_type = """
+            border-radius: 2px; border: 0px; color: #f0f0f0;
+            padding: 3px; background: """ + color + """;
+        """
         self._asset_type.setText(asset_type_name)
-        # self._asset_type.setStyleSheet(css_asset_type)
+        self._asset_type.setStyleSheet(css_asset_type)
 
     def set_owner(self, owner):
         name = owner.getName()
@@ -593,11 +528,7 @@ class SingleSceneVersionWidget(QtGui.QWidget):
                 errors.append(error)
 
         if len(errors) > 0:
-            self.set_scene_error("<br/><br/>".join(errors))
-        else:
-            self.initiate_scene_error()
+            self.notify.emit("<br/><br/>".join(errors), 'error')
 
-        if len(warnings) > 0:
-            self.set_scene_warning("<br/><br/>".join(warnings))
-        else:
-            self.initiate_scene_warning()
+        elif len(warnings) > 0:
+            self.notify.emit("<br/><br/>".join(warning), 'error')
