@@ -43,7 +43,7 @@ class BaseDialog(QtGui.QDialog):
         self.footer_container_layout = QtGui.QHBoxLayout()
 
         # Main Container wrapper for loading scree
-        self.busy_overlay = TagTreeOverlay(self.main_container)
+        self.busy_overlay = TagTreeOverlay(self)
         self.busy_overlay.hide()
 
         self.header_container_layout.setContentsMargins(4, 0, 4, 0)
