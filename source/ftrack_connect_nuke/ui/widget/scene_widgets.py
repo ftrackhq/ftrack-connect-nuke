@@ -91,6 +91,7 @@ class SceneManagerWidget(BaseDialog):
 
 
 class SceneVersionWidget(QtGui.QWidget):
+    notify = QtCore.Signal((str, str))
 
     def __init__(self, parent=None):
         super(SceneVersionWidget, self).__init__(parent)
@@ -126,6 +127,7 @@ class SceneVersionWidget(QtGui.QWidget):
 
         if scene_version.getId() not in self._scene_versions_dict.keys():
             widget = SingleSceneVersionWidget(scene_version, self)
+            widget.notify.connect(self.notify.emit)
             self._scene_versions_dict[scene_version.getId()] = widget
             self._stackLayout.addWidget(widget)
 
@@ -153,6 +155,7 @@ class SceneVersionWidget(QtGui.QWidget):
 
 
 class NoSceneVersionWidget(QtGui.QWidget):
+    notify = QtCore.Signal((str, str))
 
     def __init__(self, parent=None):
         super(NoSceneVersionWidget, self).__init__(parent)
@@ -163,10 +166,6 @@ class NoSceneVersionWidget(QtGui.QWidget):
         padding:10px; border: 0px;
         """
 
-        # image = os.path.join(image_dir, "no_asset.png")
-        # css_image = """
-        # background: url(""" + image + """) no-repeat center center;
-        # """
         main_layout = QtGui.QHBoxLayout(self)
 
         frame = QtGui.QFrame(self)
@@ -243,6 +242,7 @@ class ThumbnailWidget(QtGui.QLabel):
 
 
 class SingleSceneVersionWidget(QtGui.QWidget):
+    notify = QtCore.Signal((str, str))
 
     def __init__(self, scene_version=None, parent=None):
         super(SingleSceneVersionWidget, self).__init__(parent)
@@ -524,10 +524,8 @@ class SingleSceneVersionWidget(QtGui.QWidget):
                 "not a Nuke script (ending with .nk)<br/>[file: %s]" % file
                 errors.append(error)
 
-        # if len(errors) > 0:
-        #     self.parent().parent().header.setMessage("<br/><br/>".join(errors), 'error')
+        if len(errors) > 0:
+            self.notify.emit("<br/><br/>".join(errors), 'error')
 
-        # elif len(warnings) > 0:
-        #     self.parent().parent().header.setMessage("<br/><br/>".join(errors), 'warnings')
-        # else:
-        #     self.parent().parent().header.dismissMessage()
+        elif len(warnings) > 0:
+            self.notify.emit("<br/><br/>".join(warning), 'error')

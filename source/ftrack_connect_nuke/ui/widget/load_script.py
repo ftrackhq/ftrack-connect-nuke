@@ -62,6 +62,8 @@ class ScriptOpenerDialog(BaseDialog):
         right_layout = QtGui.QVBoxLayout(right_widget)
         right_layout.setContentsMargins(5, 0, 0, 0)
         self._scene_version_widget = SceneVersionWidget(self)
+        self._scene_version_widget.notify.connect(self.header.setMessage)
+
         right_layout.addWidget(self._scene_version_widget)
         splitter.addWidget(right_widget)
         self.main_container_layout.addWidget(splitter)
