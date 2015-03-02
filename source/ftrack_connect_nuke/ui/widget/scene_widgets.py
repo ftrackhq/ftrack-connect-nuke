@@ -5,15 +5,14 @@ from PySide import QtGui, QtCore, QtWebKit
 import ftrack
 from base_dialog import BaseDialog
 from scene_stats_widget import StatisticWidget
-from message_widget import MessageWidget
 from status_widget import StatusWidget
 
 
-from images import image_dir
+# from images import image_dir
 
 from FnAssetAPI import logging
 
-from .. import utilities
+from ftrack_connect_nuke.millftrack_nuke import utilities
 
 import nuke
 import os
@@ -212,28 +211,28 @@ class LoadingSceneVersionWidget(QtGui.QWidget):
         frame.setFrameShadow(QtGui.QFrame.Raised)
         frame_layout = QtGui.QVBoxLayout(frame)
 
-        loading_gif = os.path.join(image_dir, "mill_logo_light.gif")
-        self.movie = QtGui.QMovie(loading_gif, QtCore.QByteArray(), frame)
+        # loading_gif = os.path.join(image_dir, "mill_logo_light.gif")
+        # self.movie = QtGui.QMovie(loading_gif, QtCore.QByteArray(), frame)
 
-        movie_screen = QtGui.QLabel(frame)
-        movie_screen.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
-        movie_screen.setAlignment(QtCore.Qt.AlignCenter)
+        # movie_screen = QtGui.QLabel(frame)
+        # movie_screen.setSizePolicy(QtGui.QSizePolicy.Expanding,
+        #                            QtGui.QSizePolicy.Expanding)
+        # movie_screen.setAlignment(QtCore.Qt.AlignCenter)
 
-        warning = QtGui.QLabel(frame)
-        warning.setText("Loading scene asset...")
-        warning.setWordWrap(True)
-        warning.setAlignment(QtCore.Qt.AlignCenter)
+        # warning = QtGui.QLabel(frame)
+        # warning.setText("Loading scene asset...")
+        # warning.setWordWrap(True)
+        # warning.setAlignment(QtCore.Qt.AlignCenter)
 
-        frame_layout.addWidget(movie_screen)
-        frame_layout.addWidget(warning)
+        # frame_layout.addWidget(movie_screen)
+        # frame_layout.addWidget(warning)
 
         main_layout.addWidget(frame)
 
-        # Add the QMovie object to the label
-        self.movie.setCacheMode(QtGui.QMovie.CacheAll)
-        self.movie.setSpeed(100)
-        movie_screen.setMovie(self.movie)
+        # # Add the QMovie object to the label
+        # self.movie.setCacheMode(QtGui.QMovie.CacheAll)
+        # self.movie.setSpeed(100)
+        # movie_screen.setMovie(self.movie)
 
     def start_anim(self):
         self.movie.start()
@@ -324,17 +323,6 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         asset_main_frame_layout.addWidget(asset_version_lbl)
         asset_main_frame_layout.addWidget(self._asset_version)
         asset_frame_layout.addWidget(asset_main_frame)
-
-        self._scene_error_box = MessageWidget(self)
-        asset_frame_layout.addWidget(self._scene_error_box)
-        self._scene_error_box._warning_header.setWordWrap(True)
-        self._scene_error_box._warning_header.setTextFormat(QtCore.Qt.RichText)
-
-        self._scene_warning_box = MessageWidget(self)
-        asset_frame_layout.addWidget(self._scene_warning_box)
-        self._scene_warning_box._warning_header.setWordWrap(True)
-        self._scene_warning_box._warning_header.setTextFormat(
-            QtCore.Qt.RichText)
 
         overview_layout = QtGui.QHBoxLayout()
         overview_layout.setContentsMargins(0, 0, 0, 0)
@@ -574,23 +562,6 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         self._infos_layout.insertRow(0, locker_lbl, locker)
 
         self.locked = True
-
-    def set_scene_error(self, error=None):
-        if error != None:
-            self._scene_error_box.set_error(error)
-        else:
-            self._scene_error_box.setVisible(False)
-        self.error = True
-
-    def set_scene_warning(self, warning):
-        self._scene_warning_box.set_warning(warning)
-
-    def initiate_scene_error(self):
-        self._scene_error_box.setVisible(False)
-        self.error = False
-
-    def initiate_scene_warning(self):
-        self._scene_warning_box.setVisible(False)
 
     def _validate(self):
         errors = []

@@ -26,7 +26,7 @@ class Delegate(delegate.Delegate):
         from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
 
         from ftrack_connect_nuke.ui.widget.publish_script import ScriptPublisherDialog
-
+        from ftrack_connect_nuke.ui.widget.load_script import ScriptOpenerDialog
         Connector.registerAssets()
 
         # wrappers for initializing the widgets with the correct connector object
@@ -109,7 +109,7 @@ class Delegate(delegate.Delegate):
         ftrackMenu.addSeparator()
         ftrackMenu.addCommand('Publish a gizmo...', GizmoPublisherDialog)
         ftrackMenu.addCommand('Publish script...', ScriptPublisherDialog)
-        # ftrackMenu.addCommand('Load script...', millAssetManager.open_script_panel)
+        ftrackMenu.addCommand('Load script...', ScriptOpenerDialog)
 
         # ftrackMenu.addCommand('Publish a group of nodes...', millAssetManager.publish_group_panel)
 

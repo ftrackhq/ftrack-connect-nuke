@@ -13,7 +13,7 @@ from FnAssetAPI import logging
 
 class ScriptOpenerDialog(BaseDialog):
 
-    def __init__(self, version_id):
+    def __init__(self):
         super(ScriptOpenerDialog, self).__init__(
             QtGui.QApplication.activeWindow())
 
