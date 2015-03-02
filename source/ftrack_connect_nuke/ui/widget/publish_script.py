@@ -6,8 +6,12 @@
 # import ftrack
 from PySide import QtGui
 from FnAssetAPI import logging
+import re
+import json
 
 from ftrack_connect_nuke.connector.nukeassets import NukeSceneAsset
+import nuke
+import ftrack
 # from ftrack_connect_nuke.connector.nukecon import Connector
 
 from comment_widget import CommentWidget
@@ -15,6 +19,7 @@ from task_widgets import TaskWidget
 from snapshots_widget import SnapshotsWidget
 from base_dialog import BaseDialog
 from ftrack_connect.ui.theme import applyTheme
+from ftrack_connect_nuke.ui.legacy import get_dependencies
 from ftrack_connect.ui import resource
 
 
@@ -31,16 +36,7 @@ class ScriptPublisherDialog(BaseDialog):
         self._connectors_per_type = {}
         self._connectors_per_type['nuke_scene'] = NukeSceneAsset()
         self.setupUI()
-
-        # Check error
-        # if not self.is_error():
         self.initiate_tasks()
-        # else:
-        #     self.left_tasks_widget.setEnabled(False)
-        #     self._asset_connectors_cbbox.setEnabled(False)
-        #     self._snapshotWidget.setEnabled(False)
-        #     self._comment_widget.setEnabled(False)
-        #     self._tasks_btn.setEnabled(False)
 
         self.exec_()
 
@@ -173,14 +169,16 @@ class ScriptPublisherDialog(BaseDialog):
         self._comment_widget = CommentWidget(self.right_bot_container)
         self.right_bot_container_layout.addWidget(self._comment_widget)
 
-        self._connect_script_signals()
         self._save_btn.setText("Publish and Save script")
-
+        self._save_btn.clicked.disconnect()
+        self._connect_script_signals()
 
     def _connect_script_signals(self):
         self.asset_conn_combo.currentIndexChanged.connect(
             self._toggle_asset_type
         )
+        self._comment_widget.changed.connect(self._validate_comments)
+        self._save_btn.clicked.connect(self.publish_script_panel)
 
     @property
     def asset_thumbnail(self):
@@ -218,16 +216,23 @@ class ScriptPublisherDialog(BaseDialog):
         return self.left_tasks_widget.current_task_status_changed()
 
     def _toggle_asset_type(self):
-        # intermediary slot to ensure none of the signal argument is passed to the
+        # intermediary slot to ensure none
+        # of the signal argument is passed to the
         # "update_asset" method.
 
+        self.update_asset()
+        self._validate()
+
+    def set_task(self, task):
+        super(ScriptPublisherDialog, self).set_task(task)
         self.update_asset()
         self._validate()
 
     def update_task(self, *args):
         super(ScriptPublisherDialog, self).update_task(*args)
         self.left_tasks_widget.set_task(self.current_task)
-        self._validate(soft_validation=True)
+        self.update_asset()
+        self._validate()
         self._comment_widget.setFocus()
 
     def update_asset(self):
@@ -246,51 +251,221 @@ class ScriptPublisherDialog(BaseDialog):
             if version:
                 asset_version = version[-1].get('version')
 
-        # version = task.asset_version_number(self.asset_name, self.connector.asset_type)
+        # version = task.asset_version_number(
+        # self.asset_name, self.connector.asset_type)
         self._asset_version.setText("%03d" % asset_version)
 
-    def _validate(self, soft_validation=False):
-        logging.debug("soft_validation: %s" % soft_validation)
-
-        self.asset_conn_combo.setEnabled(True)
-
-        warning = None
-
-        asset_type = self.asset_conn_combo.currentText()
-        connector = self._connectors_per_type[asset_type]
-        if self.current_task != None and self.current_task != None:
-            if self.current_task.getId() != self.current_task.getId():
-                warning = "The current Nuke script doesn't belong to this task... The"
-                "task should be '%s'" % self.current_task.getName()
-
-            # elif self.current_task.connector.asset_type != connector.asset_type:
-            #     warning = "The current Nuke script doesn't belong to this asset... The"
-            #     "asset type should be '%s'" % self.current_task.connector.asset_type
-
-        if warning is not None:
-            self.set_warning(warning)
-        else:
-            self._validate_task()
+    def _validate(self, soft_validation=True):
+        task_valid = self._validate_task()
+        if not task_valid:
+            return
 
         # Error check
-
         error = None
-        display_error = True
+        if len(self._comment_widget.text) == 0:
+            error = "You must comment before publishing"
 
-        if self.current_task == None:
+        elif not error and self.current_task is None:
             error = "You don't have any task assigned to you."
             self.asset_conn_combo.setEnabled(False)
 
-        elif self.current_task.getParent() == None:
-            error = "This task isn't attached to any shot.. You need one to publish an asset"
+        elif not error and not self.current_task.getParent():
+            error = (
+                "This task isn't attached to any shot.. "
+                "You need one to publish an asset"
+            )
 
-        if error == None and len(self._comment_widget.text) == 0:
+        if not error:
+            self.set_enabled(True)
+            if self.header.isVisible():
+                self.header.dismissMessage()
+        else:
+            self.header.setMessage(error, 'error')
+            self.set_enabled(False)
+
+    def _validate_comments(self):
+        if len(self._comment_widget.text) == 0:
             error = "You must comment before publishing"
-            if soft_validation:
-                display_error = False
+            self.header.setMessage(error, 'error')
+            self.set_enabled(False)
+        else:
+            self.set_enabled(True)
+            self.header.dismissMessage()
 
-        if error != None:
-            if display_error:
-                self.set_error(error)
-            else:
-                self.set_enabled(False)
+    def publish_script_panel(self):
+        task = self.current_task
+        asset_name = self.asset_name
+        thumbnail = self.asset_thumbnail
+        comment = self.comment
+        asset_type = self.current_asset_type
+
+        import tempfile
+        tmp_script = tempfile.NamedTemporaryFile(
+            suffix='.nk', delete=False).name
+        nuke.scriptSaveAs(tmp_script)
+
+        task = ftrack.Task(task.getId())
+        parent = task.getParent()
+        asset_id = parent.createAsset(
+            name=asset_name,
+            assetType=asset_type
+        ).getId()
+
+        asset = ftrack.Asset(asset_id)
+        version = asset.createVersion(comment=comment, taskid=task.getId())
+        version.createComponent(
+            name='scene',
+            path=tmp_script
+        )
+
+        logging.info(thumbnail)
+
+        if thumbnail:
+            version.createThumbnail(thumbnail)
+
+        scene_metas = SceneNodeAnalyser()
+
+        version.setMeta(
+            'mft.node_numbers', json.dumps(scene_metas.node_number_meta)
+        )
+
+        dependencies = get_dependencies()
+        logging.info(dependencies.values())
+        version.addUsesVersions(versions=dependencies.values())
+
+        result = version.publish()
+        if result:
+            nuke.message('Asset %s correctly published' % asset.getName())
+
+        if self.current_shot_status_changed():
+            task.shot.ftrack_object.setStatus(self.current_shot_status)
+
+        if self.current_task_status_changed():
+            task.setStatus(self.current_task_status)
+
+        # self.recent_assets.add_scene(version)
+        # self.recent_assets.update_menu()
+
+
+class NodeType(object):
+
+    def __init__(self, name, regex=None, is_output=False):
+        self.name = name
+        self.is_output = is_output
+
+        self._total_ftrack_assets_ids = []
+
+        if regex is not None:
+            self._regex = re.compile(regex)
+        else:
+            self._regex = re.compile("^" + name + "$")
+
+        self.nodes = []
+
+    def add_instance(self, node, id_ftrack=None):
+        self.nodes.append(node)
+
+        if id_ftrack is not None:
+            self._total_ftrack_assets_ids.append(id_ftrack)
+
+    def match(self, node_class):
+        return re.search(self._regex, node_class) is not None
+
+    def compute_total(self, all_enabled_nodes, all_nodes_in_tree):
+        node_names = set([n.name() for n in self.nodes])
+
+        total = len(node_names)
+        total_enabled = len(node_names.intersection(all_enabled_nodes))
+        total_in_tree = 0
+
+        if self.is_output:
+            return (total, total_enabled)
+
+        total_in_tree = len(node_names.intersection(all_nodes_in_tree))
+        total_tracked = len(self._total_ftrack_assets_ids)
+        return (total, total_enabled, total_in_tree, total_tracked)
+
+
+class SceneNodeAnalyser(object):
+
+    ''' List the useful nodes composing the Nuke scene '''
+
+    def __init__(self):
+        self._outputs = ["Write", "MillWrite", "MillWrite2", "MillWrite3"]
+        self._inputs = ["Read", "ReadGeo"]
+        self._blacklist_classes = ["Dot", "BackdropNode", "Viewer"]
+
+        self._nodes_metas = [
+            NodeType(
+                "Output nodes", "^(" + "|".join(self._outputs) + ")$", is_output=True),
+            NodeType("Input nodes", "^(" + "|".join(self._inputs) + ")$"),
+            NodeType("Genarts nodes", "^OFXcom.genarts."),
+            NodeType("Revision nodes", "^OFXcom.revisionfx."),
+            NodeType("VectorBlur nodes"),
+            NodeType("OpticalFlares nodes")
+        ]
+
+        self.links = set()
+
+        all_nodes = []
+        all_enabled_nodes = []
+        all_tracked_nodes = []
+
+        blacklist_nodes = []
+
+        for node in nuke.allNodes(group=nuke.root()):
+            if node.Class() in self._blacklist_classes:
+                blacklist_nodes.append(node.name())
+                continue
+
+            id_ftrack = None
+            if "ftrack_version_id" in node.knobs().keys():
+                id_ftrack = node["ftrack_version_id"].value()
+                nuke.tprint(id_ftrack)
+                all_tracked_nodes.append(id_ftrack)
+
+            for node_meta in self._nodes_metas:
+                if node_meta.match(node.Class()):
+                    node_meta.add_instance(node, id_ftrack)
+
+            try:
+                node_enabled = not node["disable"].value()
+            # If there is no 'disable' knob, we consider the node is enabled
+            except:
+                node_enabled = True
+            if node_enabled:
+                all_enabled_nodes.append(node.name())
+
+            all_nodes.append(node.name())
+
+        all_nodes_in_tree = self._nodes_in_tree(self._nodes_metas[0].nodes,
+                                                blacklist_nodes)
+
+        self.node_number_meta = {"Nodes number": (len(all_nodes),
+                                                  len(all_enabled_nodes),
+                                                  len(all_nodes_in_tree),
+                                                  len(all_tracked_nodes))}
+        for node_meta in self._nodes_metas:
+            self.node_number_meta[node_meta.name] = node_meta.compute_total(all_enabled_nodes,
+                                                                            all_nodes_in_tree)
+
+        nuke.tprint(self.node_number_meta)
+
+    def _nodes_in_tree(self, outputs, blacklist_nodes):
+        tree = set()
+
+        for output in outputs:
+            deps = set()
+            if output["disable"].value():
+                continue
+            children = nuke.dependencies(output)
+            while len(children) != 0:
+                new_children = []
+                for child in children:
+                    new_children += nuke.dependencies(child)
+                deps = deps.union([c.name() for c in children])
+                children = new_children
+            deps_valid = deps.difference(blacklist_nodes)
+            tree = tree.union(deps_valid)
+
+        return tree

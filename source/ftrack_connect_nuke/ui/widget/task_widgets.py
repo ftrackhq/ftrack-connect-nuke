@@ -162,17 +162,18 @@ class TaskWidget(QtGui.QWidget):
 
     def set_task(self, task, current_scene=None):
         parents = self._get_task_parents(task)
+        self._current_task = task
         if parents not in self._tasks_dict.keys():
-            single_task_widget = SingleTaskWidget(task, current_scene, self)
+            single_task_widget = SingleTaskWidget(task=task, parent=self)
             single_task_widget.assets_widget.assets_tree.asset_version_selected.connect(
-                self._emit_asset_version_selected)
+                self._emit_asset_version_selected
+            )
             single_task_widget.set_read_only(self._read_only)
             single_task_widget.set_selection_mode(self._selection_mode)
             self._tasks_dict[parents] = single_task_widget
             self._stackLayout.addWidget(single_task_widget)
 
         self._stackLayout.setCurrentWidget(self._tasks_dict[parents])
-        self._current_task = task
 
     def current_shot_status_changed(self):
         single_task_widget = self._stackLayout.currentWidget()
@@ -212,21 +213,21 @@ class SingleTaskWidget(QtGui.QFrame):
 
     def setupUI(self):
         css_task_global = """
-    QFrame { padding: 3px; border-radius: 4px;
-             background: #252525; color: #FFF; }
-    QLabel { padding: 0px; background: none; }
-    QTabWidget::pane { border-top: 2px solid #151515; top: -2px;}
-    QTabBar::tab { padding: 6px 10px; background: #151515;
-                   border-top: 2px solid #151515;
-                   border-right: 2px solid #151515;
-                   border-left: 2px solid #151515;
-                   border-radius: 0px; }
-    QTabBar::tab:selected { background: #333;
-                            border-top-left-radius: 4px;
-                            border-top-right-radius: 4px; }
-    QTabBar::tab:hover { background: #222; }
-    QTabBar::tab:!selected { margin-top: 2px; }
-    """
+        QFrame { padding: 3px; border-radius: 4px;
+                 background: #252525; color: #FFF; }
+        QLabel { padding: 0px; background: none; }
+        QTabWidget::pane { border-top: 2px solid #151515; top: -2px;}
+        QTabBar::tab { padding: 6px 10px; background: #151515;
+                       border-top: 2px solid #151515;
+                       border-right: 2px solid #151515;
+                       border-left: 2px solid #151515;
+                       border-radius: 0px; }
+        QTabBar::tab:selected { background: #333;
+                                border-top-left-radius: 4px;
+                                border-top-right-radius: 4px; }
+        QTabBar::tab:hover { background: #222; }
+        QTabBar::tab:!selected { margin-top: 2px; }
+        """
         css_task_name_lbl = "font-size: 13px;"
         css_task_name = "color: #c3cfa4; font-size: 13px; font-weight: bold;"
 
@@ -397,12 +398,12 @@ class SceneAssetsWidget(QtGui.QWidget):
 
     def setupUI(self):
         css_settings_global = """
-    QFrame { border: none; color: #FFF; }
-    QCheckBox { color: #DDD; padding: 0px; background: none; }
-    QComboBox { color: #DDD; padding: 2px; background: #333; }
-    QComboBox::drop-down { border-radius: 0px; }
-    QToolButton { color: #DDD; padding: 0px; background: #333; }
-    """
+        QFrame { border: none; color: #FFF; }
+        QCheckBox { color: #DDD; padding: 0px; background: none; }
+        QComboBox { color: #DDD; padding: 2px; background: #333; }
+        QComboBox::drop-down { border-radius: 0px; }
+        QToolButton { color: #DDD; padding: 0px; background: #333; }
+        """
         self.setStyleSheet(css_settings_global)
 
         main_layout = QtGui.QVBoxLayout(self)
@@ -448,19 +449,6 @@ class SceneAssetsWidget(QtGui.QWidget):
 
     def initiate_task(self, task, current_scene=None):
         self._task = task
-
-        if current_scene != None:
-            self._asset_connectors_cbbox.blockSignals(True)
-
-            # for i in range(1, self._asset_connectors_cbbox.count()):
-            #   asset_type = self._asset_connectors_cbbox.itemText(i)
-            #   connector = self._connectors_per_type[asset_type]
-            #   if connector.asset_type == current_scene.getType():
-            #     self._asset_connectors_cbbox.setCurrentIndex(i)
-            #     break
-
-            self._asset_connectors_cbbox.blockSignals(False)
-
         self.initiate_assets_tree()
 
     def initiate_assets_tree(self):

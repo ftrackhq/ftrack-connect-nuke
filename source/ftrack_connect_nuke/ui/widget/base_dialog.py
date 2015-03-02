@@ -17,7 +17,6 @@ class BaseDialog(QtGui.QDialog):
         self.disable_tasks_list = disable_tasks_list
         self._user = ftrack.User(os.getenv('LOGNAME'))
         self.initiate_tasks()
-        logging.debug(self._tasks_dict)
 
         self._current_scene = None
 
@@ -194,7 +193,8 @@ class BaseDialog(QtGui.QDialog):
         self._validate_task()
 
     def set_enabled(self, bool_result):
-        self._save_btn.setEnabled(bool_result)
+        if not self._save_btn.isEnabled() == bool_result:
+            self._save_btn.setEnabled(bool_result)
 
     def set_task(self, task):
         if task is None:
@@ -238,17 +238,8 @@ class BaseDialog(QtGui.QDialog):
 
         self.tasks_combo.blockSignals(False)
 
-        self.set_loading_mode(False)
+        # self.set_loading_mode(False)
         self.update_task_global()
-
-    def set_loading_mode(self, bool_value):
-        if bool_value:
-            self.loading_widget.movie_loading.start()
-            self.main_stacked_layout.setCurrentWidget(self.loading_widget)
-        else:
-            self.main_stacked_layout.setCurrentWidget(self.main_container)
-            self.loading_widget.movie_loading.stop()
-            self.set_enabled(not bool_value)
 
     def set_warning(self, msg, detail=None):
         self.header.setMessage(msg + (detail or ''), 'warning')
@@ -266,8 +257,11 @@ class BaseDialog(QtGui.QDialog):
                 ' any asset. This action will be reported.'
             )
             self.set_warning(warning)
+            return False
         else:
             self.header.dismissMessage()
+            self.set_enabled(True)
+            return True
 
 
 class LoadWidget(QtGui.QWidget):
