@@ -29,11 +29,11 @@ class ScriptOpenerDialog(BaseDialog):
 
         # CONTENT TASK
 
-        splitter = QtGui.QSplitter(self)
-        splitter.setContentsMargins(0, 0, 0, 10)
-        splitter.setChildrenCollapsible(False)
+        self.splitter = QtGui.QSplitter(self)
+        self.splitter.setContentsMargins(0, 0, 0, 10)
+        self.splitter.setChildrenCollapsible(False)
 
-        left_widget = QtGui.QWidget(splitter)
+        left_widget = QtGui.QWidget(self.splitter)
         left_layout = QtGui.QVBoxLayout(left_widget)
         left_layout.setContentsMargins(0, 0, 5, 0)
         self._task_widget = TaskWidget(self)
@@ -43,27 +43,18 @@ class ScriptOpenerDialog(BaseDialog):
             self.set_scene_version)
         self._task_widget.no_asset_version.connect(self.set_no_asset_version)
         left_layout.addWidget(self._task_widget)
-        splitter.addWidget(left_widget)
+        self.splitter.addWidget(left_widget)
 
         # CONTENT ASSET
-
-        css_asset_name = "color: #c3cfa4; font-weight: bold;"
-        css_asset_version = "color: #de8888; font-weight: bold;"
-        css_asset_global = """
-        QFrame { padding: 3px; border-radius: 4px;
-                 background: #222; color: #FFF; font-size: 13px; }
-        QLabel { padding: 0px; background: none; }
-        """
-
-        right_widget = QtGui.QWidget(splitter)
+        right_widget = QtGui.QWidget(self.splitter)
         right_layout = QtGui.QVBoxLayout(right_widget)
         right_layout.setContentsMargins(5, 0, 0, 0)
         self._scene_version_widget = scene_widgets.SceneVersionWidget(self)
         self._scene_version_widget.notify.connect(self.header.setMessage)
 
         right_layout.addWidget(self._scene_version_widget)
-        splitter.addWidget(right_widget)
-        self.main_container_layout.addWidget(splitter)
+        self.splitter.addWidget(right_widget)
+        self.main_container_layout.addWidget(self.splitter)
 
         self._save_btn.setText("Open script")
         self._save_btn.setMinimumWidth(150)

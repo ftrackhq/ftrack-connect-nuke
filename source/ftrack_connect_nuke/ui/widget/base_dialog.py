@@ -60,6 +60,8 @@ class BaseDialog(QtGui.QDialog):
         self.main_container_layout.setContentsMargins(3, 3, 3, 3)
 
         self.footer_container_layout.setAlignment(QtCore.Qt.AlignBottom)
+        self.footer_container.setMaximumHeight(50)
+        self.footer_container_layout.setContentsMargins(8, 8, 8, 8)
 
         # -- CONTAINER LAYOUT ASSIGN -- #
         self.header_container.setLayout(self.header_container_layout)

@@ -73,6 +73,10 @@ class ScriptPublisherDialog(BaseDialog):
 
         # Create "main content" for the publisher
         self.publish_container = QtGui.QWidget(self.main_container)
+        self.publish_container.setSizePolicy(
+            QtGui.QSizePolicy.Expanding,
+            QtGui.QSizePolicy.Expanding,
+        )
         self.publish_container_layout = QtGui.QHBoxLayout()
         self.publish_container.setLayout(self.publish_container_layout)
 
@@ -84,6 +88,7 @@ class ScriptPublisherDialog(BaseDialog):
         self.publish_splitter.setChildrenCollapsible(False)
 
         self.publish_container_layout.addWidget(self.publish_splitter)
+        self.publish_container_layout.setContentsMargins(5, 5, 5, 5)
 
         # Create left and right containers for the splitter
         self.publish_left_container = QtGui.QWidget(self.publish_splitter)
@@ -91,6 +96,7 @@ class ScriptPublisherDialog(BaseDialog):
 
         self.publish_left_container_layout = QtGui.QVBoxLayout()
         self.publish_right_container_layout = QtGui.QVBoxLayout()
+        self.publish_right_container_layout.setContentsMargins(5, 0, 0, 0)
 
         self.publish_left_container.setLayout(
             self.publish_left_container_layout
@@ -137,7 +143,7 @@ class ScriptPublisherDialog(BaseDialog):
 
         # Right Splitter TOP Container
         asset_title_label = QtGui.QLabel('Asset', self.right_top_container)
-        self._asset_name = QtGui.QLabel('..1', self.right_top_container)
+        self._asset_name = QtGui.QLabel('Loading...', self.right_top_container)
         asset_spacer = QtGui.QSpacerItem(
             0,
             0,
@@ -145,9 +151,11 @@ class ScriptPublisherDialog(BaseDialog):
             QtGui.QSizePolicy.Minimum
         )
         version_title_label = QtGui.QLabel('Version', self.right_top_container)
-        self._asset_version = QtGui.QLabel('..2', self.right_top_container)
+        self._asset_version = QtGui.QLabel(
+            'Loading...',
+            self.right_top_container
+        )
 
-        self._asset_name.setStyleSheet(css_asset_global)
         self._asset_version.setStyleSheet(css_asset_version)
 
         self.right_top_container_layout.addWidget(asset_title_label)

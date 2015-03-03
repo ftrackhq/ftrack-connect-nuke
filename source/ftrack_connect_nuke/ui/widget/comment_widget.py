@@ -22,7 +22,7 @@ class CommentWidget(QtGui.QFrame):
         """
 
         self.setMinimumWidth(600)
-        self.setMaximumHeight(100)
+        # self.setMaximumHeight(100)
         self.setStyleSheet(css_comment_frame)
 
         layout = QtGui.QFormLayout(self)
