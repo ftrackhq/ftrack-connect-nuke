@@ -34,33 +34,24 @@ class ScriptEditorWidget(QtGui.QWidget):
         option_layout = QtGui.QHBoxLayout(self._option_frame)
         option_layout.setContentsMargins(8, 8, 8, 8)
         option_layout.setSpacing(8)
-        filter_lbl = QtGui.QLabel("Filter", self._option_frame)
+        # filter_lbl = QtGui.QLabel("Filter", self._option_frame)
         css_filter = """
-        QLineEdit { border-radius: 4px; border: 1px solid #666;
+        QLineEdit { border: 1px solid #666;
                     background: #555; color: #000; }
         """
-        css_btn = """
-        QPushButton { background: #111; color: #AAA; }
-        QPushButton:pressed { background: #222; color: #FFF; }
-        """
-        css_tool_btn = """
-        QToolButton { background: #111; color: #AAA; }
-        QToolButton:pressed { background: #222; color: #FFF; }
-        """
+
         self._filter_edit = QtGui.QLineEdit(self._option_frame)
         self._filter_edit.setMaximumHeight(20)
-        self._filter_edit.setStyleSheet(css_filter)
+        # self._filter_edit.setStyleSheet(css_filter)
         self._filter_edit.textChanged.connect(self._set_filter)
-        self._previous_occurence = QtGui.QToolButton(self._option_frame)
-        self._previous_occurence.setArrowType(QtCore.Qt.LeftArrow)
-        self._previous_occurence.setStyleSheet(css_tool_btn)
-        self._previous_occurence.setMaximumWidth(20)
-        self._previous_occurence.setMaximumHeight(20)
-        self._next_occurence = QtGui.QToolButton(self._option_frame)
-        self._next_occurence.setArrowType(QtCore.Qt.RightArrow)
-        self._next_occurence.setStyleSheet(css_tool_btn)
-        self._next_occurence.setMaximumWidth(20)
-        self._next_occurence.setMaximumHeight(20)
+        self._previous_occurence = QtGui.QPushButton('previous', self._option_frame)
+        # self._previous_occurence.setArrowType(QtCore.Qt.LeftArrow)
+        # self._previous_occurence.setMaximumWidth(20)
+        # self._previous_occurence.setMaximumHeight(20)
+        self._next_occurence = QtGui.QPushButton('next',self._option_frame)
+        # self._next_occurence.setArrowType(QtCore.Qt.RightArrow)
+        # self._next_occurence.setMaximumWidth(20)
+        # self._next_occurence.setMaximumHeight(20)
         spacer = QtGui.QSpacerItem(40, 20,
             QtGui.QSizePolicy.Expanding,
             QtGui.QSizePolicy.Minimum
@@ -68,39 +59,23 @@ class ScriptEditorWidget(QtGui.QWidget):
         self._collapse_all_btn = QtGui.QPushButton(
             "Collapse All", self._option_frame)
         self._collapse_all_btn.setMaximumHeight(20)
-        self._collapse_all_btn.setStyleSheet(css_btn)
+        # self._collapse_all_btn.setStyleSheet(css_btn)
         self._collapse_all_btn.clicked.connect(
             self._script_editor_tree.collapseAll)
         self._expand_all_btn = QtGui.QPushButton(
             "Expand All", self._option_frame)
         self._expand_all_btn.setMaximumHeight(20)
-        self._expand_all_btn.setStyleSheet(css_btn)
+        # self._expand_all_btn.setStyleSheet(css_btn)
         self._expand_all_btn.clicked.connect(
-            self._script_editor_tree.expandAll)
-        self._line_number_cbox = QtGui.QCheckBox(
-            "Show line numbers", self._option_frame)
-        self._line_number_cbox.setChecked(True)
-        self._line_number_cbox.stateChanged.connect(self._toggle_line_number)
-        self._zoom_text_in = QtGui.QPushButton("+", self._option_frame)
-        self._zoom_text_in.setMaximumWidth(20)
-        self._zoom_text_in.setMaximumHeight(20)
-        self._zoom_text_in.setStyleSheet(css_btn)
-        self._zoom_text_in.clicked.connect(self._toggle_zoom)
-        self._zoom_text_out = QtGui.QPushButton("-", self._option_frame)
-        self._zoom_text_out.setMaximumWidth(20)
-        self._zoom_text_out.setMaximumHeight(20)
-        self._zoom_text_out.setStyleSheet(css_btn)
-        self._zoom_text_out.clicked.connect(self._toggle_zoom)
-        option_layout.addWidget(filter_lbl)
+            self._script_editor_tree.expandAll
+        )
         option_layout.addWidget(self._filter_edit)
         option_layout.addWidget(self._previous_occurence)
         option_layout.addWidget(self._next_occurence)
         option_layout.addItem(spacer)
         option_layout.addWidget(self._collapse_all_btn)
         option_layout.addWidget(self._expand_all_btn)
-        option_layout.addWidget(self._line_number_cbox)
-        option_layout.addWidget(self._zoom_text_in)
-        option_layout.addWidget(self._zoom_text_out)
+
         main_layout.addWidget(self._option_frame)
 
     def set_file(self, file):
@@ -363,9 +338,7 @@ class ScriptEditorTreeView(QtGui.QTreeView):
         super(ScriptEditorTreeView, self).__init__(parent)
 
         css_tree = """
-        QTreeView { border-top-right-radius: 4px;
-                    border-top-left-radius: 4px;
-                    background: #444; border: 1px solid #555; }
+        QTreeView { background: #444; border: 1px solid #555; }
         QTreeView::branch:has-siblings:!adjoins-item { background: transparent; }
         QTreeView::branch:has-siblings:adjoins-item { background: transparent; }
         QTreeView::branch:!has-children:!has-siblings:adjoins-item { background: transparent; }
@@ -379,9 +352,9 @@ class ScriptEditorTreeView(QtGui.QTreeView):
             border-image: none;
             image: url(":ftrack/image/studio/branch-open");
           }
-        QScrollArea { padding: 3px; border: 0px; border-radius: 4px;
+        QScrollArea { padding: 3px; border: 0px;
                       background: #252525; }
-        QScrollBar { border: 0; border-radius: 6px;background-color: #333;
+        QScrollBar { border: 0; background-color: #333;
                      margin: 1px; }
         QScrollBar::handle { background: #222; border: 1px solid #111; }
         QScrollBar::sub-line, QScrollBar::add-line { height: 0px; width: 0px; }
@@ -457,9 +430,9 @@ class ScriptEditorTreeView(QtGui.QTreeView):
     def drawBranches(self, painter, rect, index):
         ''' Move the branches on the right to let the space for the line number display.
         '''
-        if self.parent()._line_number_cbox.isChecked():
-            rect.setRight(
-                rect.right() + self._delegate.line_numbers_indent + 10)
+        rect.setRight(
+                rect.right() + self._delegate.line_numbers_indent + 10
+        )
         super(ScriptEditorTreeView, self).drawBranches(painter, rect, index)
 
     def paintEvent(self, event):
@@ -619,14 +592,11 @@ class ScriptEditorItemDelegate(QtGui.QStyledItemDelegate):
             str(model.total_line_number))
 
         # Draw the line number if the option has been set
-        if tree_widget.parent()._line_number_cbox.isChecked():
-            painter.setPen(
-                QtGui.QPen(self._color_line_number, 1, QtCore.Qt.SolidLine))
-            painter.setFont(font_line_number)
-            painter.drawText(5, rect.top() + 15, str(item.line_number))
-            interval_left = rect.left() + 15 + self.line_numbers_indent
-        else:
-            interval_left = rect.left() + 15
+        painter.setPen(
+            QtGui.QPen(self._color_line_number, 1, QtCore.Qt.SolidLine))
+        painter.setFont(font_line_number)
+        painter.drawText(5, rect.top() + 15, str(item.line_number))
+        interval_left = rect.left() + 15 + self.line_numbers_indent
 
         # Draw the filter if we need one
         if tree_widget.filter != None:
