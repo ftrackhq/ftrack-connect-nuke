@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PySide import QtGui, QtCore, QtWebKit
+from PySide import QtGui, QtCore
 import ftrack
-from base_dialog import BaseDialog
 from scene_stats_widget import StatisticWidget
 from status_widget import StatusWidget
 import urllib
 
 from FnAssetAPI import logging
 from ftrack_connect_nuke.ui.controller import Controller
-import nuke
 import os
 
 
@@ -29,16 +27,10 @@ class SceneVersionWidget(QtGui.QWidget):
         main_layout.setSpacing(0)
 
         self._empty_asset_version = NoSceneVersionWidget(self)
-        self._loading_asset_version = LoadingSceneVersionWidget(self)
         self._stackLayout = QtGui.QStackedLayout()
         self._stackLayout.addWidget(self._empty_asset_version)
         self._stackLayout.addWidget(self._loading_asset_version)
         main_layout.addLayout(self._stackLayout)
-
-        self.initiate()
-
-    def initiate(self):
-        self._stackLayout.setCurrentWidget(self._loading_asset_version)
 
     def set_empty(self):
         self._stackLayout.setCurrentWidget(self._empty_asset_version)
@@ -109,28 +101,6 @@ class NoSceneVersionWidget(QtGui.QWidget):
         frame_layout.addWidget(movie_screen)
         frame_layout.addWidget(warning)
 
-        main_layout.addWidget(frame)
-
-
-class LoadingSceneVersionWidget(QtGui.QWidget):
-
-    def __init__(self, parent=None):
-        super(LoadingSceneVersionWidget, self).__init__(parent)
-        self.setMinimumWidth(700)
-
-        css_loading = """
-        background:#222; border-radius: 4px;
-        padding:10px; border: 0px;
-        """
-
-        main_layout = QtGui.QHBoxLayout(self)
-
-        frame = QtGui.QFrame(self)
-        frame.setMaximumSize(QtCore.QSize(300, 250))
-        frame.setStyleSheet(css_loading)
-        frame.setFrameShape(QtGui.QFrame.StyledPanel)
-        frame.setFrameShadow(QtGui.QFrame.Raised)
-        frame_layout = QtGui.QVBoxLayout(frame)
         main_layout.addWidget(frame)
 
 

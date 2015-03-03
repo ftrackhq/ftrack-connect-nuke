@@ -6,7 +6,7 @@ import ftrack
 import os
 from base_dialog import BaseDialog
 from task_widgets import TaskWidget
-from scene_widgets import SceneVersionWidget
+import scene_widgets
 
 from FnAssetAPI import logging
 from ftrack_connect.ui import resource
@@ -26,10 +26,6 @@ class ScriptOpenerDialog(BaseDialog):
 
     def setupUI(self):
         super(ScriptOpenerDialog, self).setupUI()
-
-        self.resize(1300, 950)
-        self.setMinimumWidth(1300)
-        self.setMinimumHeight(950)
 
         # CONTENT TASK
 
@@ -62,7 +58,7 @@ class ScriptOpenerDialog(BaseDialog):
         right_widget = QtGui.QWidget(splitter)
         right_layout = QtGui.QVBoxLayout(right_widget)
         right_layout.setContentsMargins(5, 0, 0, 0)
-        self._scene_version_widget = SceneVersionWidget(self)
+        self._scene_version_widget = scene_widgets.SceneVersionWidget(self)
         self._scene_version_widget.notify.connect(self.header.setMessage)
 
         right_layout.addWidget(self._scene_version_widget)
@@ -83,6 +79,13 @@ class ScriptOpenerDialog(BaseDialog):
         self._validate()
 
     def set_scene_version(self, scene_version):
+        current = self._scene_version_widget._stackLayout.currentWidget()
+        if not isinstance(current, scene_widgets.NoSceneVersionWidget):
+            size = (1304, 890)
+        else:
+            size = (1276, 638)
+        self.resize(*size)
+        self.setMinimumSize(*size)
         if scene_version is None:
             self._scene_version_widget.set_empty()
             self.set_enabled(False)
