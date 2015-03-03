@@ -86,22 +86,16 @@ class BrowseKnob():
         spec = specifications.ImageSpecification()
         task = ftrack.Task(os.environ['FTRACK_TASKID'])
         spec.referenceHint = task.getEntityRef()
-        browser = BrowserDialog(task)
+        spec.referenceHint = ftrack.Task(os.environ['FTRACK_TASKID']).getEntityRef()
+        browser = TabbedBrowserDialog.buildForSession(spec, context)
+        browser.setWindowTitle(FnAssetAPI.l("Publish to"))
+        browser.setAcceptButtonTitle("Set")
+        if not browser.exec_():
+            return ''
 
-        # browser.setWindowTitle(FnAssetAPI.l("Publish to"))
-        # browser.setAcceptButtonTitle("Set")
-        # if not browser.exec_():
-            # return ''
-        if browser.result():
-            # self.set_task(browser.task)
-
-            self.targetTask = browser.task.getId()
-            obj = connector.Connector.objectById(self.targetTask)
-
-            # FnAssetAPI.logging.info(obj)
-            # FnAssetAPI.logging.info(self.targetTask)
-
-            self._lineEdit.setText(HelpFunctions.getPath(obj, slash=True))
+        self.targetTask = browser.getSelection()[0]
+        obj = ftrackConnector.Connector.objectById(self.targetTask)
+        self._lineEdit.setText(HelpFunctions.getPath(obj, slash=True))
 
 
 class HeaderKnob():
