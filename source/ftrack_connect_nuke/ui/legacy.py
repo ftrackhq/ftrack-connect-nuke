@@ -179,7 +179,6 @@ def publishAssetKnob():
     else:
         currentTask = connector.Connector.objectById(n.knob('fpubto').getObject().targetTask)
 
-
     shot = currentTask.getParent()
 
     publishAsset(n, assetName, content, comment, shot, currentTask)
@@ -208,8 +207,10 @@ def get_dependencies():
 
 
 def publishAsset(n, assetName, content, comment, shot, currentTask):
+    header = n.knobs().get('fheader').getObject().headerWidget
+
     if not currentTask:
-        nuke.message('Could not find currenttask')
+        header.setMessage('Could not find currenttask', 'warning')
     else:
         publishProgress = nuke.ProgressTask('Publishing assets')
         publishProgress.setProgress(0)
@@ -263,7 +264,7 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
                 )
 
         else:
-            nuke.message("Can't publish this assettype yet")
+            header.setMessage("Can't publish this assettype yet", 'info')
             return
 
         publishProgress.setProgress(100)
@@ -275,7 +276,7 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
 
         assetVersion.publish()
 
-        nuke.message('Asset published')
+        header.setMessage('Asset Correctly published!')
 
 def getMetaData(nodeName):
     n = nuke.toNode(nodeName)

@@ -11,6 +11,7 @@ from ftrack_connect.ui.widget import header
 from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
 from ftrack_connect_nuke import connector
 from ftrack_connect.ui.theme import applyTheme
+from ftrack_connect.ui import resource
 
 class TableKnob():
     def makeUI(self):
@@ -92,6 +93,7 @@ class BrowseKnob():
 class HeaderKnob():
     def makeUI(self):
         self.headerWidget = header.HeaderWidget(parent=None)
+        applyTheme(self.headerWidget, 'integration')
         self.headerWidget.setTitle('Publish')
 
         self.headerWidget.updateValue = self.updateValue
