@@ -32,6 +32,15 @@ class BaseDialog(QtGui.QDialog):
         # QFrame { padding: 3px; border-radius: 4px;
         #          background: #252525; color: #FFF; }
         # """
+        self.global_css = """
+        QSplitter QFrame {
+            padding: 3px;
+            border-radius: 1px;
+            background: #222;
+            color: #FFF;
+            font-size: 13px;
+        }
+        """
         self.global_layout = QtGui.QVBoxLayout()
         self.setLayout(self.global_layout)
         self.global_layout.setContentsMargins(0, 0, 0, 0)
@@ -148,6 +157,9 @@ class BaseDialog(QtGui.QDialog):
 
         self._connect_base_signals()
         self.set_loading_screen(True)
+
+    def append_css(self, css):
+        self.setStyleSheet(self.styleSheet()+css)
 
     def modify_layouts(self, layout, spacing, margin, alignment):
         for child in layout.findChildren(QtGui.QLayout):

@@ -15,7 +15,7 @@ from ftrack_connect.worker import Worker
 from FnAssetAPI import logging
 
 
-class TaskWidget(QtGui.QWidget):
+class TaskWidget(QtGui.QFrame):
     asset_version_selected = QtCore.Signal(object)
     no_asset_version = QtCore.Signal()
 
@@ -130,8 +130,6 @@ class SingleTaskWidget(QtGui.QFrame):
 
     def setupUI(self):
         css_task_global = """
-        QFrame { padding: 3px; border-radius: 4px;
-                 background: #252525; color: #FFF; }
         QLabel { padding: 0px; background: none; }
         QTabWidget::pane { border-top: 2px solid #151515; top: -2px;}
         QTabBar::tab { padding: 6px 10px; background: #151515;

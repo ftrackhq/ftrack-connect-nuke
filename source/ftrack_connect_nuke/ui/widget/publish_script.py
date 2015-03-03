@@ -115,19 +115,10 @@ class ScriptPublisherDialog(BaseDialog):
 
         # Right Splitter Containers
         css_asset_version = "color: #de8888; font-weight: bold;"
-        css_asset_global = """
-        QFrame { padding: 3px; border-radius: 4px;
-                 background: #222; color: #FFF; font-size: 13px; }
-        QLabel { padding: 0px; background: none; }
-        """
 
         self.right_top_container = QtGui.QFrame(self.publish_right_container)
         self.right_mid_container = QtGui.QFrame(self.publish_right_container)
         self.right_bot_container = QtGui.QFrame(self.publish_right_container)
-
-        self.right_top_container.setStyleSheet(css_asset_global)
-        self.right_mid_container.setStyleSheet(css_asset_global)
-        self.right_bot_container.setStyleSheet(css_asset_global)
 
         self.right_top_container_layout = QtGui.QHBoxLayout()
         self.right_mid_container_layout = QtGui.QHBoxLayout()
@@ -182,6 +173,7 @@ class ScriptPublisherDialog(BaseDialog):
             alignment=QtCore.Qt.AlignTop
         )
 
+        self.append_css(self.global_css)
         self._connect_script_signals()
 
     def _connect_script_signals(self):
