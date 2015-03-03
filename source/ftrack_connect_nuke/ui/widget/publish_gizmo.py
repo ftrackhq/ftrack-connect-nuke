@@ -45,8 +45,8 @@ class GizmoPublisherDialog(BaseDialog):
 
         asset_main_frame = QtGui.QFrame(self)
         asset_main_frame.setMinimumWidth(600)
-        # uncomment this line to have the black background on asset.
-        # asset_main_frame.setStyleSheet(css_asset_global)
+        # comment this line to remove the black background on asset.
+        asset_main_frame.setStyleSheet(css_asset_global)
         asset_main_frame_layout = QtGui.QHBoxLayout(asset_main_frame)
         asset_main_frame_layout.setSpacing(10)
         asset_name_lbl = QtGui.QLabel("Asset", asset_main_frame)
