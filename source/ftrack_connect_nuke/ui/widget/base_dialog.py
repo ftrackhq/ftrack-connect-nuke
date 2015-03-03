@@ -161,11 +161,12 @@ class BaseDialog(QtGui.QDialog):
     def append_css(self, css):
         self.setStyleSheet(self.styleSheet()+css)
 
-    def modify_layouts(self, layout, spacing, margin, alignment):
+    def modify_layouts(self, layout, spacing, margin, alignment=None):
         for child in layout.findChildren(QtGui.QLayout):
             child.setSpacing(spacing)
             child.setContentsMargins(*margin)
-            child.setAlignment(alignment)
+            if alignment:
+                child.setAlignment(alignment)
 
     def _connect_base_signals(self):
         self._tasks_btn.clicked.connect(self.browse_all_tasks)

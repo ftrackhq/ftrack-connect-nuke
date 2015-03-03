@@ -30,6 +30,7 @@ class SceneVersionWidget(QtGui.QWidget):
         self._stackLayout = QtGui.QStackedLayout()
         self._stackLayout.addWidget(self._empty_asset_version)
         main_layout.addLayout(self._stackLayout)
+        # self.setStyleSheet()
 
     def set_empty(self):
         self._stackLayout.setCurrentWidget(self._empty_asset_version)
@@ -143,7 +144,7 @@ class SingleSceneVersionWidget(QtGui.QWidget):
 
     def setupUI(self):
         css_asset_global = """
-        QFrame { padding: 3px; border-radius: 4px;
+        QFrame { padding: 3px;
                  background: #222; color: #FFF; font-size: 13px; }
         QLabel { padding: 0px; background: none; }
         """

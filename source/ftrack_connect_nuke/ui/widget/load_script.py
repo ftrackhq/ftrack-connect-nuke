@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PySide import QtGui
-import ftrack
+from PySide import QtGui, QtCore
 import os
 from base_dialog import BaseDialog
 from task_widgets import TaskWidget
@@ -30,7 +29,7 @@ class ScriptOpenerDialog(BaseDialog):
         # CONTENT TASK
 
         self.splitter = QtGui.QSplitter(self)
-        self.splitter.setContentsMargins(0, 0, 0, 10)
+        self.splitter.setContentsMargins(10, 10, 10, 10)
         self.splitter.setChildrenCollapsible(False)
 
         left_widget = QtGui.QWidget(self.splitter)
@@ -60,6 +59,17 @@ class ScriptOpenerDialog(BaseDialog):
         self._save_btn.setMinimumWidth(150)
         self._save_btn.clicked.connect(self.load_scene)
 
+        self.splitter.setSizePolicy(
+            QtGui.QSizePolicy.Expanding,
+            QtGui.QSizePolicy.Expanding,
+        )
+
+        self.modify_layouts(
+            self.splitter,
+            spacing=8,
+            margin=(8, 2, 8, 2),
+        )
+
     @property
     def current_scene_version(self):
         return self._scene_version_widget.current_scene_version
@@ -72,7 +82,7 @@ class ScriptOpenerDialog(BaseDialog):
     def set_scene_version(self, scene_version):
         current = self._scene_version_widget._stackLayout.currentWidget()
         if not isinstance(current, scene_widgets.NoSceneVersionWidget):
-            size = (1304, 890)
+            size = (1400, 910)
         else:
             size = (1276, 638)
         self.resize(*size)

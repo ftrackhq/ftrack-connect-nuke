@@ -27,8 +27,18 @@ class TaskWidget(QtGui.QFrame):
 
         self._read_only = True
         self._selection_mode = False
+        self.setObjectName('ftrack-task-widget')
 
         self._tasks_dict = dict()
+        self.setStyleSheet('''
+        #ftrack-task-widget {
+            padding: 3px;
+            border-radius: 1px;
+            background: #222;
+            color: #FFF;
+            font-size: 13px;
+        }
+        ''')
 
     def setupUI(self):
         main_layout = QtGui.QVBoxLayout(self)

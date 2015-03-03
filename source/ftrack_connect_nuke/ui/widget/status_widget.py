@@ -36,10 +36,10 @@ class StatusWidget(QtGui.QWidget):
         self._revert_btn = QtGui.QToolButton(self)
         self._revert_btn.setText("revert status")
         revert_css = """
-    QToolButton { background:transparent; border:none; color: #de8888;
-                  text-decoration: underline; }`
-    QToolButton:hover {color: #dd2727;}
-    """
+        QToolButton { background:transparent; border:none; color: #de8888;
+                      text-decoration: underline; }`
+        QToolButton:hover {color: #dd2727;}
+        """
         self._revert_btn.setStyleSheet(revert_css)
         self._revert_btn.clicked.connect(self._revert_status)
         self._revert_btn.setVisible(False)
@@ -107,13 +107,14 @@ class StatusWidgetDisplay(QtGui.QLabel):
         self.status = status
 
     def set_status_css(self, color=None):
-        background_color = "#000" if color == None else color
-        text_color = "#AAA" if color == None else "#000"
+        background_color = "#000" if color is None else color
+        text_color = "#E5E5E5"
         css_status = """
-    padding: 5px; border-radius: 4px; color: """ + text_color + """;
-    background: """ + background_color + """;
-    """
-        self.setStyleSheet(css_status)
+        padding: 5px;
+        color: %s;
+        background: %s;
+        """
+        self.setStyleSheet(css_status % (text_color, background_color))
 
     def initiate(self):
         self.setText("None")
