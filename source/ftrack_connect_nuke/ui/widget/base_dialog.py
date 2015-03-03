@@ -4,7 +4,7 @@ from PySide import QtGui, QtCore
 from ftrack_connect.ui.widget.header import HeaderWidget
 from ftrack_connect_nuke.ui.controller import Controller
 from ftrack_connect.ui.widget import overlay as _overlay
-from ftrack_connect.worker import Worker
+from FnAssetAPI import logging
 
 
 class BaseDialog(QtGui.QDialog):
@@ -35,8 +35,8 @@ class BaseDialog(QtGui.QDialog):
         self.main_container = QtGui.QFrame(self)
         self.footer_container = QtGui.QFrame(self)
 
-        # self.header_container.setStyleSheet("background-color:red;")
-        # self.main_container.setStyleSheet("background-color:green;")
+        # self.header_container.setStyleSheet("background-color:black;")
+        # self.main_container.setStyleSheet("background-color:grey;")
         # self.footer_container.setStyleSheet("background-color:blue;")
 
         # -- CONTAINERS LAYOUT -- #
@@ -48,7 +48,6 @@ class BaseDialog(QtGui.QDialog):
         self.busy_overlay = LoadingOverlay(self)
         self.busy_overlay.hide()
 
-        self.header_container_layout.setContentsMargins(4, 0, 4, 0)
         self.header_container_layout.setAlignment(QtCore.Qt.AlignTop)
 
         self.main_container_layout.setContentsMargins(3, 3, 3, 3)
@@ -69,6 +68,7 @@ class BaseDialog(QtGui.QDialog):
         self.header = HeaderWidget(self.header_container)
         # self.header_container.setStyleSheet("background-color:black;")
         self.header_container_layout.addWidget(self.header)
+        self.header_container_layout.setContentsMargins(0, 0, 0, 0)
 
         # Taks main container
         self.tasks_frame = QtGui.QFrame(self.header_container)
@@ -89,6 +89,7 @@ class BaseDialog(QtGui.QDialog):
         self.tasks_browse_widget = QtGui.QWidget(self.tasks_main_container)
         self.tasks_browse_widget_layout = QtGui.QHBoxLayout()
         self.tasks_browse_widget.setLayout(self.tasks_browse_widget_layout)
+        self.tasks_browse_widget_layout.setContentsMargins(0, 0, 0, 0)
 
         self.tasks_main_container_layout.addWidget(self.tasks_browse_widget)
 
@@ -138,6 +139,12 @@ class BaseDialog(QtGui.QDialog):
 
         self._connect_base_signals()
         self.set_loading_screen(True)
+
+    def modify_layouts(self, layout, spacing, margin, alignment):
+        for child in layout.findChildren(QtGui.QLayout):
+            child.setSpacing(spacing)
+            child.setContentsMargins(*margin)
+            child.setAlignment(alignment)
 
     def _connect_base_signals(self):
         self._tasks_btn.clicked.connect(self.browse_all_tasks)

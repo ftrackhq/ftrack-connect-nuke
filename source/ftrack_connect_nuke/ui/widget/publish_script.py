@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# import os
-# import re
-# import ftrack
-from PySide import QtGui
+from PySide import QtGui, QtCore
 from FnAssetAPI import logging
 import re
 import json
@@ -12,7 +9,6 @@ import json
 from ftrack_connect_nuke.connector.nukeassets import NukeSceneAsset
 import nuke
 import ftrack
-# from ftrack_connect_nuke.connector.nukecon import Connector
 
 from comment_widget import CommentWidget
 from task_widgets import TaskWidget
@@ -37,7 +33,6 @@ class ScriptPublisherDialog(BaseDialog):
         self._connectors_per_type['nuke_scene'] = NukeSceneAsset()
         self.setupUI()
         self.initiate_tasks()
-
         self.exec_()
 
     def setupUI(self):
@@ -171,6 +166,14 @@ class ScriptPublisherDialog(BaseDialog):
 
         self._save_btn.setText("Publish and Save script")
         self._save_btn.clicked.disconnect()
+
+        self.modify_layouts(
+            self.asset_conn_container,
+            spacing=0,
+            margin=(0, 0, 0, 0),
+            alignment=QtCore.Qt.AlignTop
+        )
+
         self._connect_script_signals()
 
     def _connect_script_signals(self):
