@@ -366,7 +366,7 @@ class SceneAssetsWidget(QtGui.QWidget):
         self._asset_connectors_cbbox.setSizeAdjustPolicy(
             QtGui.QComboBox.AdjustToContents)
 
-        self._refresh_btn = QtGui.QToolButton(self)
+        self._refresh_btn = QtGui.QPushButton(self)
         self._refresh_btn.setText("refresh")
         self._refresh_btn.clicked.connect(self.initiate_assets_tree)
 
