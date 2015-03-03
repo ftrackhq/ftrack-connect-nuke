@@ -383,6 +383,9 @@ class SceneAssetsWidget(QtGui.QWidget):
         if self._asset_connectors_cbbox.currentIndex() == 0:
             asset_types = None
 
+        self.assets_tree.create_asset.connect(
+            self.assets_tree._model.appendRow
+        )
         args = (self._task.getId(), asset_types,)
         self.worker = Worker(self.assets_tree.import_assets, args=args)
         self.worker.started.connect(self.worker_started.emit)
