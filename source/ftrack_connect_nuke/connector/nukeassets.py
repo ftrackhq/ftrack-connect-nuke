@@ -118,7 +118,7 @@ class ImageSequenceAsset(GenericAsset):
 
         self.setFTab(resultingNode, iAObj)
 
-        return 'Imported imgseq asset'
+        return 'Imported %s asset' % iAObj.componentName
 
     def changeVersion(self, iAObj=None, applicationObject=None):
         n = nuke.toNode(applicationObject)
@@ -198,7 +198,7 @@ class ImageSequenceAsset(GenericAsset):
     def publishAsset(self, iAObj=None):
         publishedComponents = []
         # needs rewrite with using publishContent
-        return publishedComponents, 'image sequence asset published'
+        return publishedComponents, '%s published' % iAObj.componentName
 
 
 class CameraAsset(GenericAsset):
