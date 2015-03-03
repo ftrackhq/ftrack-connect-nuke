@@ -120,7 +120,7 @@ class SnapshotsWidget(QtGui.QWidget):
     def get_pixmap_file(self, name_file, pixmap, overwrite=False):
         ''' Save a pixmap into the nuke temp if necessary
         '''
-        dir_temp = tempfile.tempfile.gettempdir()
+        dir_temp = tempfile.gettempdir()
         file_path = os.path.join(dir_temp, name_file + ".png")
         if not overwrite and os.path.isfile(file_path):
             return file_path
