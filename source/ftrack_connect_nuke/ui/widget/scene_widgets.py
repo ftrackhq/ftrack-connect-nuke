@@ -29,7 +29,6 @@ class SceneVersionWidget(QtGui.QWidget):
         self._empty_asset_version = NoSceneVersionWidget(self)
         self._stackLayout = QtGui.QStackedLayout()
         self._stackLayout.addWidget(self._empty_asset_version)
-        self._stackLayout.addWidget(self._loading_asset_version)
         main_layout.addLayout(self._stackLayout)
 
     def set_empty(self):
@@ -120,8 +119,10 @@ class ThumbnailWidget(QtGui.QLabel):
         self.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignTop)
         self.update_image(image)
 
-    def update_image(self, image_path=None):
-        self._pixmap = QtGui.QPixmap(image_path)
+    def update_image(self, image=None):
+        if not image:
+            return
+        self._pixmap = image
         pixmap_scaled = self._pixmap.scaled(
             self.size, QtCore.Qt.KeepAspectRatio)
         self.setPixmap(pixmap_scaled)
@@ -289,7 +290,7 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         asset_frame_layout.addItem(spacer_global)
 
     def _load_image(self, image):
-        default_thumbnail =  os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
+        default_thumbnail = os.environ["FTRACK_SERVER"] + "/img/thumbnail2.png"
         thumbnail = self.scene_version.getThumbnail() or default_thumbnail
         image.loadFromData(urllib.urlopen(thumbnail).read())
         return image
@@ -303,11 +304,12 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         self._status.set_status(self.scene_version.getStatus())
         self._asset_version.setText("%03d" % self.scene_version.get('version'))
 
-
-        image = QtGui.QImage()
+        image = QtGui.QPixmap()
 
         self._controller = Controller(self._load_image, [image])
-        self._controller.completed.connect(self._thumbnail_widget.update_image)
+        self._controller.completed.connect(
+            lambda: self._thumbnail_widget.update_image(image)
+        )
         self._controller.start()
 
         self.set_owner(self.scene_version.getOwner())
