@@ -4,7 +4,14 @@ from PySide import QtGui, QtCore
 from ftrack_connect.ui.widget.header import HeaderWidget
 from ftrack_connect_nuke.ui.controller import Controller
 from ftrack_connect.ui.widget import overlay as _overlay
-from FnAssetAPI import logging
+
+import FnAssetAPI
+from FnAssetAPI import specifications
+from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
+
+
+class FtrackPublishLocale(specifications.LocaleSpecification):
+    _type = "ftrack.publish"
 
 
 class BaseDialog(QtGui.QDialog):
@@ -176,11 +183,23 @@ class BaseDialog(QtGui.QDialog):
         return parents
 
     def browse_all_tasks(self):
-        from browser_dialog import BrowserDialog
+        session = FnAssetAPI.SessionManager.currentSession()
+        context = session.createContext()
+        context.access = context.kWrite
+        context.locale = FtrackPublishLocale()
+        spec = specifications.ImageSpecification()
+        task = ftrack.Task(os.environ['FTRACK_TASKID'])
+        spec.referenceHint = task.getEntityRef()
+        spec.referenceHint = ftrack.Task(os.environ['FTRACK_TASKID']).getEntityRef()
+        browser = TabbedBrowserDialog.buildForSession(spec, context)
+        browser.setWindowTitle(FnAssetAPI.l("Publish to"))
+        browser.setAcceptButtonTitle("Set")
+        if not browser.exec_():
+            return ''
 
-        browser = BrowserDialog(self.current_task, self)
-        if browser.result():
-            self.set_task(browser.task)
+        targetTask = browser.getSelection()[0]
+        task = ftrack.Task(targetTask.split('ftrack://')[-1].split('?')[0])
+        self.set_task(task)
 
     def update_task_global(self):
         self.update_task()
