@@ -30,7 +30,6 @@ class CommentWidget(QtGui.QFrame):
         label = QtGui.QLabel("Comment", self)
         self._edit_field = QtGui.QTextEdit(self)
         self._edit_field.setMinimumHeight(80)
-        self._edit_field.setMaximumHeight(80)
         self._edit_field.textChanged.connect(self._validate_comment)
         layout.setWidget(0, QtGui.QFormLayout.LabelRole, label)
         layout.setWidget(0, QtGui.QFormLayout.FieldRole, self._edit_field)
