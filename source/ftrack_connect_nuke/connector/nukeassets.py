@@ -6,12 +6,13 @@ import nuke
 import ftrack
 import os
 import traceback
+from nukecon import Connector
 
 from ftrack_connect.connector import (
-    FTAssetHandlerInstance, 
-    HelpFunctions, 
-    FTAssetType, 
-    FTAssetObject, 
+    FTAssetHandlerInstance,
+    HelpFunctions,
+    FTAssetType,
+    FTAssetObject,
     FTComponent
 )
 
@@ -79,7 +80,7 @@ class ImageSequenceAsset(GenericAsset):
 
     def importAsset(self, iAObj=None):
         '''Create nuke read node from *iAObj.'''
-        
+
         if iAObj.filePath.endswith('nk'):
             nuke.nodePaste(iAObj.filePath)
             return
@@ -142,7 +143,7 @@ class ImageSequenceAsset(GenericAsset):
         self.setFTab(n, iAObj)
 
         return True
-    
+
     def publishContent(self, content, assetVersion, progressCallback=None):
 
         publishedComponents = []
@@ -183,7 +184,7 @@ class ImageSequenceAsset(GenericAsset):
 
         try:
             node = nuke.toNode(content[0][4])
-            thumbnail = ftrack_connect_nuke.ftrackConnector.Connector.createThumbNail(node)
+            thumbnail = Connector.createThumbNail(node)
             print thumbnail
             if thumbnail:
                 publishedComponents.append(FTComponent(componentname='thumbnail', path=thumbnail))
@@ -193,7 +194,7 @@ class ImageSequenceAsset(GenericAsset):
             traceback.print_exc(file=sys.stdout)
 
         return publishedComponents
-                    
+
     def publishAsset(self, iAObj=None):
         publishedComponents = []
         # needs rewrite with using publishContent
@@ -225,18 +226,18 @@ class CameraAsset(GenericAsset):
 
     def publishContent(self, content, assetVersion, progressCallback=None):
         publishedComponents = []
-        
+
         for c in content:
             publishfilename = c[0]
             componentName = c[1]
-            
+
             publishedComponents.append(FTComponent(componentname=componentName, path=publishfilename))
-            
+
         return publishedComponents
 
     def publishAsset(self, iAObj=None):
         return [], "Publish function not implemented for camera asset"
-    
+
 
 class GeometryAsset(GenericAsset):
     def __init__(self):
@@ -246,7 +247,7 @@ class GeometryAsset(GenericAsset):
         resultingNode = nuke.createNode("ReadGeo2", inpanel=False)
         resultingNode['file'].setValue(nukecon.Connector.windowsFixPath(iAObj.filePath))
         resultingNode['name'].setValue(iAObj.assetName)
-        
+
         #fps = int(ftrack.Task(os.environ['FTRACK_SHOTID']).getFPS())
         #resultingNode['frame_rate'].setValue(fps)
 
@@ -264,13 +265,13 @@ class GeometryAsset(GenericAsset):
 
     def publishContent(self, content, assetVersion, progressCallback=None):
         publishedComponents = []
-        
+
         for c in content:
             publishfilename = c[0]
             componentName = c[1]
-            
+
             publishedComponents.append(FTComponent(componentname=componentName, path=publishfilename))
-            
+
         return publishedComponents
 
     def publishAsset(self, iAObj=None):
@@ -306,10 +307,10 @@ class GizmoAsset(GenericAsset):
         for d in old_gizmo.dependent(nuke.INPUTS | nuke.HIDDEN_INPUTS):
            for input in [i for i in range(d.inputs()) if d.input(i) == old_gizmo]:
                d.setInput(input, new_gizmo)
-        
+
         # restore ititial position
         new_gizmo.setXYpos(old_gizmo.xpos(), old_gizmo.ypos())
-        
+
         # swap them over
         nuke.delete(old_gizmo)
         new_gizmo['name'].setValue(iAObj.assetName)
@@ -320,13 +321,13 @@ class GizmoAsset(GenericAsset):
 
     def publishContent(self, content, assetVersion, progressCallback=None):
         publishedComponents = []
-        
+
         for c in content:
             publishfilename = c[0]
             componentName = c[1]
-            
+
             publishedComponents.append(FTComponent(componentname=componentName, path=publishfilename))
-            
+
         return publishedComponents
 
 

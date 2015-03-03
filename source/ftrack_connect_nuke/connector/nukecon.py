@@ -8,9 +8,11 @@ from nukescripts import panels
 import nukescripts
 import nuke
 
-from ftrack_connect.connector import FTAssetHandlerInstance, HelpFunctions, Connector
+from ftrack_connect.connector import (
+    FTAssetHandlerInstance,
+    HelpFunctions,
+    Connector as _Connector)
 
-import nukeassets
 
 def register_scheme(scheme):
     for method in filter(lambda s: s.startswith('uses_'), dir(urlparse)):
@@ -19,7 +21,7 @@ def register_scheme(scheme):
 register_scheme('ftrack')
 
 
-class Connector(Connector):
+class Connector(_Connector):
     def __init__(self):
         super(Connector, self).__init__()
 
@@ -158,6 +160,7 @@ class Connector(Connector):
 
     @classmethod
     def registerAssets(cls):
+        import nukeassets
         nukeassets.registerAssetTypes()
         super(Connector, cls).registerAssets()
 
@@ -173,9 +176,9 @@ class Connector(Connector):
             reformatNode = nuke.nodes.Reformat()
             reformatNode['type'].setValue("to box")
             reformatNode['box_width'].setValue(200.0)
-    
+
             reformatNode.setInput(0, nodeObject)
-    
+
             w2 = nuke.nodes.Write()
             w2.setInput(0, reformatNode)
             thumbNailFilename = 'thumbnail_' + HelpFunctions.getUniqueNumber() + '.png'
@@ -185,7 +188,7 @@ class Connector(Connector):
 
             curFrame = int(nuke.knob("frame"))
             nuke.execute(w2, curFrame, curFrame)
-    
+
             nuke.delete(reformatNode)
             nuke.delete(w2)
 
@@ -194,7 +197,7 @@ class Connector(Connector):
             import traceback
             traceback.print_exc(file=sys.stdout)
             return None
-        
+
     @staticmethod
     def windowsFixPath(path):
         path = path.replace('\\', '/')
