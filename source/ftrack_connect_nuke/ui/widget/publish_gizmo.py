@@ -105,6 +105,7 @@ class GizmoPublisherDialog(BaseDialog):
         self._comment_widget.changed.connect(self._validate_gizmo)
         gizmo_layout.addWidget(self._comment_widget)
 
+        self._save_btn.clicked.disconnect()
         self._save_btn.clicked.connect(self._publish)
 
         self.main_container_layout.addWidget(gizmo_widget)
