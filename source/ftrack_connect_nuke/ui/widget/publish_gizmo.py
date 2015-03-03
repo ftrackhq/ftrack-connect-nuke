@@ -26,25 +26,26 @@ class GizmoPublisherDialog(BaseDialog):
 
     def setupUI(self):
         super(GizmoPublisherDialog, self).setupUI()
-        css_label = "color: #c3cfa4; font-size: 12px; font-weight: bold;"
+        self.resize(980, 640)
 
         gizmo_widget = QtGui.QWidget()
         gizmo_layout = QtGui.QVBoxLayout(gizmo_widget)
         gizmo_layout.setContentsMargins(5, 0, 0, 0)
 
         css_asset_global = """
-            QFrame { padding: 3px; border-radius: 4px;
+            QFrame { padding: 3px;
                      background: #222; color: #FFF; font-size: 13px; }
             QLabel { padding: 0px; background: none; }
             """
         css_asset_name = """
-            QLineEdit { padding: 3px; border-radius: 4px; border: 1px solid #444;
+            QLineEdit { padding: 3px; border: 1px solid #444;
                         background: #333; color: #FFF; font-weight: bold; }
             """
         css_asset_version = "color: #de8888; font-weight: bold;"
 
         asset_main_frame = QtGui.QFrame(self)
         asset_main_frame.setMinimumWidth(600)
+        # comment this line to remove the black background on asset.
         asset_main_frame.setStyleSheet(css_asset_global)
         asset_main_frame_layout = QtGui.QHBoxLayout(asset_main_frame)
         asset_main_frame_layout.setSpacing(10)
@@ -71,7 +72,7 @@ class GizmoPublisherDialog(BaseDialog):
 
         browser_label = QtGui.QLabel("Gizmo file", gizmo_widget)
         browser_edit_css = """
-            QLineEdit { border-radius: 4px; border: 1px solid #666;
+            QLineEdit { border: 1px solid #666;
                         background: #555; color: #000; }
         """
         self._browser_edit = QtGui.QLineEdit(gizmo_widget)
@@ -100,6 +101,7 @@ class GizmoPublisherDialog(BaseDialog):
         gizmo_layout.addItem(file_layout)
 
         self._comment_widget = CommentWidget(gizmo_widget)
+        self._comment_widget.setMaximumHeight(120)
         self._comment_widget.changed.connect(self._validate_gizmo)
         gizmo_layout.addWidget(self._comment_widget)
 

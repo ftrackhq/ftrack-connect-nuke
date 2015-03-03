@@ -12,10 +12,10 @@ class CommentWidget(QtGui.QFrame):
         super(CommentWidget, self).__init__(parent)
 
         css_comment_frame = """
-        QFrame { border-radius: 4px; background: #222; color: #FFF; }
+        QFrame { 4px; background: #222; color: #FFF; }
         QLabel { padding: 0px; background: none; }
         QTextEdit { border: 3px solid #252525; background: #444; }
-        QScrollBar { border: 0; border-radius: 6px;
+        QScrollBar { border: 0;
                      background-color: #333; margin: 1px;}
         QScrollBar::handle {background: #222; border: 1px solid #111;}
         QScrollBar::sub-line, QScrollBar::add-line {height: 0px; width: 0px;}
