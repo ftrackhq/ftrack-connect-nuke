@@ -126,7 +126,6 @@ class SnapshotsWidget(QtGui.QWidget):
             return file_path
 
         pixmap.save(file_path, format="PNG", quality=100)
-        logging.debug(file_path)
         return file_path
 
     def chooseSource(self):

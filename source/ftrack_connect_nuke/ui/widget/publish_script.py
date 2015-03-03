@@ -316,6 +316,14 @@ class ScriptPublisherDialog(BaseDialog):
 
         task = ftrack.Task(task.getId())
         parent = task.getParent()
+
+        if isinstance(parent, ftrack.Project):
+            msg = 'Cannot publish asset "%s" under project "%s"'
+            self.header.setMessage(
+                msg % (task.getName(), parent.getName()),
+                'error'
+            )
+
         asset_id = parent.createAsset(
             name=asset_name,
             assetType=asset_type
@@ -345,7 +353,7 @@ class ScriptPublisherDialog(BaseDialog):
 
         result = version.publish()
         if result:
-            nuke.message('Asset %s correctly published' % asset.getName())
+            self.header.setMessage('Asset %s correctly published' % asset.getName())
 
         if self.current_shot_status_changed():
             task.shot.ftrack_object.setStatus(self.current_shot_status)

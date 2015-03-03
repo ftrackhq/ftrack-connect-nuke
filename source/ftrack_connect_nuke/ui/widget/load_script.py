@@ -57,6 +57,7 @@ class ScriptOpenerDialog(BaseDialog):
 
         self._save_btn.setText("Open script")
         self._save_btn.setMinimumWidth(150)
+        self._save_btn.clicked.disconnect()
         self._save_btn.clicked.connect(self.load_scene)
 
         self.splitter.setSizePolicy(
@@ -116,7 +117,7 @@ class ScriptOpenerDialog(BaseDialog):
         import nuke
         current_scene_version = self.current_scene_version
         path = current_scene_version.getComponent(name='scene').getFilesystemPath()
-        if not os.path.exists(path):
+        if not path or not os.path.exists(path):
             self.header.setMessage('file %s does not exist!', 'error')
             return
         nuke.nodePaste(path)
