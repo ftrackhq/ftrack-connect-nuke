@@ -4,6 +4,7 @@
 import os
 from PySide import QtGui, QtCore, QtOpenGL
 from ftrack_connect.ui import resource
+import tempfile
 
 class SnapshotsWidget(QtGui.QWidget):
 
@@ -119,7 +120,8 @@ class SnapshotsWidget(QtGui.QWidget):
     def get_pixmap_file(self, name_file, pixmap, overwrite=False):
         ''' Save a pixmap into the nuke temp if necessary
         '''
-        file_path = os.path.join(dir_temp(), name_file + ".png")
+        dir_temp = tempfile.tempfile.gettempdir()
+        file_path = os.path.join(dir_temp, name_file + ".png")
         if not overwrite and os.path.isfile(file_path):
             return file_path
 
