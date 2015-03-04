@@ -56,6 +56,12 @@ class BrowseKnob():
         )
 
         self.targetTask = self.current_task.getEntityRef()
+        session = FnAssetAPI.SessionManager.currentSession()
+        self.context = session.createContext()
+        self.context.access = self.context.kWrite
+        self.context.locale = FtrackPublishLocale()
+        self.spec = specifications.ImageSpecification()
+        self.spec.referenceHint = self.targetTask
 
     def makeUI(self):
         self.mainWidget = QtGui.QWidget()
@@ -81,13 +87,7 @@ class BrowseKnob():
         pass
 
     def openBrowser(self):
-        session = FnAssetAPI.SessionManager.currentSession()
-        context = session.createContext()
-        context.access = context.kWrite
-        context.locale = FtrackPublishLocale()
-        spec = specifications.ImageSpecification()
-        spec.referenceHint = self.targetTask
-        browser = TabbedBrowserDialog.buildForSession(spec, context)
+        browser = TabbedBrowserDialog.buildForSession(self.spec, self.context)
         browser.setWindowTitle(FnAssetAPI.l("Publish to"))
         browser.setAcceptButtonTitle("Set")
         if not browser.exec_():
