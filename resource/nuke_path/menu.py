@@ -2,10 +2,10 @@
 import ftrack_connect_nuke
 import ftrack_connect
 try:
-	# included in ftrack-connect-foundry
-	import assetmgr_nuke
+    # part of nuke
+    import foundry.assetmgr
 except:
-	# part of nuke
-	import foundry.assetmgr
+	# included in ftrack-connect-foundry
+    import assetmgr_nuke
 
 import nuke
