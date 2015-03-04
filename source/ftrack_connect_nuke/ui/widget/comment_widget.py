@@ -27,6 +27,7 @@ class CommentWidget(QtGui.QFrame):
 
         layout = QtGui.QFormLayout(self)
         layout.setSpacing(10)
+        layout.setContentsMargins(0, 0, 0, 0)
         label = QtGui.QLabel("Comment", self)
         self._edit_field = QtGui.QTextEdit(self)
         self._edit_field.setObjectName('ftrack-edit-field')
