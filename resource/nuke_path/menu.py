@@ -1,3 +1,6 @@
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
+
 # Import to bootstrap foundry api.
 import ftrack_connect_nuke
 import ftrack_connect
