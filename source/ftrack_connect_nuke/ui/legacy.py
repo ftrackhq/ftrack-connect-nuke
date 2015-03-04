@@ -292,12 +292,10 @@ def getMetaData(nodeName):
     return metaData
 
 def ftrackPublishKnobChanged(forceRefresh=False, g=None):
-    if not g:
-        g = nuke.thisNode()
-
-    header = getHeaderKnob(g)
+    g = g or nuke.thisNode()
 
     if 'ftable' in g.knobs():
+        header = getHeaderKnob(g)
         nodeAssetType = ''
         if nuke.thisKnob().name() in ['inputChange', 'fscript'] or forceRefresh == True:
             thisNodeName = g['name'].value()
