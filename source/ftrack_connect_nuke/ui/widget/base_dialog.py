@@ -89,7 +89,6 @@ class BaseDialog(QtGui.QDialog):
         self.header = HeaderWidget(self.header_container)
         # self.header_container.setStyleSheet("background-color:black;")
         self.header_container_layout.addWidget(self.header)
-        self.header_container_layout.setContentsMargins(0, 0, 0, 0)
 
         # Taks main container
         self.tasks_frame = QtGui.QFrame(self.header_container)

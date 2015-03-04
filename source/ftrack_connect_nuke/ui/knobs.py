@@ -102,7 +102,6 @@ class HeaderKnob():
     def makeUI(self):
         self.headerWidget = header.HeaderWidget(parent=None)
         applyTheme(self.headerWidget, 'integration')
-        self.headerWidget.setTitle('Publish')
 
         self.headerWidget.updateValue = self.updateValue
 
