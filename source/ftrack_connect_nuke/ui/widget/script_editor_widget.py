@@ -32,7 +32,7 @@ class ScriptEditorWidget(QtGui.QWidget):
 
         self._option_frame = QtGui.QFrame(self)
         option_layout = QtGui.QHBoxLayout(self._option_frame)
-        option_layout.setContentsMargins(8, 8, 8, 8)
+        option_layout.setContentsMargins(0, 8, 0, 8)
         option_layout.setSpacing(8)
         # filter_lbl = QtGui.QLabel("Filter", self._option_frame)
         css_filter = """

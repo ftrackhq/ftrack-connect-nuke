@@ -46,9 +46,20 @@ class BaseDialog(QtGui.QDialog):
             font-size: 13px;
         }
         """
+        self.base_margin = QtCore.QMargins()
+        self.base_margin.setTop(11)
+        self.base_margin.setBottom(11)
+        self.base_margin.setRight(11)
+        self.base_margin.setLeft(11)
+        self.container_margin = QtCore.QMargins()
+        self.container_margin.setTop(5)
+        self.container_margin.setBottom(5)
+        self.container_margin.setRight(0)
+        self.container_margin.setLeft(0)
+
         self.global_layout = QtGui.QVBoxLayout()
         self.setLayout(self.global_layout)
-        self.global_layout.setContentsMargins(0, 0, 0, 0)
+        self.global_layout.setContentsMargins(self.base_margin)
         self.global_layout.setSpacing(0)
 
         # -- CONTAINERS -- #
@@ -65,17 +76,18 @@ class BaseDialog(QtGui.QDialog):
         self.main_container_layout = QtGui.QVBoxLayout()
         self.footer_container_layout = QtGui.QHBoxLayout()
 
+        self.header_container_layout.setContentsMargins(self.container_margin)
+        self.main_container_layout.setContentsMargins(self.container_margin)
+        self.footer_container_layout.setContentsMargins(self.container_margin)
+
         # Main Container wrapper for loading scree
         self.busy_overlay = LoadingOverlay(self)
         self.busy_overlay.hide()
 
         self.header_container_layout.setAlignment(QtCore.Qt.AlignTop)
 
-        self.main_container_layout.setContentsMargins(3, 3, 3, 3)
-
         self.footer_container_layout.setAlignment(QtCore.Qt.AlignBottom)
         self.footer_container.setMaximumHeight(50)
-        self.footer_container_layout.setContentsMargins(8, 8, 8, 8)
 
         # -- CONTAINER LAYOUT ASSIGN -- #
         self.header_container.setLayout(self.header_container_layout)
@@ -162,12 +174,18 @@ class BaseDialog(QtGui.QDialog):
         self._connect_base_signals()
         self.set_loading_screen(True)
 
+        self.modify_layouts(
+            self.tasks_main_container,
+            margin=(0, 0, 0, 0)
+        )
+
     def append_css(self, css):
         self.setStyleSheet(self.styleSheet()+css)
 
-    def modify_layouts(self, layout, spacing, margin, alignment=None):
-        for child in layout.findChildren(QtGui.QLayout):
-            child.setSpacing(spacing)
+    def modify_layouts(self, parent, margin, spacing=None, alignment=None):
+        for child in parent.findChildren(QtGui.QLayout):
+            if spacing:
+                child.setSpacing(spacing)
             child.setContentsMargins(*margin)
             if alignment:
                 child.setAlignment(alignment)
