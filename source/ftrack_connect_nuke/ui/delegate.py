@@ -46,7 +46,7 @@ class Delegate(delegate.Delegate):
         ftrackMenu.addSeparator()
 
         # add ftrack publish node to the menu
-        ftrackMenu.addCommand('Create ftrack Publish Node', lambda: legacy.createFtrackPublish())
+        ftrackMenu.addCommand('Create Publish Node', lambda: legacy.createFtrackPublish())
 
         ftrackMenu.addSeparator()
 
