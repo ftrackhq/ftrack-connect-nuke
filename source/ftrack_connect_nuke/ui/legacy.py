@@ -118,7 +118,7 @@ def addPublishKnobsToGroupNode(g):
     refreshKnob.setFlag(nuke.STARTLINE)
     g.addKnob(refreshKnob)
 
-    publishKnob = nuke.PyScript_Knob('pknob', 'Publish!', 'ftrack_connect_nuke.ui.legacy.publishAssetKnob()')
+    publishKnob = nuke.PyScript_Knob('pknob', 'Publish', 'ftrack_connect_nuke.ui.legacy.publishAssetKnob()')
     g.addKnob(publishKnob)
     publishKnob.setEnabled(False)
 
