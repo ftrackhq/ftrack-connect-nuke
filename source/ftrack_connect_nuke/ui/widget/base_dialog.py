@@ -290,9 +290,9 @@ class BaseDialog(QtGui.QDialog):
 
         if not task_in_user:
             warning = (
-                'This task is not assigned to you. You might need to ask your'
-                'supervisor to assign you to this task before publishing'
-                ' any asset. This action will be reported.'
+                'This task is not assigned to you. You might need to ask your '
+                'supervisor to assign you to this task before publishing '
+                'any asset.'
             )
             self.set_warning(warning)
             return False
