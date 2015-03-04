@@ -47,6 +47,16 @@ class FtrackPublishLocale(specifications.LocaleSpecification):
 
 
 class BrowseKnob():
+
+    def __init__(self):
+        self.current_task = ftrack.Task(
+            os.getenv('FTRACK_TASKID',
+                os.getenv('FTRACK_SHOTID')
+            )
+        )
+
+        self.targetTask = self.current_task.getEntityRef()
+
     def makeUI(self):
         self.mainWidget = QtGui.QWidget()
         applyTheme(self.mainWidget, 'integration')
@@ -56,17 +66,14 @@ class BrowseKnob():
         self.hlayout.setContentsMargins(0, 0, 0, 0)
         self.mainWidget.setLayout(self.hlayout)
 
-        task = ftrack.Task(os.environ['FTRACK_TASKID'])
         self._lineEdit = QtGui.QLineEdit()
-        self._lineEdit.setText(HelpFunctions.getPath(task, slash=True))
+        self._lineEdit.setText(HelpFunctions.getPath(self.current_task, slash=True))
         self.hlayout.addWidget(self._lineEdit)
 
         self._browse = QtGui.QPushButton("Browse")
         self.hlayout.addWidget(self._browse)
 
         QtCore.QObject.connect(self._browse, QtCore.SIGNAL('clicked()'), self.openBrowser)
-
-        self.targetTask = task.getEntityRef()
 
         return self.mainWidget
 
@@ -79,9 +86,7 @@ class BrowseKnob():
         context.access = context.kWrite
         context.locale = FtrackPublishLocale()
         spec = specifications.ImageSpecification()
-        task = ftrack.Task(os.environ['FTRACK_TASKID'])
-        spec.referenceHint = task.getEntityRef()
-        spec.referenceHint = ftrack.Task(os.environ['FTRACK_TASKID']).getEntityRef()
+        spec.referenceHint = self.targetTask
         browser = TabbedBrowserDialog.buildForSession(spec, context)
         browser.setWindowTitle(FnAssetAPI.l("Publish to"))
         browser.setAcceptButtonTitle("Set")
