@@ -45,10 +45,15 @@ class BaseDialog(QtGui.QDialog):
         }
         """
         self.base_margin = QtCore.QMargins()
-        self.base_margin.setTop(5)
-        self.base_margin.setBottom(5)
-        self.base_margin.setRight(5)
-        self.base_margin.setLeft(5)
+        self.base_margin.setTop(11)
+        self.base_margin.setBottom(11)
+        self.base_margin.setRight(11)
+        self.base_margin.setLeft(11)
+        self.container_margin = QtCore.QMargins()
+        self.container_margin.setTop(5)
+        self.container_margin.setBottom(5)
+        self.container_margin.setRight(0)
+        self.container_margin.setLeft(0)
 
         self.global_layout = QtGui.QVBoxLayout()
         self.setLayout(self.global_layout)
@@ -68,6 +73,10 @@ class BaseDialog(QtGui.QDialog):
         self.header_container_layout = QtGui.QVBoxLayout()
         self.main_container_layout = QtGui.QVBoxLayout()
         self.footer_container_layout = QtGui.QHBoxLayout()
+
+        self.header_container_layout.setContentsMargins(self.container_margin)
+        self.main_container_layout.setContentsMargins(self.container_margin)
+        self.footer_container_layout.setContentsMargins(self.container_margin)
 
         # Main Container wrapper for loading scree
         self.busy_overlay = LoadingOverlay(self)

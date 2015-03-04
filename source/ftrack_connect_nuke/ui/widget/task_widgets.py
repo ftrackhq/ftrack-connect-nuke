@@ -251,13 +251,6 @@ class SingleTaskWidget(QtGui.QFrame):
         tab_asset_tree_layout.addWidget(self.assets_widget)
         self._tab_widget.addTab(self.tab_asset_tree, "All Scene Assets")
 
-        # Display Notes from this task
-
-        tab_notes = QtGui.QWidget()
-        tab_notes_layout = QtGui.QVBoxLayout(tab_notes)
-        tab_notes_layout.setContentsMargins(0, 8, 0, 0)
-        self._tab_widget.addTab(tab_notes, "Notes")
-
         task_frame_layout.addWidget(self._tab_widget)
 
     def _get_task_infos(self):

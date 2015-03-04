@@ -78,17 +78,18 @@ class ScriptPublisherDialog(BaseDialog):
             QtGui.QSizePolicy.Expanding,
         )
         self.publish_container_layout = QtGui.QHBoxLayout()
+        self.publish_container_layout.setContentsMargins(0, 0, 0, 0)
         self.publish_container.setLayout(self.publish_container_layout)
 
         self.main_container_layout.addWidget(self.publish_container)
 
         # Create "main content" splitter for the publisher
         self.publish_splitter = QtGui.QSplitter(self.publish_container)
-        self.publish_splitter.setContentsMargins(0, 0, 0, 10)
+        self.publish_splitter.setContentsMargins(0, 0, 0, 0)
         self.publish_splitter.setChildrenCollapsible(False)
 
         self.publish_container_layout.addWidget(self.publish_splitter)
-        self.publish_container_layout.setContentsMargins(5, 5, 5, 5)
+        self.publish_container_layout.setContentsMargins(0, 0, 0, 0)
 
         # Create left and right containers for the splitter
         self.publish_left_container = QtGui.QWidget(self.publish_splitter)

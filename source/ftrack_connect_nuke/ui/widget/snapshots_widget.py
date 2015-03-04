@@ -64,18 +64,20 @@ class SnapshotsWidget(QtGui.QWidget):
         self._edit_buttons.eraser_toggled.connect(self.erase_drawing)
         self._edit_buttons.color_modified.connect(self.set_pen_color)
 
-        layout_buttons = QtGui.QHBoxLayout()
+        self.target_button_container = QtGui.QWidget(self)
+        self.target_button_container_layout = QtGui.QHBoxLayout()
+        self.target_button_container.setLayout(self.target_button_container_layout)
         self._viewer_btn = QtGui.QPushButton("Use Active Viewer", self)
         self._viewer_btn.setObjectName("Viewer_btn")
         self._viewer_btn.clicked.connect(self.chooseSource)
         self._dag_btn = QtGui.QPushButton("Use Node Graph", self)
         self._dag_btn.setObjectName("DAG_btn")
         self._dag_btn.clicked.connect(self.chooseSource)
-        layout_buttons.addWidget(self._viewer_btn)
-        layout_buttons.addWidget(self._dag_btn)
+        self.target_button_container_layout.addWidget(self._viewer_btn)
+        self.target_button_container_layout.addWidget(self._dag_btn)
 
         layout.addWidget(self._snapshot_frame)
-        layout.addItem(layout_buttons)
+        layout.addWidget(self.target_button_container)
 
     def _current_view(self):
         if self._stackLayout.currentWidget() in [self._viewer_view,
@@ -138,11 +140,23 @@ class SnapshotsWidget(QtGui.QWidget):
         # Set button style
         for button in [self._viewer_btn, self._dag_btn]:
             if button == source:
-                btn_style = """ QPushButton{ background: #000; color: #c3cfa4;
-                                     padding:10px; border:0px;} """
+                btn_style = """
+                QPushButton {
+                    background: #000;
+                    color: #c3cfa4;
+                    padding:10px;
+                    border:0px;
+                }
+                """
             else:
-                btn_style = """ QPushButton{ background: #222; color: #fff;
-                                     padding:10px; border:0px;} """
+                btn_style = """
+                QPushButton {
+                    background: #222;
+                    color: #fff;
+                    padding:10px;
+                    border:0px;
+                }
+                """
             button.setStyleSheet(btn_style)
 
         # Set snapshot
@@ -221,13 +235,13 @@ class SnapshotsView(QtGui.QGraphicsView):
         self._scale_factor = 1.15
 
         css_frame = """
-    background: #000;
-    border-top: 2px solid #000;
-    border-left: 2px solid #000;
-    border-right: 2px solid #000;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    """
+        background: #000;
+        border-top: 2px solid #000;
+        border-left: 2px solid #000;
+        border-right: 2px solid #000;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        """
         self.setStyleSheet(css_frame)
 
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
