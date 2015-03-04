@@ -1,5 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
+
 import os
 import re
 import datetime
@@ -14,9 +15,6 @@ from ftrack_connect.ui import resource
 from FnAssetAPI import logging
 
 
-###############################################################################
-# DELEGATE
-###############################################################################
 
 class TreeDelegateStyle(QtGui.QStyledItemDelegate):
 
@@ -74,7 +72,6 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
         self._inter_item = 3
         self._space_before_btn = 8
 
-        # Keep the width memory as option.rect is bullshitting in the sizeHint
         # method...
         self._width = self._minimum_width
 
@@ -237,15 +234,6 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
                     )
 
                 padding_left += size_thumbnail.width() + 10
-
-            # # Draw locked symbol if necessary
-            # if locked:
-            #     painter.drawPixmap(
-            #         option.rect.right() - padding_right - 20,
-            #         padding_top, self._icon_locked
-            #     )
-
-            #     padding_right += 30
 
             # Draw version number
             if self._is_top_asset_version(index):
@@ -536,10 +524,6 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
         return super(TreeDelegateStyle, self).editorEvent(event, model, option, index)
 
 
-###############################################################################
-# ITEMS
-###############################################################################
-
 class ItemSignal(QtCore.QObject):
     asset_regenerated = QtCore.Signal()
 
@@ -677,10 +661,6 @@ class ButtonItem(TreeItem):
         self.setData(asset_type_role, self.asset_type_role)
 
 
-###############################################################################
-# PROXY MODEL
-###############################################################################
-
 class AssetSortFilter(QtGui.QSortFilterProxyModel):
 
     def __init__(self, parent, model):
@@ -712,10 +692,6 @@ class AssetSortFilter(QtGui.QSortFilterProxyModel):
 
         return self.filterRegExp().indexIn(regexp_filter_source) != -1
 
-
-###############################################################################
-# TREE
-###############################################################################
 
 class AssetsTree(QtGui.QTreeView):
     asset_version_selected = QtCore.Signal(object)

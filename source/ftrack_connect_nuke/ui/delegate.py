@@ -46,14 +46,14 @@ class Delegate(delegate.Delegate):
         ftrackMenu.addSeparator()
 
         # add ftrack publish node to the menu
-        ftrackMenu.addCommand('Create ftrack Publish Node', lambda: legacy.createFtrackPublish())
+        ftrackMenu.addCommand('Create Publish Node', lambda: legacy.createFtrackPublish())
 
         ftrackMenu.addSeparator()
 
         globals()['ftrackImportAssetClass'] = wrapImportAssetDialog
 
         panels.registerWidgetAsPanel(
-            "%s.%s" % (__name__, 'ftrackImportAssetClass'),
+            "{0}.{0}".format(__name__, 'ftrackImportAssetClass'),
             'ftrackImportAsset',
             'ftrackDialogs.ftrackImportAssetDialog'
         )
@@ -71,7 +71,7 @@ class Delegate(delegate.Delegate):
 
         # Create the asset manager dialog entry in the menu
         panels.registerWidgetAsPanel(
-            "%s.%s" % (__name__, 'ftrackAssetManagerDialogClass'),
+            "{0}.{0}" .format(__name__, 'ftrackAssetManagerDialogClass'),
             'ftrackAssetManager',
             'ftrackDialogs.ftrackAssetManagerDialog'
         )
@@ -107,9 +107,9 @@ class Delegate(delegate.Delegate):
 
         # add new entries in the ftrack menu
         ftrackMenu.addSeparator()
-        ftrackMenu.addCommand('Publish a gizmo...', GizmoPublisherDialog)
-        ftrackMenu.addCommand('Publish script...', ScriptPublisherDialog)
-        ftrackMenu.addCommand('Load script...', ScriptOpenerDialog)
+        ftrackMenu.addCommand('Publish a gizmo', GizmoPublisherDialog)
+        ftrackMenu.addCommand('Publish script', ScriptPublisherDialog)
+        ftrackMenu.addCommand('Load script', ScriptOpenerDialog)
 
         # ftrackMenu.addCommand('Publish a group of nodes...', millAssetManager.publish_group_panel)
 
@@ -126,19 +126,6 @@ class Delegate(delegate.Delegate):
         nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='Read')
         nuke.addKnobChanged(legacy.ftrackPublishKnobChanged, nodeClass="Group")
         nuke.addOnCreate(legacy.ftrackPublishHieroInit)
-
-        # file_menu = nukeMenu.menu('File')
-        # file_menu.addSeparator(index=7)
-        # file_menu.addCommand('FTrack - Open Script...', millAssetManager.open_script_panel, index=8)
-        # file_menu.addCommand('FTrack - Publish Script...', millAssetManager.publish_script_panel, index=8)
-        # file_menu.addCommand('FTrack - Publish a gizmo...', millAssetManager.publish_gizmo_panel, index=8)
-        # file_menu.addSeparator(index=8)
-
-        # # remove foundy ones
-        # fn_publish = file_menu.removeItem("Publish Script...")
-        # fn_open_publish = file_menu.removeItem("Open Published Script...")
-        # fn_publish_new = file_menu.removeItem("Publish Script to a New Version")
-
 
     def populateUI(self, uiElement, specification, context):
         super(Delegate, self).populateUI(uiElement, specification, context)
