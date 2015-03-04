@@ -2,9 +2,11 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
+import getpass
+
 import ftrack
 from PySide import QtGui, QtCore
-from ftrack_connect.ui.widget.header import HeaderWidget
+from ftrack_connect.ui.widget import header
 from ftrack_connect_nuke.ui.controller import Controller
 from ftrack_connect.ui.widget import overlay as _overlay
 
@@ -98,7 +100,7 @@ class BaseDialog(QtGui.QDialog):
         self.global_layout.addWidget(self.footer_container)
 
         # -- HEADER -- #
-        self.header = HeaderWidget(self.header_container)
+        self.header = header.Header(getpass.getuser(), self.header_container)
         # self.header_container.setStyleSheet("background-color:black;")
         self.header_container_layout.addWidget(self.header)
 

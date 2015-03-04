@@ -3,6 +3,8 @@
 
 import os
 import ftrack
+import getpass
+
 import FnAssetAPI
 from FnAssetAPI.ui.toolkit import QtGui, QtCore
 from FnAssetAPI import specifications
@@ -100,7 +102,7 @@ class BrowseKnob():
 
 class HeaderKnob():
     def makeUI(self):
-        self.headerWidget = header.HeaderWidget(parent=None)
+        self.headerWidget = header.Header(getpass.getuser(), parent=None)
         applyTheme(self.headerWidget, 'integration')
 
         self.headerWidget.updateValue = self.updateValue
