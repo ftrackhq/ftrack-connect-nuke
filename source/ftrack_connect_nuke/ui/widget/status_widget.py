@@ -143,7 +143,7 @@ class StatusComboBox(QtGui.QComboBox):
                            width: 15px; border: 0px;
                            border-top-right-radius: 3px;
                            border-bottom-right-radius: 3px; }
-    QComboBox::down-arrow { image: url(':ftrack/image/studio/branch-open') }
+    QComboBox::down-arrow { image: url(':ftrack/image/integration/branch-open') }
     QAbstractItemView { background: #888; border: 0px; }
     """
         self.setStyleSheet(css_combobox)

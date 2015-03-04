@@ -767,7 +767,7 @@ class AssetsTree(QtGui.QTreeView):
             mime_data.setData(
                 "text/plain", ":".join([id_ftrack, asset_name, version_id]))
 
-            pixmap = QtGui.QPixmap(':ftrack/image/studio/drag')
+            pixmap = QtGui.QPixmap(':ftrack/image/integration/drag')
             drag.setPixmap(pixmap)
 
             drag.setMimeData(mime_data)
