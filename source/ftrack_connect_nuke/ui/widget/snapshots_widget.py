@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
 
 import os
 from PySide import QtGui, QtCore, QtOpenGL

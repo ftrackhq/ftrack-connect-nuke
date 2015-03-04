@@ -1,5 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
+
 import json
 import time
 import os
