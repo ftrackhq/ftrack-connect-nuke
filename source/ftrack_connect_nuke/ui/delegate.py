@@ -127,19 +127,6 @@ class Delegate(delegate.Delegate):
         nuke.addKnobChanged(legacy.ftrackPublishKnobChanged, nodeClass="Group")
         nuke.addOnCreate(legacy.ftrackPublishHieroInit)
 
-        # file_menu = nukeMenu.menu('File')
-        # file_menu.addSeparator(index=7)
-        # file_menu.addCommand('FTrack - Open Script...', millAssetManager.open_script_panel, index=8)
-        # file_menu.addCommand('FTrack - Publish Script...', millAssetManager.publish_script_panel, index=8)
-        # file_menu.addCommand('FTrack - Publish a gizmo...', millAssetManager.publish_gizmo_panel, index=8)
-        # file_menu.addSeparator(index=8)
-
-        # # remove foundy ones
-        # fn_publish = file_menu.removeItem("Publish Script...")
-        # fn_open_publish = file_menu.removeItem("Open Published Script...")
-        # fn_publish_new = file_menu.removeItem("Publish Script to a New Version")
-
-
     def populateUI(self, uiElement, specification, context):
         super(Delegate, self).populateUI(uiElement, specification, context)
 
