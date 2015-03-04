@@ -23,7 +23,7 @@ class Delegate(delegate.Delegate):
         from nukescripts import panels
         from ftrack_connect_nuke import ftrackConnector
         from ftrack_connect_nuke.ftrackplugin.ftrackDialogs import ftrackAssetManagerDialog, ftrackImportAssetDialog
-        from ftrack_connect_nuke.ui.widget.notification import Notification
+        from ftrack_connect_nuke.ui.widget.crew import Crew
         ftrackConnector.Connector.registerAssets()
 
         # Populate the ui
@@ -89,16 +89,16 @@ class Delegate(delegate.Delegate):
 
         ftrackMenu.addSeparator()
 
-        # Create the notification dialog entry in the menu
+        # Create the crew dialog entry in the menu
         panels.registerWidgetAsPanel(
-            'ftrack_connect_nuke.ui.widget.notification.Notification',
-            'ftrackNotification',
-            'widget.ftrackNotification'
+            'ftrack_connect_nuke.ui.widget.crew.Crew',
+            'Crew',
+            'widget.Crew'
         )
         ftrackMenu.addCommand(
-            'Notifications',
+            'Crew',
             'pane = nuke.getPaneFor("Properties.1");'
-            'panel = nukescripts.restorePanel("widget.ftrackNotification");'
+            'panel = nukescripts.restorePanel("widget.Crew");'
             'panel.addToPane(pane)'
         )
 

@@ -1,6 +1,6 @@
 import os
 import shutil
-import ftrack_legacy as ftrack
+import ftrack_legacy
 import clique
 import glob
 import tempfile
@@ -20,7 +20,7 @@ from ftrack_connect_nuke.ftrackConnector import nukeassets
 
 from knobs import TableKnob, BrowseKnob, HeaderKnob
 
-ftrack.setup()
+ftrack_legacy.setup()
 
 current_module = ".".join(__name__.split(".")[:-1])+'.legacy'
 
@@ -198,7 +198,7 @@ def get_dependencies():
                 knob_value = attribute.value()
                 if 'ftrack' in knob_value:
                    version_id = knob_value.split('ftrack://')[-1].split('?')[0]
-                   dependency_version = ftrack.AssetVersion(version_id)
+                   dependency_version = ftrack_legacy.AssetVersion(version_id)
                    print 'dependency %s found' % dependency_version
                    dependencies[node['name'].value()] = dependency_version
 
