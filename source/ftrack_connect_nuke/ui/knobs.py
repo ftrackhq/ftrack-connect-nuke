@@ -1,15 +1,22 @@
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
+
 import os
 import ftrack
+import getpass
+
 import FnAssetAPI
 from FnAssetAPI.ui.toolkit import QtGui, QtCore
 from FnAssetAPI import specifications
 
 import ftrack_connect_nuke
-from ftrack_connect_nuke.ftrackConnector.maincon import HelpFunctions
-from ftrack_connect_nuke.ftrackplugin.ftrackWidgets import HeaderWidget
-from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
-from ftrack_connect_nuke import ftrackConnector
+from ftrack_connect.connector import HelpFunctions
+from ftrack_connect.ui.widget import header
 
+from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
+from ftrack_connect_nuke import connector
+from ftrack_connect.ui.theme import applyTheme
+from ftrack_connect.ui import resource
 
 class TableKnob():
     def makeUI(self):
@@ -42,52 +49,61 @@ class FtrackPublishLocale(specifications.LocaleSpecification):
 
 
 class BrowseKnob():
+
+    def __init__(self):
+        self.current_task = ftrack.Task(
+            os.getenv('FTRACK_TASKID',
+                os.getenv('FTRACK_SHOTID')
+            )
+        )
+
+        self.targetTask = self.current_task.getEntityRef()
+        session = FnAssetAPI.SessionManager.currentSession()
+        self.context = session.createContext()
+        self.context.access = self.context.kWrite
+        self.context.locale = FtrackPublishLocale()
+        self.spec = specifications.ImageSpecification()
+        self.spec.referenceHint = self.targetTask
+
     def makeUI(self):
         self.mainWidget = QtGui.QWidget()
+        applyTheme(self.mainWidget, 'integration')
+
         self.mainWidget.setContentsMargins(0, 0, 0, 0)
         self.hlayout = QtGui.QHBoxLayout()
         self.hlayout.setContentsMargins(0, 0, 0, 0)
         self.mainWidget.setLayout(self.hlayout)
-        
-        task = ftrack.Task(os.environ['FTRACK_TASKID'])
+
         self._lineEdit = QtGui.QLineEdit()
-        self._lineEdit.setText(HelpFunctions.getPath(task, slash=True))
+        self._lineEdit.setText(HelpFunctions.getPath(self.current_task, slash=True))
         self.hlayout.addWidget(self._lineEdit)
-    
+
         self._browse = QtGui.QPushButton("Browse")
         self.hlayout.addWidget(self._browse)
-        
+
         QtCore.QObject.connect(self._browse, QtCore.SIGNAL('clicked()'), self.openBrowser)
-        
-        self.targetTask = task.getEntityRef()
-                
+
         return self.mainWidget
-    
+
     def updateValue(self):
         pass
-    
+
     def openBrowser(self):
-        session = FnAssetAPI.SessionManager.currentSession()
-        context = session.createContext()
-        context.access = context.kWrite
-        context.locale = FtrackPublishLocale()
-        spec = specifications.ImageSpecification()
-        spec.referenceHint = ftrack.Task(os.environ['FTRACK_TASKID']).getEntityRef()
-        browser = TabbedBrowserDialog.buildForSession(spec, context)
+        browser = TabbedBrowserDialog.buildForSession(self.spec, self.context)
         browser.setWindowTitle(FnAssetAPI.l("Publish to"))
         browser.setAcceptButtonTitle("Set")
         if not browser.exec_():
             return ''
-        
+
         self.targetTask = browser.getSelection()[0]
-        obj = ftrackConnector.Connector.objectById(self.targetTask)
+        obj = connector.Connector.objectById(self.targetTask)
         self._lineEdit.setText(HelpFunctions.getPath(obj, slash=True))
-        
+
 
 class HeaderKnob():
     def makeUI(self):
-        self.headerWidget = HeaderWidget.HeaderWidget(parent=None)
-        self.headerWidget.setTitle('Publish')
+        self.headerWidget = header.Header(getpass.getuser(), parent=None)
+        applyTheme(self.headerWidget, 'integration')
 
         self.headerWidget.updateValue = self.updateValue
 
