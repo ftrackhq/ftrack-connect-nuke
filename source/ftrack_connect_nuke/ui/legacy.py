@@ -135,6 +135,7 @@ def createFtrackPublish():
 
 def publishAssetKnob():
     n = nuke.thisNode()
+    header = getHeaderKnob(n)
     ftrackPublishKnobChanged(g=n, forceRefresh=True)
     n.knob('pknob').setEnabled(False)
     tableWidget = n['ftable'].getObject().tableWidget
@@ -151,15 +152,15 @@ def publishAssetKnob():
         if tableWidget.item(row, 4).toolTip() == 'T':
             content.append((filePath, compName, first, last, nodeName, meta))
         else:
-            nuke.message('Can not find ' + filePath + ' on disk')
+            header.setMessage('Can not find ' + filePath + ' on disk', 'error')
             return
 
     if len(content) == 0:
-        nuke.message('Nothing to publish')
+        header.setMessage('Nothing to publish', 'warning')
         return
 
     if 'New' == n['fassetnameexisting'].value() and n['ftrackassetname'].value() == '':
-        nuke.message('Enter an assetname or select an existing')
+        header.setMessage('Enter an assetname or select an existing', 'warning')
         return
     elif 'New' != n['fassetnameexisting'].value():
         assetName = n['fassetnameexisting'].value()
@@ -207,7 +208,7 @@ def get_dependencies():
 
 
 def publishAsset(n, assetName, content, comment, shot, currentTask):
-    header = n.knobs().get('fheader').getObject().headerWidget
+    header = getHeaderKnob(n)
 
     if not currentTask:
         header.setMessage('Could not find currenttask', 'warning')
@@ -289,6 +290,8 @@ def getMetaData(nodeName):
 def ftrackPublishKnobChanged(forceRefresh=False, g=None):
     if not g:
         g = nuke.thisNode()
+
+    header = getHeaderKnob(g)
 
     if 'ftable' in g.knobs():
         nodeAssetType = ''
@@ -404,7 +407,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
 
             if len(l) != len(wodup):
                 g.knob('pknob').setEnabled(False)
-                nuke.message('Components can not have the same name')
+                header.setMessage('Components can not have the same name', 'warning')
 
             rowCntr = 0
             for comp in components:
@@ -527,3 +530,7 @@ def ftrackPublishHieroInit():
             g.removeKnob(g.knob('fpubinit'))
             g.removeKnob(g.knob('User'))
             addPublishKnobsToGroupNode(g)
+
+
+def getHeaderKnob(node):
+    return node.knobs().get('fheader').getObject().headerWidget
