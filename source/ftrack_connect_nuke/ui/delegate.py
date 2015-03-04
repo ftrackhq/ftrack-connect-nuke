@@ -53,7 +53,7 @@ class Delegate(delegate.Delegate):
         globals()['ftrackImportAssetClass'] = wrapImportAssetDialog
 
         panels.registerWidgetAsPanel(
-            "%s.%s" % (__name__, 'ftrackImportAssetClass'),
+            "{0}.{0}".format(__name__, 'ftrackImportAssetClass'),
             'ftrackImportAsset',
             'ftrackDialogs.ftrackImportAssetDialog'
         )
@@ -71,7 +71,7 @@ class Delegate(delegate.Delegate):
 
         # Create the asset manager dialog entry in the menu
         panels.registerWidgetAsPanel(
-            "%s.%s" % (__name__, 'ftrackAssetManagerDialogClass'),
+            "{0}.{0}" .format(__name__, 'ftrackAssetManagerDialogClass'),
             'ftrackAssetManager',
             'ftrackDialogs.ftrackAssetManagerDialog'
         )
