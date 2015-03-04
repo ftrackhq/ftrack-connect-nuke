@@ -109,8 +109,6 @@ class GizmoPublisherDialog(BaseDialog):
         self._save_btn.clicked.connect(self._publish)
 
         self.main_container_layout.addWidget(gizmo_widget)
-        self.main_container_layout.addWidget(self._save_btn)
-        self.main_container_layout.addWidget(self._cancel_btn)
 
         self._save_btn.setText("Publish Gizmo")
         self._save_btn.setMinimumWidth(150)
