@@ -1,3 +1,6 @@
+# :coding: utf-8
+# :copyright: Copyright (c) 2015 ftrack
+
 import sys
 import os
 import tempfile
@@ -8,11 +11,10 @@ from nukescripts import panels
 import nukescripts
 import nuke
 
-import assetmgr_nuke
-import maincon
-from maincon import FTAssetHandlerInstance
-from maincon import HelpFunctions
-import nukeassets
+from ftrack_connect.connector import (
+    FTAssetHandlerInstance,
+    HelpFunctions,
+    Connector as _Connector)
 
 
 def register_scheme(scheme):
@@ -22,7 +24,7 @@ def register_scheme(scheme):
 register_scheme('ftrack')
 
 
-class Connector(maincon.Connector):
+class Connector(_Connector):
     def __init__(self):
         super(Connector, self).__init__()
 
@@ -30,7 +32,8 @@ class Connector(maincon.Connector):
     def getAssets():
         allReadNodes = nuke.allNodes('Read')
         allCamNodess = nuke.allNodes('Camera2')
-        allInterestingNodes = allReadNodes + allCamNodess
+        allGizmos =  [n for n in nuke.allNodes() if type(n) ==  nuke.Gizmo]
+        allInterestingNodes = allReadNodes + allCamNodess + allGizmos
 
         componentIds = []
 
@@ -62,6 +65,7 @@ class Connector(maincon.Connector):
 
         assetHandler = FTAssetHandlerInstance.instance()
         importAsset = assetHandler.getAssetClass(iAObj.assetType)
+
         if importAsset:
             result = importAsset.importAsset(iAObj)
             return result
@@ -159,6 +163,7 @@ class Connector(maincon.Connector):
 
     @classmethod
     def registerAssets(cls):
+        import nukeassets
         nukeassets.registerAssetTypes()
         super(Connector, cls).registerAssets()
 
@@ -174,9 +179,9 @@ class Connector(maincon.Connector):
             reformatNode = nuke.nodes.Reformat()
             reformatNode['type'].setValue("to box")
             reformatNode['box_width'].setValue(200.0)
-    
+
             reformatNode.setInput(0, nodeObject)
-    
+
             w2 = nuke.nodes.Write()
             w2.setInput(0, reformatNode)
             thumbNailFilename = 'thumbnail_' + HelpFunctions.getUniqueNumber() + '.png'
@@ -186,7 +191,7 @@ class Connector(maincon.Connector):
 
             curFrame = int(nuke.knob("frame"))
             nuke.execute(w2, curFrame, curFrame)
-    
+
             nuke.delete(reformatNode)
             nuke.delete(w2)
 
@@ -195,7 +200,7 @@ class Connector(maincon.Connector):
             import traceback
             traceback.print_exc(file=sys.stdout)
             return None
-        
+
     @staticmethod
     def windowsFixPath(path):
         path = path.replace('\\', '/')
