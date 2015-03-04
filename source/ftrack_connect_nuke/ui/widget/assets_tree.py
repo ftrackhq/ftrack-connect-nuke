@@ -74,7 +74,6 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
         self._inter_item = 3
         self._space_before_btn = 8
 
-        # Keep the width memory as option.rect is bullshitting in the sizeHint
         # method...
         self._width = self._minimum_width
 
