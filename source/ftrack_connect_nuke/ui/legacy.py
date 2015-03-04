@@ -71,12 +71,16 @@ def checkForNewAssets():
     if message != '':
         header.setMessage(message, 'warning')
 
-
+@ftrack.withGetCache
 def addPublishKnobsToGroupNode(g):
     tab = nuke.Tab_Knob('ftrackpub', 'ftrack Publish')
     g.addKnob(tab)
 
-    headerKnob = nuke.PyCustom_Knob("fheader", "", "ftrack_connect_nuke.ui.knobs.HeaderKnob()")
+    headerKnob = nuke.PyCustom_Knob(
+        'fheader', '', 'ftrack_connect_nuke.ui.knobs.HeaderKnob("{0}")'.format(
+            g.name()
+        )
+    )
     headerKnob.setFlag(nuke.STARTLINE)
     g.addKnob(headerKnob)
 
