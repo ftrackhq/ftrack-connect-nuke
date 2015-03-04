@@ -107,9 +107,9 @@ class Delegate(delegate.Delegate):
 
         # add new entries in the ftrack menu
         ftrackMenu.addSeparator()
-        ftrackMenu.addCommand('Publish a gizmo...', GizmoPublisherDialog)
-        ftrackMenu.addCommand('Publish script...', ScriptPublisherDialog)
-        ftrackMenu.addCommand('Load script...', ScriptOpenerDialog)
+        ftrackMenu.addCommand('Publish a gizmo', GizmoPublisherDialog)
+        ftrackMenu.addCommand('Publish script', ScriptPublisherDialog)
+        ftrackMenu.addCommand('Load script', ScriptOpenerDialog)
 
         # ftrackMenu.addCommand('Publish a group of nodes...', millAssetManager.publish_group_panel)
 
