@@ -8,7 +8,6 @@ import glob
 import nuke
 
 import ftrack_legacy as ftrack
-import panelcom
 
 import os
 import traceback
