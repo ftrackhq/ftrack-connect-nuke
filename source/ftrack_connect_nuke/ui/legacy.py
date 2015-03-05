@@ -50,7 +50,6 @@ def checkForNewAssets():
     message = ''
     for ftNode in allAssets:
         n = nuke.toNode(HelpFunctions.safeString(ftNode[1]))
-        header = getHeaderKnob(n)
         n.knob('componentId').value()
         componentName = n.knob('componentName').value()
         assetVersionId = n.knob('assetVersionId').value()
@@ -69,7 +68,7 @@ def checkForNewAssets():
                     message += ' to v:' + str(latestversion) + '\n'
 
     if message != '':
-        header.setMessage(message, 'warning')
+        nuke.message(message)
 
 
 def addPublishKnobsToGroupNode(g):
