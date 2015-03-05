@@ -21,7 +21,7 @@ class Delegate(delegate.Delegate):
         import legacy
         from nukescripts import panels
 
-        from ftrack_connect_nuke.ui.widget.crew import Crew
+        from ftrack_connect_nuke.ui.widget.crew import NukeCrew
         from ftrack_connect_nuke.connector import Connector
 
         from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
@@ -109,7 +109,7 @@ class Delegate(delegate.Delegate):
 
         # Create the crew dialog entry in the menu
         panels.registerWidgetAsPanel(
-            'ftrack_connect_nuke.ui.widget.crew.Crew',
+            'ftrack_connect_nuke.ui.widget.crew.NukeCrew',
             'Crew',
             'widget.Crew'
         )
