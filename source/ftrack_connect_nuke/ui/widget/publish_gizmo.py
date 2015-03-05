@@ -22,6 +22,15 @@ class GizmoPublisherDialog(BaseDialog):
         )
         applyTheme(self, 'integration')
         self.setupUI()
+
+        try:
+            ftrack.AssetType('nuke_gizmo')
+        except ftrack.FTrackError as error:
+            self.header.setMessage(
+                'No Asset type with short name "nuke_gizmo" found. Contact your '
+                'supervisor or system administrator to add it.',
+                'warning'
+            )
         self.exec_()
 
     def setupUI(self):
@@ -145,10 +154,22 @@ class GizmoPublisherDialog(BaseDialog):
 
         task = self.current_task
         parent = task.getParent()
-        asset_id = parent.createAsset(
-            name=asset_name,
-            assetType='nuke_gizmo'
-        ).getId()
+
+        try:
+            asset_id = parent.createAsset(
+                name=asset_name,
+                assetType='nuke_gizmo'
+            ).getId()
+        except ftrack.FTrackError as error:
+            if 'Asset type is not valid' in error.message:
+                self.header.setMessage(
+                    'No Asset type with short name "nuke_gizmo" found. Contact '
+                    'your supervisor or system administrator to add it.',
+                    'error'
+                )
+                return
+            # If gizmo is not the issue re-raise.
+            raise
 
         asset = ftrack.Asset(asset_id)
         version = asset.createVersion(comment=comment, taskid=task.getId())
