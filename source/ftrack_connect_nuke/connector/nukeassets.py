@@ -50,16 +50,27 @@ class GenericAsset(FTAssetType):
         btn = nuke.String_Knob('assetType')
         resultingNode.addKnob(btn)
 
-    def setFTab(self, resultingNode, iAObj):
+    def setFTab(self, resultingNode, iAObj):           
         componentId = ftrack.Component(iAObj.componentId).getEntityRef()
         assetVersionId = ftrack.AssetVersion(iAObj.assetVersionId).getEntityRef()
-        resultingNode.knob('componentId').setValue(componentId)
-        resultingNode.knob('componentName').setValue(iAObj.componentName)
-        resultingNode.knob('assetVersionId').setValue(assetVersionId)
-        resultingNode.knob('assetVersion').setValue(iAObj.assetVersion)
-        resultingNode.knob('assetName').setValue(iAObj.assetName)
-        resultingNode.knob('assetType').setValue(iAObj.assetType)
-
+        resultingNode.knob('componentId').setValue(
+            HelpFunctions.safeString(componentId)
+        )
+        resultingNode.knob('componentName').setValue(
+            HelpFunctions.safeString(iAObj.componentName)
+        )
+        resultingNode.knob('assetVersionId').setValue(
+            HelpFunctions.safeString(assetVersionId)
+        )
+        resultingNode.knob('assetVersion').setValue(
+            HelpFunctions.safeString(iAObj.assetVersion)
+        )
+        resultingNode.knob('assetName').setValue(
+            HelpFunctions.safeString(iAObj.assetName)
+        )
+        resultingNode.knob('assetType').setValue(
+            HelpFunctions.safeString(iAObj.assetType)
+        )
 
 class ImageSequenceAsset(GenericAsset):
     def __init__(self):
@@ -89,7 +100,10 @@ class ImageSequenceAsset(GenericAsset):
             return
         else:
             resultingNode = nuke.createNode('Read', inpanel=False)
-            resultingNode['name'].setValue(iAObj.assetName + '_' + iAObj.componentName)
+            resultingNode['name'].setValue(
+                HelpFunctions.safeString(iAObj.assetName) + '_' +
+                HelpFunctions.safeString(iAObj.componentName)
+            )
 
         self.addFTab(resultingNode)
 
@@ -124,7 +138,7 @@ class ImageSequenceAsset(GenericAsset):
         return 'Imported %s asset' % iAObj.componentName
 
     def changeVersion(self, iAObj=None, applicationObject=None):
-        n = nuke.toNode(applicationObject)
+        n = nuke.toNode(HelpFunctions.safeString(applicationObject))
         #print assetVersionId
         proxyPath = ''
         try:
@@ -161,11 +175,11 @@ class ImageSequenceAsset(GenericAsset):
             end = int(float(c[3]))
 
             if not start - end == 0:
-                sequence_format = '{0} [{1}-{2}]'.format(
+                sequence_format = u'{0} [{1}-{2}]'.format(
                     filename, start, end
                 )
             else:
-                sequence_format = '{0}'.format(
+                sequence_format = u'{0}'.format(
                     filename, start
                 )
 
@@ -186,7 +200,7 @@ class ImageSequenceAsset(GenericAsset):
             publishedComponents.append(sequenceComponent)
 
         try:
-            node = nuke.toNode(content[0][4])
+            node = nuke.toNode(HelpFunctions.safeString(content[0][4]))
             thumbnail = Connector.createThumbNail(node)
             print thumbnail
             if thumbnail:
@@ -211,8 +225,14 @@ class CameraAsset(GenericAsset):
     def importAsset(self, iAObj=None):
         resultingNode = nuke.createNode("Camera2", inpanel=False)
         resultingNode['read_from_file'].setValue(True)
-        resultingNode['file'].setValue(nukecon.Connector.windowsFixPath(iAObj.filePath))
-        resultingNode['name'].setValue(iAObj.assetName)
+        resultingNode['file'].setValue(
+            HelpFunctions.safeString(
+                nukecon.Connector.windowsFixPath(iAObj.filePath)
+            )
+        )
+        resultingNode['name'].setValue(
+            HelpFunctions.safeString(iAObj.assetName)
+        )
 
         self.addFTab(resultingNode)
         self.setFTab(resultingNode, iAObj)
@@ -220,7 +240,7 @@ class CameraAsset(GenericAsset):
         return 'Imported camera asset'
 
     def changeVersion(self, iAObj=None, applicationObject=None):
-        n = nuke.toNode(applicationObject)
+        n = nuke.toNode(HelpFunctions.safeString(applicationObject))
         n['read_from_file'].setValue(True)
         n['file'].setValue(nukecon.Connector.windowsFixPath(iAObj.filePath))
         self.setFTab(n, iAObj)
@@ -248,9 +268,14 @@ class GeometryAsset(GenericAsset):
 
     def importAsset(self, iAObj=None):
         resultingNode = nuke.createNode("ReadGeo2", inpanel=False)
-        resultingNode['file'].setValue(nukecon.Connector.windowsFixPath(iAObj.filePath))
-        resultingNode['name'].setValue(iAObj.assetName)
-
+        resultingNode['file'].setValue(
+            HelpFunctions.safeString(
+                nukecon.Connector.windowsFixPath(iAObj.filePath)
+            )
+        )
+        resultingNode['name'].setValue(
+            HelpFunctions.safeString(iAObj.assetName)
+        )
         #fps = int(ftrack.Task(os.environ['FTRACK_SHOTID']).getFPS())
         #resultingNode['frame_rate'].setValue(fps)
 
@@ -260,8 +285,12 @@ class GeometryAsset(GenericAsset):
         return 'Imported geo asset'
 
     def changeVersion(self, iAObj=None, applicationObject=None):
-        n = nuke.toNode(applicationObject)
-        n['file'].setValue(nukecon.Connector.windowsFixPath(iAObj.filePath))
+        n = nuke.toNode(HelpFunctions.safeString(applicationObject))
+        n['file'].setValue(
+            HelpFunctions.safeString(
+                nukecon.Connector.windowsFixPath(iAObj.filePath)
+            )
+        )
         self.setFTab(n, iAObj)
 
         return True
