@@ -7,24 +7,20 @@ import getpass
 
 from PySide import QtGui
 
+from FnAssetAPI import logging
 import nuke
 import ftrack_connect.crew_hub
-import ftrack_connect.event_hub_thread
 import ftrack
 import ftrack_legacy
 from ftrack_connect.ui.widget import notification_list as _notification_list
 from ftrack_connect.ui.widget import crew as _crew
+import ftrack_connect.ui.theme
 
 from ftrack_connect_nuke.ftrackConnector.panelcom import (
     PanelComInstance as _PanelComInstance
 )
-from ftrack_connect_nuke.ftrackplugin.ftrackWidgets.HeaderWidget import (
-    HeaderWidget
-)
+from ftrack_connect.ui.widget.header import Header
 
-# TODO: Move this to a proper place. Maybe where the Plugin is started?
-eventHubThread = ftrack_connect.event_hub_thread.EventHubThread()
-eventHubThread.start()
 
 session = ftrack.Session()
 
@@ -32,6 +28,10 @@ session = ftrack.Session()
 class NukeCrewHub(ftrack_connect.crew_hub.SignalCrewHub):
 
     def isInterested(self, data):
+        '''Return if interested in user with *data*.'''
+
+        # In first version we are interested in all users since all users
+        # are visible in the list.
         return True
 
 
@@ -42,10 +42,28 @@ class UserClassifier(object):
         '''Initialise classifier.'''
         super(UserClassifier, self).__init__()
 
-        self._
+        logging.info('Initialise classifier')
 
-    def __call__(self, user):
+        self._lookup = dict()
+
+        other_assignees = session.query(
+            'select id from User where assignments.context_id '
+            'is "{0}"'.format(os.environ['FTRACK_TASKID'])
+        ).all()
+
+        for assignee in other_assignees:
+            self._lookup[assignee['id']] = 'assigned'
+
+        logging.info(
+            '_lookup contains "{0}"'.format(str(self._lookup))
+        )
+
+    def __call__(self, user_id):
         '''Classify user and return relevant group.'''
+        try:
+            return self._lookup[user_id]
+        except KeyError:
+            return 'others'
 
 
 class Crew(QtGui.QDialog):
@@ -53,6 +71,8 @@ class Crew(QtGui.QDialog):
     def __init__(self, parent=None):
         '''Initialise widget with *parent*.'''
         super(Crew, self).__init__(parent=parent)
+
+        ftrack_connect.ui.theme.applyTheme(self, 'integration')
 
         self.setMinimumWidth(400)
         self.setSizePolicy(
@@ -64,8 +84,7 @@ class Crew(QtGui.QDialog):
         self.vertical_layout = QtGui.QVBoxLayout(self)
         self.horizontal_layout = QtGui.QHBoxLayout()
 
-        self.header = HeaderWidget(self)
-        self.header.setTitle('Crew')
+        self.header = Header(username=getpass.getuser(), parent=self)
 
         self.vertical_layout.addWidget(self.header)
 
@@ -75,9 +94,11 @@ class Crew(QtGui.QDialog):
 
         self._hub = NukeCrewHub()
 
-        groups = ['Assigned', 'Supervisors']
+        self._classifier = UserClassifier()
+
+        groups = ['Assigned']
         self.chat = _crew.Crew(
-            groups, hub=self._hub, parent=self
+            groups, hub=self._hub, classifier=self._classifier, parent=self
         )
 
         for user in session.query(
@@ -179,7 +200,6 @@ class Crew(QtGui.QDialog):
 
     def _update_notification_context(self):
         '''Update the notification list context on refresh.'''
-
 
     def _read_context_from_environment(self):
         '''Read context from environment.'''
