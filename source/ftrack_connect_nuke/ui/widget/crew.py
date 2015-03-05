@@ -17,9 +17,6 @@ from ftrack_connect.ui.widget import notification_list as _notification_list
 from ftrack_connect.ui.widget import crew as _crew
 import ftrack_connect.ui.theme
 
-from ftrack_connect_nuke.ftrackConnector.panelcom import (
-    PanelComInstance as _PanelComInstance
-)
 from ftrack_connect.ui.widget.header import Header
 
 
@@ -142,6 +139,11 @@ class NukeCrew(QtGui.QDialog):
 
         self.setObjectName('Crew')
         self.setWindowTitle('Crew')
+
+        # Import inline to avoid mysterious segfault in nuke 9.1dev build.
+        from ftrack_connect_nuke.ftrackConnector.panelcom import (
+            PanelComInstance as _PanelComInstance
+        )
 
         panel_communication_singleton = _PanelComInstance.instance()
         panel_communication_singleton.addRefreshListener(
