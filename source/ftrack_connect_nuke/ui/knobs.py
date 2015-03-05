@@ -100,13 +100,32 @@ class BrowseKnob():
         self._lineEdit.setText(HelpFunctions.getPath(obj, slash=True))
 
 
+# Header widget cache used to fix bug in Nuke that causes the HeaderKnob
+# to be instansiated multiple times.
+HEADER_WIDGET_CACHE = dict()
+
+
 class HeaderKnob():
+    '''Header knob.'''
+
+    def __init__(self, cacheId):
+        '''Instansiate header knob with *cacheId*.
+
+        *cacheId* is used to retrieve a header that is already created.
+
+        '''
+        if cacheId not in HEADER_WIDGET_CACHE:
+            headerWidget = header.Header(
+                getpass.getuser(), parent=None
+            )
+            applyTheme(headerWidget, 'integration')
+
+            HEADER_WIDGET_CACHE[cacheId] = headerWidget
+
+        self.headerWidget = HEADER_WIDGET_CACHE[cacheId]
+
     def makeUI(self):
-        self.headerWidget = header.Header(getpass.getuser(), parent=None)
-        applyTheme(self.headerWidget, 'integration')
-
-        self.headerWidget.updateValue = self.updateValue
-
+        '''Return widget.'''
         return self.headerWidget
 
     def updateValue(self):
