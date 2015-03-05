@@ -105,13 +105,15 @@ class Delegate(delegate.Delegate):
             )
 
 
-        # add new entries in the ftrack menu
+        # Add new entries in the ftrack menu.
         ftrackMenu.addSeparator()
-        ftrackMenu.addCommand('Publish a gizmo', GizmoPublisherDialog)
-        ftrackMenu.addCommand('Publish script', ScriptPublisherDialog)
-        ftrackMenu.addCommand('Load script', ScriptOpenerDialog)
+        ftrackMenu.addCommand('Publish gizmo', GizmoPublisherDialog)
 
-        # ftrackMenu.addCommand('Publish a group of nodes...', millAssetManager.publish_group_panel)
+        # The new load and publish script dialog's are waiting for some style
+        # fixes.
+        if False:
+            ftrackMenu.addCommand('Publish script', ScriptPublisherDialog)
+            ftrackMenu.addCommand('Load script', ScriptOpenerDialog)
 
         # Add ftrack publish node
         toolbar = nuke.toolbar("Nodes")
