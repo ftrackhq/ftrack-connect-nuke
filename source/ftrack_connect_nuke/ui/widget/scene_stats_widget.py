@@ -101,7 +101,7 @@ class StatisticWidget(QtGui.QWidget):
                            width: 15px; border: 0px;
                            border-top-right-radius: 4px;
                            border-bottom-right-radius: 0px; }
-    QComboBox::down-arrow { image: url(':ftrack/image/studio/branch-open') }
+    QComboBox::down-arrow { image: url(':ftrack/image/integration/branch-open') }
     QAbstractItemView { background: #888; border: 0px; }
     """
         self._stats_cbbox.setStyleSheet(css_combobox)

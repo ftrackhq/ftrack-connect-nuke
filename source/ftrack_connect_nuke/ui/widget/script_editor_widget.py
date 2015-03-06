@@ -345,12 +345,12 @@ class ScriptEditorTreeView(QtGui.QTreeView):
         QTreeView::branch:has-children:!has-siblings:closed,
         QTreeView::branch:closed:has-children:has-siblings {
             border-image: none;
-            image: url(":ftrack/image/studio/branch-closed");
+            image: url(":ftrack/image/integration/branch-closed");
           }
         QTreeView::branch:open:has-children:!has-siblings,
         QTreeView::branch:open:has-children:has-siblings {
             border-image: none;
-            image: url(":ftrack/image/studio/branch-open");
+            image: url(":ftrack/image/integration/branch-open");
           }
         QScrollArea { padding: 3px; border: 0px;
                       background: #252525; }

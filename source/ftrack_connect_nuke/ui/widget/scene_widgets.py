@@ -78,7 +78,7 @@ class NoSceneVersionWidget(QtGui.QWidget):
         """
 
         css_image = """
-        background: url(':ftrack/image/studio/no-asset') no-repeat center center;
+        background: url(':ftrack/image/integration/no-asset') no-repeat center center;
         """
         main_layout = QtGui.QHBoxLayout(self)
 

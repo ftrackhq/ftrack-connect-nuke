@@ -251,7 +251,7 @@ class SnapshotsView(QtGui.QGraphicsView):
 
         self._drawings = []
 
-        image_pen_px = QtGui.QPixmap(':ftrack/image/studio/pencil')
+        image_pen_px = QtGui.QPixmap(':ftrack/image/integration/pencil')
         image_pen_px.setMask(image_pen_px.mask())
         self._image_pen_cursor = QtGui.QCursor(image_pen_px)
 
@@ -370,10 +370,10 @@ class SnapshotsEditButtons(QtGui.QWidget):
         self._handscroll_mode = handscroll_mode
         self._icones = {}
         self._icones = {
-            'fitscreen': ':ftrack/image/studio/fit-screen',
-            'move': ':ftrack/image/studio/hand-scroll',
-            'draw': ':ftrack/image/studio/pencil',
-            'eraser': ':ftrack/image/studio/eraser',
+            'fitscreen': ':ftrack/image/integration/fit-screen',
+            'move': ':ftrack/image/integration/hand-scroll',
+            'draw': ':ftrack/image/integration/pencil',
+            'eraser': ':ftrack/image/integration/eraser',
         }
 
         self.setupUI(parent)
