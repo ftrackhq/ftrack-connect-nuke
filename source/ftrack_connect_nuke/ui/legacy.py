@@ -70,7 +70,7 @@ def checkForNewAssets():
     if message != '':
         nuke.message(message)
 
-@ftrack.withGetCache
+@ftrack_legacy.withGetCache
 def addPublishKnobsToGroupNode(g):
     tab = nuke.Tab_Knob('ftrackpub', 'ftrack Publish')
     g.addKnob(tab)
