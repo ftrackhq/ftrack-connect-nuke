@@ -8,7 +8,7 @@ import logging
 import re
 import os
 
-import ftrack
+import ftrack_legacy as ftrack
 import ftrack_connect.application
 
 

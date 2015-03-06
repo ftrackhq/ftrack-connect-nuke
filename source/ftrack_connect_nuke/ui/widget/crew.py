@@ -141,7 +141,7 @@ class NukeCrew(QtGui.QDialog):
         self.setWindowTitle('Crew')
 
         # Import inline to avoid mysterious segfault in nuke 9.1dev build.
-        from ftrack_connect_nuke.ftrackConnector.panelcom import (
+        from ftrack_connect.connector.panelcom import (
             PanelComInstance as _PanelComInstance
         )
 

@@ -7,8 +7,8 @@ import ftrack_legacy
 import ftrack
 import nuke
 
-from ftrack_connect_nuke.ftrackConnector.maincon import FTAssetObject
-from ftrack_connect_nuke import ftrackConnector
+from ftrack_connect.connector import FTAssetObject
+from ftrack_connect_nuke.connector import Connector
 
 log = logging.getLogger(__name__)
 
@@ -60,7 +60,7 @@ def callback(event):
         assetVersionId=result['id']
     )
 
-    ftrackConnector.Connector.changeVersion(
+    Connector.changeVersion(
         iAObj=importObj,
         applicationObject=_getNodeName(result['asset']['id'])
     )

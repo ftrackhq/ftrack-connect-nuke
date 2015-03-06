@@ -2,7 +2,6 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
-import shutil
 import ftrack_legacy
 import clique
 import glob
@@ -14,10 +13,11 @@ import FnAssetAPI
 
 import nuke
 import nukescripts
-import ftrack_connect
 import ftrack_connect_nuke
 
-from ftrack_connect.connector import FTComponent, FTAssetObject, HelpFunctions, PanelComInstance
+from ftrack_connect.connector import (
+    FTComponent, FTAssetObject, HelpFunctions
+)
 from ftrack_connect_nuke import connector
 from ftrack_connect_nuke.connector import nukeassets
 
@@ -41,6 +41,9 @@ class ProgressDialog(QtGui.QDialog):
 
 
 def refAssetManager():
+    # Inline to avoid Nuke crashing on startup without traceback.
+    from ftrack_connect.connector import PanelComInstance
+
     panelComInstance = PanelComInstance.instance()
     panelComInstance.refreshListeners()
 
