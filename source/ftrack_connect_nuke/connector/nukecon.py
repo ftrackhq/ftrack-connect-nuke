@@ -76,7 +76,7 @@ class Connector(_Connector):
     def selectObject(applicationObject='', clearSelection=True):
         if clearSelection:
             nukescripts.clear_selection_recursive()
-        n = nuke.toNode(applicationObject)
+        n = nuke.toNode(HelpFunctions.safeString(applicationObject))
         n.knob('selected').setValue(True)
 
     @staticmethod
@@ -87,7 +87,7 @@ class Connector(_Connector):
 
     @staticmethod
     def removeObject(applicationObject=''):
-        deleteMeNode = nuke.toNode(applicationObject)
+        deleteMeNode = nuke.toNode(HelpFunctions.safeString(applicationObject))
         nuke.delete(deleteMeNode)
 
     @staticmethod
@@ -95,7 +95,9 @@ class Connector(_Connector):
         assetHandler = FTAssetHandlerInstance.instance()
         changeAsset = assetHandler.getAssetClass(iAObj.assetType)
         if changeAsset:
-            result = changeAsset.changeVersion(iAObj, applicationObject)
+            result = changeAsset.changeVersion(
+                iAObj, applicationObject
+            )
             return result
         else:
             print 'assetType not supported'
@@ -127,7 +129,7 @@ class Connector(_Connector):
         # Orange RGB 227, 99, 22
         latestColor = int('%02x%02x%02x%02x' % (20, 161, 74, 255), 16)
         oldColor = int('%02x%02x%02x%02x' % (227, 99, 22, 255), 16)
-        n = nuke.toNode(applicationObject)
+        n = nuke.toNode(HelpFunctions.safeString(applicationObject))
         if latest:
             n.knob("note_font_color").setValue(latestColor)
         else:
@@ -150,12 +152,13 @@ class Connector(_Connector):
 
     @staticmethod
     def getUniqueSceneName(assetName):
-        res = nuke.toNode(assetName)
+        assetName = assetName
+        res = nuke.toNode(HelpFunctions.safeString(assetName))
         if res:
             i = 0
             while res:
                 uniqueAssetName = assetName + str(i)
-                res = nuke.toNode(uniqueAssetName)
+                res = nuke.toNode(HelpFunctions.safeString(uniqueAssetName))
                 i = i + 1
             return uniqueAssetName
         else:
