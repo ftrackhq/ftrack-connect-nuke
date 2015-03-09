@@ -7,6 +7,7 @@ import ftrack
 import clique
 import glob
 import tempfile
+import uuid
 
 from FnAssetAPI.ui.toolkit import QtGui
 
@@ -79,7 +80,7 @@ def addPublishKnobsToGroupNode(g):
 
     headerKnob = nuke.PyCustom_Knob(
         'fheader', '', 'ftrack_connect_nuke.ui.knobs.HeaderKnob("{0}")'.format(
-            g.name()
+            str(uuid.uuid1())
         )
     )
     headerKnob.setFlag(nuke.STARTLINE)
