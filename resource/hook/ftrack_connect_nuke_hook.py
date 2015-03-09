@@ -263,6 +263,12 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
             ), 'FTRACK_EVENT_PLUGIN_PATH', environment
         )
 
+        environment = ftrack_connect.application.appendPath(
+            os.path.join(
+                self.plugin_path, '..', 'ftrack_python_api'
+            ), 'FTRACK_PYTHON_API_PLUGIN_PATH', environment
+        )
+
         return environment
 
 

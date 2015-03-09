@@ -85,6 +85,21 @@ data_files.append(
     )
 )
 
+connect_ftrack_new_api_dependency_link = (
+    'https://bitbucket.org/ftrack/ftrack-python-api/get/update-api-entity-factory-path.zip'
+    '#egg=ftrack-python-api'
+)
+
+connect_dependency_link = (
+    'https://bitbucket.org/ftrack/ftrack-connect/get/backlog/crew/integrate-with-nuke.zip'
+    '#egg=ftrack-connect-0.1.7'
+)
+
+connect_foundry_dependency_link = (
+    'https://bitbucket.org/ftrack/ftrack-connect-foundry/get/backlog/switch-to-new-api.zip'
+    '#egg=ftrack-connect-foundry-0.1.0'
+)
+
 # Configuration.
 setup(
     name='ftrack-connect-nuke',
@@ -106,6 +121,7 @@ setup(
         'lowdown >= 0.1.0, < 1'
     ],
     install_requires=[
+        'ftrack-python-api',
         'ftrack-connect >= 0.1, < 1',
         'ftrack-connect-foundry >= 0.1.0, < 2'
     ],
@@ -118,10 +134,9 @@ setup(
     dependency_links=[
         ('https://bitbucket.org/ftrack/lowdown/get/0.1.0.zip'
          '#egg=lowdown-0.1.0'),
-        ('https://bitbucket.org/ftrack/ftrack-connect/get/0.1.7.zip'
-        '#egg=ftrack-connect-0.1.7'),
-        ('https://bitbucket.org/ftrack/ftrack-connect-foundry/get/master.zip'
-        '#egg=ftrack-connect-foundry-0.1.0')
+        connect_dependency_link,
+        connect_foundry_dependency_link,
+        connect_ftrack_new_api_dependency_link
     ],
     data_files=data_files
 )
