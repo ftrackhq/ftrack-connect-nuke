@@ -8,7 +8,7 @@ try:
     # part of nuke
     import foundry.assetmgr
 except:
-	# included in ftrack-connect-foundry
+    # included in ftrack-connect-foundry
     import assetmgr_nuke
 
 import nuke

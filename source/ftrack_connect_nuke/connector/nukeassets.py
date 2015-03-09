@@ -309,8 +309,10 @@ class GeometryAsset(GenericAsset):
     def publishAsset(self, iAObj=None):
         return [], "Publish function not implemented for geometry asset"
 
-# new gizmo asset (mill) # not used atm
+
 class GizmoAsset(GenericAsset):
+    '''Gizmo asset.'''
+
     def __init__(self):
         super(GizmoAsset, self).__init__()
 
@@ -363,8 +365,8 @@ class GizmoAsset(GenericAsset):
         return publishedComponents
 
 
-# new scene assets (Mill)
 class NukeSceneAsset(GizmoAsset):
+    '''Nuke scene asset.'''
 
     def importAsset(self, iAObj=None):
         if iAObj.filePath.endswith('nk'):
