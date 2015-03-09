@@ -14,7 +14,7 @@ Assets can be imported into Nuke from the Import Asset pane.
 
 The pane can be opened from the ftrack menu:
 
-.. image:: /image/ftrack_menu_import_asset_menu_option.jpg
+.. image:: /image/menu.png
 
 1. Browse to a shot using the :menuselection:`Import from` button. Your current
    shot will be preselected.
@@ -32,7 +32,7 @@ script.
 
 It can be opened from the ftrack menu:
 
-.. image:: /image/ftrack_menu_asset_manager_menu_option.png
+.. image:: /image/menu.png
 
 From the asset manager you can quickly see what assets are on the latest version
 (green) and quickly update all assets to the latest version by selecting all of
@@ -59,3 +59,22 @@ These options are available when publishing:
                         from there.
 :Attach Nuke script:    Attaches the Nuke script as a component on the published
                         version.
+
+Publishing Gizmos
+-----------------
+
+To a publish a gizmo open the "Publish gizmo" dialog from the ftrack menu.
+
+.. image:: /image/gizmo.png
+
+Either browse for or drag & drop the gizmo you want to publish. Give the new
+gizmo version a name. If an asset already exists with that name the version
+number will be incremented.
+
+Click the Publish Gizmo button to publish.
+
+.. note::
+    
+    There must be an asset type in ftrack with short "nuke_gizmo" and you'll
+    be presented with a warning if it is not. In that case you should contact 
+    the supervisor or system administrator to have it added.

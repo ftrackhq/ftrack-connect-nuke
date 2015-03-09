@@ -2,7 +2,6 @@
 # :copyright: Copyright (c) 2014 ftrack
 
 import functools
-
 import FnAssetAPI
 from FnAssetAPI.ui.toolkit import QtGui
 from ftrack_connect_foundry.ui import delegate
@@ -10,7 +9,6 @@ from ftrack_connect_foundry.ui.tasks_view import TasksView as _TasksView
 from ftrack_connect_foundry.ui.info_view import (
     WorkingTaskInfoView as _WorkingTaskInfoView, InfoView as _InfoView
 )
-
 
 class Delegate(delegate.Delegate):
     def __init__(self, bridge):
@@ -23,10 +21,23 @@ class Delegate(delegate.Delegate):
         import nuke
         import legacy
         from nukescripts import panels
-        from ftrack_connect_nuke import ftrackConnector
-        from ftrack_connect_nuke.ftrackplugin.ftrackDialogs import ftrackAssetManagerDialog, ftrackImportAssetDialog
-        
-        ftrackConnector.Connector.registerAssets()
+        from ftrack_connect_nuke.connector import Connector
+
+        from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
+
+        from ftrack_connect_nuke.ui.widget.publish_script import ScriptPublisherDialog
+        from ftrack_connect_nuke.ui.widget.load_script import ScriptOpenerDialog
+        Connector.registerAssets()
+
+        # wrappers for initializing the widgets with the correct connector object
+        def wrapImportAssetDialog(*args, **kwargs):
+            from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
+            return FtrackImportAssetDialog(connector=Connector)
+
+        def wrapAssetManagerDialog(*args, **kwargs):
+            from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
+            return FtrackAssetManagerDialog(connector=Connector)
+
 
         # Populate the ui
         nukeMenu = nuke.menu("Nuke")
@@ -37,11 +48,13 @@ class Delegate(delegate.Delegate):
         # add ftrack publish node to the menu
         ftrackMenu.addCommand('Create Publish Node', lambda: legacy.createFtrackPublish())
 
+        ftrackMenu.addSeparator()
 
-        # Create the import asset dialog entry in the menu
+        globals()['ftrackImportAssetClass'] = wrapImportAssetDialog
+
         panels.registerWidgetAsPanel(
-            'ftrack_connect_nuke.ftrackplugin.ftrackDialogs.ftrackImportAssetDialog.FtrackImportAssetDialog', 
-            'ftrackImportAsset', 
+            '{0}.{1}'.format(__name__, 'ftrackImportAssetClass'),
+            'ftrackImportAsset',
             'ftrackDialogs.ftrackImportAssetDialog'
         )
 
@@ -53,11 +66,13 @@ class Delegate(delegate.Delegate):
             'panel = nukescripts.restorePanel("ftrackDialogs.ftrackImportAssetDialog");'
             'panel.addToPane(pane)'
         )
-        
+
+        globals()['ftrackAssetManagerDialogClass'] = wrapAssetManagerDialog
+
         # Create the asset manager dialog entry in the menu
         panels.registerWidgetAsPanel(
-            'ftrack_connect_nuke.ftrackplugin.ftrackDialogs.ftrackAssetManagerDialog.FtrackAssetManagerDialog', 
-            'ftrackAssetManager', 
+            '{0}.{1}'.format(__name__, 'ftrackAssetManagerDialogClass'),
+            'ftrackAssetManager',
             'ftrackDialogs.ftrackAssetManagerDialog'
         )
         ftrackMenu.addCommand(
@@ -89,6 +104,17 @@ class Delegate(delegate.Delegate):
                 )
             )
 
+
+        # Add new entries in the ftrack menu.
+        ftrackMenu.addSeparator()
+        ftrackMenu.addCommand('Publish gizmo', GizmoPublisherDialog)
+
+        # The new load and publish script dialog's are waiting for some style
+        # fixes.
+        if False:
+            ftrackMenu.addCommand('Publish script', ScriptPublisherDialog)
+            ftrackMenu.addCommand('Load script', ScriptOpenerDialog)
+
         # Add ftrack publish node
         toolbar = nuke.toolbar("Nodes")
         ftrackNodesMenu = toolbar.addMenu("ftrack", icon="logobox.png")
@@ -103,11 +129,10 @@ class Delegate(delegate.Delegate):
         nuke.addKnobChanged(legacy.ftrackPublishKnobChanged, nodeClass="Group")
         nuke.addOnCreate(legacy.ftrackPublishHieroInit)
 
-
     def populateUI(self, uiElement, specification, context):
         super(Delegate, self).populateUI(uiElement, specification, context)
 
         host = FnAssetAPI.SessionManager.currentSession().getHost()
 
-        if host and host.getIdentifier() == 'uk.co.foundry.nuke': 
+        if host and host.getIdentifier() == 'uk.co.foundry.nuke':
             self.populate_ftrack()
