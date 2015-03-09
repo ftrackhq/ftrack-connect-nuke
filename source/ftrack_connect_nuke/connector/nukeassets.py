@@ -276,8 +276,6 @@ class GeometryAsset(GenericAsset):
         resultingNode['name'].setValue(
             HelpFunctions.safeString(iAObj.assetName)
         )
-        #fps = int(ftrack.Task(os.environ['FTRACK_SHOTID']).getFPS())
-        #resultingNode['frame_rate'].setValue(fps)
 
         self.addFTab(resultingNode)
         self.setFTab(resultingNode, iAObj)
