@@ -109,7 +109,9 @@ class ImageSequenceAsset(GenericAsset):
 
         # Compute frame range
         # TODO: Store these attributes on the component for easy access.
-        resultingNode['file'].fromUserText(iAObj.filePath)
+        resultingNode['file'].fromUserText(
+            HelpFunctions.safeString(iAObj.filePath)
+        )
 
         start, end = self.getStartEndFrames(iAObj)
 
@@ -146,7 +148,9 @@ class ImageSequenceAsset(GenericAsset):
         except:
             print 'No proxy'
 
-        n['file'].fromUserText(iAObj.filePath)
+        n['file'].fromUserText(
+            HelpFunctions.safeString(iAObj.filePath)
+        )
         if proxyPath != '':
             n['proxy'].fromUserText(proxyPath)
 
