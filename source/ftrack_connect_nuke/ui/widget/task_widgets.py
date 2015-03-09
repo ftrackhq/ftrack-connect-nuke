@@ -349,7 +349,7 @@ class SceneAssetsWidget(QtGui.QWidget):
         layout_settings.setContentsMargins(0, 0, 0, 0)
         layout_settings.setSpacing(6)
 
-        asset_types = ["All Asset Types"] + ['nuke_scene']
+        asset_types = ["All Asset Types"] + ['comp']
 
         self._asset_connectors_cbbox = QtGui.QComboBox(self)
         self._asset_connectors_cbbox.addItems(asset_types)

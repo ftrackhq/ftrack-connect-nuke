@@ -807,16 +807,16 @@ class AssetsTree(QtGui.QTreeView):
         self._assets.clear()
 
         task = ftrack.Task(assets)
-        asset = task.getAssets(assetTypes=['nuke_scene'])
+        asset = task.getAssets(assetTypes=['comp'])
         if not asset:
             return
 
         asset_versions = asset[0].getVersions()
-        asset_type = 'nuke_scene'
+        asset_type = 'comp'
         for asset_version in asset_versions:
             if asset_type not in self._assets.keys():
-                self._assets['nuke_scene'] = []
-            self._assets['nuke_scene'].append(asset_version)
+                self._assets['comp'] = []
+            self._assets['comp'].append(asset_version)
 
     def set_assets(self):
         for asset_type, scene_versions in self._assets.iteritems():
