@@ -42,7 +42,7 @@ class ProgressDialog(QtGui.QDialog):
 
 def refAssetManager():
     # Imported inline to avoid crashes in nuke.
-    from from ftrack_connect.connector import PanelComInstance
+    from ftrack_connect.connector import PanelComInstance
     panelComInstance = PanelComInstance.instance()
     panelComInstance.refreshListeners()
 
