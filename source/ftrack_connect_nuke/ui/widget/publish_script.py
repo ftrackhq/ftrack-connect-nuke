@@ -30,7 +30,7 @@ class ScriptPublisherDialog(BaseDialog):
         # self.setFTrackTitle("Publish script...")
         applyTheme(self, 'integration')
         self._connectors_per_type = {}
-        self._connectors_per_type['nuke_scene'] = NukeSceneAsset()
+        self._connectors_per_type['comp'] = NukeSceneAsset()
         self.setupUI()
         self.initiate_tasks()
         self.exec_()

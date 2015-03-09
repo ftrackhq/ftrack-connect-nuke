@@ -119,7 +119,9 @@ class ImageSequenceAsset(GenericAsset):
 
         # Compute frame range
         # TODO: Store these attributes on the component for easy access.
-        resultingNode['file'].fromUserText(iAObj.filePath)
+        resultingNode['file'].fromUserText(
+            HelpFunctions.safeString(iAObj.filePath)
+        )
 
         start, end = self.getStartEndFrames(iAObj)
 
@@ -156,7 +158,9 @@ class ImageSequenceAsset(GenericAsset):
         except:
             print 'No proxy'
 
-        n['file'].fromUserText(iAObj.filePath)
+        n['file'].fromUserText(
+            HelpFunctions.safeString(iAObj.filePath)
+        )
         if proxyPath != '':
             n['proxy'].fromUserText(proxyPath)
 
@@ -286,8 +290,6 @@ class GeometryAsset(GenericAsset):
         resultingNode['name'].setValue(
             HelpFunctions.safeString(iAObj.assetName)
         )
-        #fps = int(ftrack.Task(os.environ['FTRACK_SHOTID']).getFPS())
-        #resultingNode['frame_rate'].setValue(fps)
 
         self.addFTab(resultingNode)
         self.setFTab(resultingNode, iAObj)
@@ -319,8 +321,10 @@ class GeometryAsset(GenericAsset):
     def publishAsset(self, iAObj=None):
         return [], "Publish function not implemented for geometry asset"
 
-# new gizmo asset (mill) # not used atm
+
 class GizmoAsset(GenericAsset):
+    '''Gizmo asset.'''
+
     def __init__(self):
         super(GizmoAsset, self).__init__()
 
@@ -373,8 +377,8 @@ class GizmoAsset(GenericAsset):
         return publishedComponents
 
 
-# new scene assets (Mill)
 class NukeSceneAsset(GizmoAsset):
+    '''Nuke scene asset.'''
 
     def importAsset(self, iAObj=None):
         if iAObj.filePath.endswith('nk'):
@@ -390,6 +394,6 @@ def registerAssetTypes():
     assetHandler.registerAssetType(name='geo', cls=GeometryAsset)
     # new mill asset types
     assetHandler.registerAssetType(name='nuke_gizmo', cls=GizmoAsset)
-    assetHandler.registerAssetType(name='nuke_scene', cls=NukeSceneAsset)
+    assetHandler.registerAssetType(name='comp', cls=NukeSceneAsset)
 
 

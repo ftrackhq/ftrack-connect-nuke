@@ -6,6 +6,7 @@ import ftrack_legacy
 import clique
 import glob
 import tempfile
+import uuid
 
 from FnAssetAPI.ui.toolkit import QtGui
 
@@ -43,7 +44,6 @@ class ProgressDialog(QtGui.QDialog):
 def refAssetManager():
     # Inline to avoid Nuke crashing on startup without traceback.
     from ftrack_connect.connector import PanelComInstance
-
     panelComInstance = PanelComInstance.instance()
     panelComInstance.refreshListeners()
 
@@ -80,7 +80,7 @@ def addPublishKnobsToGroupNode(g):
 
     headerKnob = nuke.PyCustom_Knob(
         'fheader', '', 'ftrack_connect_nuke.ui.knobs.HeaderKnob("{0}")'.format(
-            g.name()
+            str(uuid.uuid1())
         )
     )
     headerKnob.setFlag(nuke.STARTLINE)
@@ -287,7 +287,7 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
 
         assetVersion.publish()
 
-        header.setMessage('Asset Correctly published!')
+        header.setMessage('Asset published!')
 
 def getMetaData(nodeName):
     n = nuke.toNode(HelpFunctions.safeString(nodeName))
