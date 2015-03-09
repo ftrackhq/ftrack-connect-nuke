@@ -9,6 +9,7 @@ from PySide import QtGui, QtCore
 from ftrack_connect.ui.widget import header
 from ftrack_connect_nuke.ui.controller import Controller
 from ftrack_connect.ui.widget import overlay as _overlay
+from ftrack_connect.connector import HelpFunctions
 
 import FnAssetAPI
 from FnAssetAPI import specifications
@@ -140,11 +141,14 @@ class BaseDialog(QtGui.QDialog):
         self.tasks_browse_widget_layout.addWidget(self.tasks_browse_label)
 
         # Task browser - combo
-        self.tasks_combo = QtGui.QComboBox(self.tasks_browse_widget)
-        self.tasks_combo.setMinimumHeight(23)
+        self.task_label = QtGui.QLabel()
+        self.task_label.setMinimumHeight(23)
+        self.task_label.setText(
+            HelpFunctions.getPath(self.current_task, slash=True)
+        )
         if self.disable_tasks_list:
-            self.tasks_combo.setHidden(True)
-        self.tasks_browse_widget_layout.addWidget(self.tasks_combo)
+            self.task_label.setHidden(True)
+        self.tasks_browse_widget_layout.addWidget(self.task_label)
 
         # Task browser - button
         self._tasks_btn = QtGui.QPushButton("Browse all tasks...")
@@ -192,8 +196,6 @@ class BaseDialog(QtGui.QDialog):
 
     def _connect_base_signals(self):
         self._tasks_btn.clicked.connect(self.browse_all_tasks)
-        self.tasks_combo.currentIndexChanged.connect(self.update_task_global)
-
         self._save_btn.clicked.connect(self.accept)
         self._cancel_btn.clicked.connect(self.reject)
 
@@ -202,14 +204,7 @@ class BaseDialog(QtGui.QDialog):
         self._display_tasks_list = toggled
 
     def _get_tasks(self):
-        for task in self._user.getTasks():
-            parent = self._get_task_parents(task)
-            self._tasks_dict[parent] = task
-
-        if self.current_task is not None:
-            current_parents = self._get_task_parents(self.current_task.getId())
-            if current_parents not in self._tasks_dict.keys():
-                self._tasks_dict[current_parents] = self.current_task
+        pass
 
     def _get_task_parents(self, task):
         task = ftrack.Task(task)
@@ -237,6 +232,7 @@ class BaseDialog(QtGui.QDialog):
         targetTask = browser.getSelection()[0]
         task = ftrack.Task(targetTask.split('ftrack://')[-1].split('?')[0])
         self.set_task(task)
+        self.update_task_global()
 
     def update_task_global(self):
         self.update_task()
@@ -246,9 +242,6 @@ class BaseDialog(QtGui.QDialog):
             self.set_empty_task_mode(True)
 
     def update_task(self):
-        self.current_task = self._tasks_dict.get(
-            self.tasks_combo.currentText()
-        )
         self._validate_task()
 
     def set_enabled(self, bool_result):
@@ -260,18 +253,9 @@ class BaseDialog(QtGui.QDialog):
             return
         self.current_task = task
         self._validate_task()
-        parents = self._get_task_parents(task)
-
-        if parents in self._tasks_dict.keys():
-            index = self.tasks_combo.findText(
-                parents,
-                QtCore.Qt.MatchFixedString
-            )
-            self.tasks_combo.setCurrentIndex(index)
-        else:
-            self._tasks_dict[parents] = task
-            self.tasks_combo.insertItem(0, parents)
-            self.tasks_combo.setCurrentIndex(0)
+        self.task_label.setText(
+            HelpFunctions.getPath(self.current_task, slash=True)
+        )
 
     def initiate_tasks(self):
         self._tasks_dict = dict()
@@ -284,19 +268,6 @@ class BaseDialog(QtGui.QDialog):
         self._controller.start()
 
     def set_tasks(self):
-        self.tasks_combo.blockSignals(True)
-
-        current_item_index = 0
-        items = sorted(self._tasks_dict.keys())
-        if self._current_scene is not None:
-            parent = self._get_task_parents(self._current_scene)
-            current_item_index = items.index(parent)
-
-        self.tasks_combo.addItems(items)
-        self.tasks_combo.setCurrentIndex(current_item_index)
-
-        self.tasks_combo.blockSignals(False)
-
         # self.set_loading_mode(False)
         self.update_task_global()
         self.set_loading_screen(False)
