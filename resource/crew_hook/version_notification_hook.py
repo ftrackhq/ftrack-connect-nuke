@@ -1,16 +1,14 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-import logging
-
 import ftrack_legacy
 import ftrack
 import nuke
+from FnAssetAPI import logging
+import pprint
 
 from ftrack_connect.connector import FTAssetObject
 from ftrack_connect_nuke.connector import Connector
-
-log = logging.getLogger(__name__)
 
 
 def _getNodeName(assetId):
@@ -34,6 +32,10 @@ def callback(event):
     new version.
 
     '''
+    logging.info('Changing version of asset based on data:\n{0}'.format(
+        pprint.pformat(event['data']))
+    )
+
     location = ftrack_legacy.Location('ftrack.connect')
 
     session = ftrack.Session()
@@ -68,7 +70,10 @@ def callback(event):
 
 def register(registry, **kw):
     '''Register hook.'''
+
+    logging.info('Register version notification hook')
+
     ftrack_legacy.EVENT_HUB.subscribe(
-        'topic=ftrack.connect.notification.version',
+        'topic=ftrack.crew.notification.version',
         callback
     )
