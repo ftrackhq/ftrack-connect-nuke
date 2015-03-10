@@ -86,8 +86,8 @@ data_files.append(
 )
 
 connect_ftrack_new_api_dependency_link = (
-    'https://bitbucket.org/ftrack/ftrack-python-api/get/update-api-entity-factory-path.zip'
-    '#egg=ftrack-python-api'
+    'file://{0}#egg=ftrack-python-api'
+    .format(os.environ['FTRACK_PYTHON_API'].replace('\\', '/'))
 )
 
 connect_dependency_link = (
