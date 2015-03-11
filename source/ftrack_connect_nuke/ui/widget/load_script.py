@@ -116,7 +116,7 @@ class ScriptOpenerDialog(BaseDialog):
     def load_scene(self):
         import nuke
         current_scene_version = self.current_scene_version
-        path = current_scene_version.getComponent(name='scene').getFilesystemPath()
+        path = current_scene_version.getComponent(name='nukescript').getFilesystemPath()
         if not path or not os.path.exists(path):
             self.header.setMessage('file %s does not exist!', 'error')
             return
