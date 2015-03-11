@@ -142,7 +142,7 @@ class SingleTaskWidget(QtGui.QFrame):
     def setupUI(self):
         css_task_global = """
         QLabel { padding: 0px; background: none; }
-        QTabWidget::pane { border-top: 2px solid #151515; top: -2px;}
+        /*QTabWidget::pane { border-top: 2px solid #151515; top: -2px;}
         QTabBar::tab { padding: 6px 10px; background: #151515;
                        border-top: 2px solid #151515;
                        border-right: 2px solid #151515;
@@ -152,7 +152,7 @@ class SingleTaskWidget(QtGui.QFrame):
                                 border-top-left-radius: 4px;
                                 border-top-right-radius: 4px; }
         QTabBar::tab:hover { background: #222; }
-        QTabBar::tab:!selected { margin-top: 2px; }
+        QTabBar::tab:!selected { margin-top: 2px; }*/
         """
         css_task_name_lbl = "font-size: 13px;"
         css_task_name = "color: #c3cfa4; font-size: 13px; font-weight: bold;"
@@ -334,7 +334,7 @@ class SceneAssetsWidget(QtGui.QWidget):
         css_settings_global = """
         QFrame { border: none; color: #FFF; }
         QCheckBox { color: #DDD; padding: 0px; background: none; }
-        QComboBox { color: #DDD; padding: 2px; background: #333; }
+        /*QComboBox { color: #DDD; padding: 2px; background: #333; }*/
         QComboBox::drop-down { border-radius: 0px; }
         QToolButton { color: #DDD; padding: 0px; background: #333; }
         """

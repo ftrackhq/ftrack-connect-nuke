@@ -127,6 +127,8 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
             locations = index.data(TreeItem.location_role)
             available = index.data(TreeItem.is_available_role)
 
+            main_color = QtGui.QColor()
+            main_color.setNamedColor('#333')
             legend_color = QtGui.QColor()
             legend_color.setNamedColor(self._view.asset_color(asset_type))
 
@@ -151,6 +153,9 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
                 background_comment = self._background_comment.lighter(111)
                 size_thumbnail = self._thumnbail_child_size
 
+            background_comment = main_color
+            background = QtGui.QColor()
+            background.setNamedColor('#222')
             # Draw background
             if option.state & QtGui.QStyle.State_Selected:
                 painter.setPen(
@@ -173,7 +178,7 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
             painter.setPen(QtGui.QPen(legend_color, 0, QtCore.Qt.SolidLine))
             painter.setBrush(legend_color)
 
-            painter.drawRoundedRect(type_indicator_rect, 3, 3)
+            # painter.drawRoundedRect(type_indicator_rect, 3, 3)
 
             padding_left += self._type_indicator_width
             padding_top += self._padding_content["top"]
@@ -229,7 +234,7 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
 
                     padding_top_legend = padding_top + thumbnail_rect.height() - 6
                     painter.drawText(
-                        padding_left + 5,
+                        padding_left + 2,
                         padding_top_legend, asset_type
                     )
 
@@ -701,7 +706,7 @@ class AssetsTree(QtGui.QTreeView):
     def __init__(self, parent=None, show_thumbnail=True):
         super(AssetsTree, self).__init__(parent)
         css_list = """
-        QTreeView { background: #666; margin: 0px; padding-top: 3px;
+        /*QTreeView { background: #666; margin: 0px; padding-top: 3px;
                     border-top-right-radius: 0px;
                     border-top-left-radius: 0px;
                     border-bottom-right-radius: 4px;
@@ -715,7 +720,7 @@ class AssetsTree(QtGui.QTreeView):
         QScrollBar { border: 0; border-radius: 6px;
                      background-color: #333; margin: 0px;}
         QScrollBar::handle {background: #222; border: 0px solid #111;}
-        QScrollBar::sub-line, QScrollBar::add-line {height: 0px; width: 0px;}
+        QScrollBar::sub-line, QScrollBar::add-line {height: 0px; width: 0px;}*/
         """
         self.setStyleSheet(css_list)
 

@@ -70,6 +70,7 @@ class ScriptOpenerDialog(BaseDialog):
             spacing=8,
             margin=(8, 2, 8, 2),
         )
+        self.set_css(self.main_container)
 
     @property
     def current_scene_version(self):

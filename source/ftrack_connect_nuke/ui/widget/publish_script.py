@@ -150,13 +150,6 @@ class ScriptPublisherDialog(BaseDialog):
 
         self._asset_version.setStyleSheet(css_asset_version)
 
-        fix_css = '''
-        #ftrack-edit-field {
-            background-color: #444;
-        }
-        '''
-        self.append_css(fix_css)
-
         self.right_top_container_layout.addWidget(asset_title_label)
         self.right_top_container_layout.addWidget(self._asset_name)
         self.right_top_container_layout.addItem(asset_spacer)
@@ -182,6 +175,7 @@ class ScriptPublisherDialog(BaseDialog):
         )
 
         self.append_css(self.global_css)
+        self.set_css(self.main_container)
         self._connect_script_signals()
 
     def _connect_script_signals(self):

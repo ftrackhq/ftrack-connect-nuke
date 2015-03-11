@@ -44,7 +44,7 @@ class SnapshotsWidget(QtGui.QWidget):
 
         self._no_snapshot = QtGui.QFrame(self._snapshot_frame)
         self._no_snapshot.setStyleSheet(
-            "QFrame{background: #000; border:0px;}")
+            "QFrame{/*background: #000;*/ border:0px;}")
         layout_no_snapshot = QtGui.QHBoxLayout(self._no_snapshot)
         label_no_snapshot = QtGui.QLabel(
             "No snapshot available...", self._no_snapshot)
@@ -235,12 +235,12 @@ class SnapshotsView(QtGui.QGraphicsView):
         self._scale_factor = 1.15
 
         css_frame = """
-        background: #000;
+        /*background: #000;
         border-top: 2px solid #000;
         border-left: 2px solid #000;
         border-right: 2px solid #000;
         border-top-left-radius: 4px;
-        border-top-right-radius: 4px;
+        border-top-right-radius: 4px;*/
         """
         self.setStyleSheet(css_frame)
 
@@ -282,7 +282,7 @@ class SnapshotsView(QtGui.QGraphicsView):
         self._pixmap = pixmap
         if pixmap == None:
             pixmap = QtGui.QPixmap(self._scene.width(), self._scene.height())
-            pixmap.fill(QtCore.Qt.black)
+            pixmap.fill(QtCore.Qt.red)
         self._item.setPixmap(pixmap)
         self.center()
 
