@@ -30,7 +30,7 @@ class ScriptPublisherDialog(BaseDialog):
         # self.setFTrackTitle("Publish script...")
         applyTheme(self, 'integration')
         self._connectors_per_type = {}
-        self._connectors_per_type['comp'] = NukeSceneAsset()
+        self._connectors_per_type['nukescript'] = NukeSceneAsset()
         self.setupUI()
         self.initiate_tasks()
         self.exec_()
@@ -327,7 +327,7 @@ class ScriptPublisherDialog(BaseDialog):
         asset = ftrack.Asset(asset_id)
         version = asset.createVersion(comment=comment, taskid=task.getId())
         version.createComponent(
-            name='scene',
+            name='nukescript',
             path=tmp_script
         )
 
