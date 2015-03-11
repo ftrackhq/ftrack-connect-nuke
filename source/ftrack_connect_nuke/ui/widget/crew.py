@@ -5,6 +5,7 @@ import os
 import urlparse
 import getpass
 import collections
+import pprint
 
 from PySide import QtGui
 
@@ -44,13 +45,42 @@ class UserClassifier(object):
 
         self._lookup = dict()
 
-        other_assignees = session.query(
-            'select id from User where assignments.context_id '
-            'is "{0}"'.format(os.environ['FTRACK_TASKID'])
-        ).all()
+    def update_context(self, context):
+        '''Update based on *context*.'''
 
-        for assignee in other_assignees:
-            self._lookup[assignee['id']] = 'assigned'
+        logging.info('Building context from: {0}'.format(
+            pprint.pformat(context)
+        ))
+
+        if context['version']:
+            contributors = session.query(
+                'select user_id from AssetVersion where id '
+                'in ({0})'.format(','.join(context['version']))
+            ).all()
+
+            for contributor in contributors:
+                self._lookup[contributor['user_id']] = 'contributors'
+
+        if context['task']:
+            other_assignees = session.query(
+                'select id from User where assignments.context_id '
+                'in ({0})'.format(','.join(context['task']))
+            ).all()
+
+            for assignee in other_assignees:
+                self._lookup[assignee['id']] = 'assigned'
+
+            for task_id in context['task']:
+                try:
+                    managers = ftrack_legacy.Task(task_id).getManagers()
+                    for manager in managers:
+                        self._lookup[manager.get('userid')] = 'supervisors'
+                except Exception:
+                    logging.warning(
+                        'Failed to get managers for task with id "{0}"'.format(
+                            task_id
+                        )
+                    )
 
         logging.info(
             '_lookup contains "{0}"'.format(str(self._lookup))
@@ -93,8 +123,11 @@ class NukeCrew(QtGui.QDialog):
         self._hub = NukeCrewHub()
 
         self._classifier = UserClassifier()
+        self._classifier.update_context(
+            self._read_context_from_environment()
+        )
 
-        groups = ['Assigned']
+        groups = ['Assigned', 'Contributors', 'Supervisors']
         self.chat = _crew.Crew(
             groups, hub=self._hub, classifier=self._classifier, parent=self
         )
@@ -195,6 +228,8 @@ class NukeCrew(QtGui.QDialog):
 
     def _update_crew_context(self, context):
         '''Update crew context and re-classify online users.'''
+        self._classifier.update_context(context)
+        self.chat.classifyOnlineUsers()
 
     def _read_context_from_environment(self):
         '''Read context from environment.'''
@@ -215,12 +250,15 @@ class NukeCrew(QtGui.QDialog):
         if component_ids:
             session = ftrack.Session()
             components = session.query(
-                'select version.asset_id from Component where id in'
+                'select version.asset_id, version.id from Component where id in'
                 ' ({0})'.format(','.join(component_ids))
             ).all()
 
             for component in components:
                 context['asset'].append(component['version']['asset_id'])
+                context['version'].append(
+                    component['version']['id']
+                )
 
         context['task'].append(os.environ['FTRACK_SHOTID'])
         context['task'].append(os.environ['FTRACK_TASKID'])
