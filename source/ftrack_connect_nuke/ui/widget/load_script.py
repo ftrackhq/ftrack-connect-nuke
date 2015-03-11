@@ -82,8 +82,7 @@ class ScriptOpenerDialog(BaseDialog):
         self._validate()
 
     def set_scene_version(self, scene_version):
-        current = self._scene_version_widget._stackLayout.currentWidget()
-        if not isinstance(current, scene_widgets.NoSceneVersionWidget):
+        if scene_version:
             size = (1400, 910)
         else:
             size = (1276, 638)
