@@ -35,12 +35,13 @@ class ScriptPublisherDialog(BaseDialog):
         self.initiate_tasks()
         self.exec_()
 
+
     def setupUI(self):
         super(ScriptPublisherDialog, self).setupUI()
 
-        self.resize(1300, 900)
-        self.setMinimumWidth(1300)
-        self.setMinimumHeight(900)
+        self.resize(1226, 790)
+        self.setMinimumWidth(1226)
+        self.setMinimumHeight(790)
 
         # self.tasks_frame.setStyleSheet("background-color:grey;")
 

@@ -403,39 +403,40 @@ class SnapshotsEditButtons(QtGui.QWidget):
         # Colors buttons
 
         left_gap = 10
+        top_padding = 80
         self._color_white = QtGui.QToolButton(parent)
         self._color_white.setMaximumSize(QtCore.QSize(20, 20))
-        self._color_white.move(left_gap, parent.height() - 60)
+        self._color_white.move(left_gap, parent.height() - top_padding)
         self._color_white.clicked.connect(self._toggle_color)
         left_gap += self._color_white.width() + 10
 
         self._color_black = QtGui.QToolButton(parent)
         self._color_black.setMaximumSize(QtCore.QSize(20, 20))
-        self._color_black.move(left_gap, parent.height() - 60)
+        self._color_black.move(left_gap, parent.height() - top_padding)
         self._color_black.clicked.connect(self._toggle_color)
         left_gap += self._color_black.width() + 10
 
         self._color_red = QtGui.QToolButton(parent)
         self._color_red.setMaximumSize(QtCore.QSize(20, 20))
-        self._color_red.move(left_gap, parent.height() - 60)
+        self._color_red.move(left_gap, parent.height() - top_padding)
         self._color_red.clicked.connect(self._toggle_color)
         left_gap += self._color_red.width() + 10
 
         self._color_green = QtGui.QToolButton(parent)
         self._color_green.setMaximumSize(QtCore.QSize(20, 20))
-        self._color_green.move(left_gap, parent.height() - 60)
+        self._color_green.move(left_gap, parent.height() - top_padding)
         self._color_green.clicked.connect(self._toggle_color)
         left_gap += self._color_green.width() + 10
 
         self._color_blue = QtGui.QToolButton(parent)
         self._color_blue.setMaximumSize(QtCore.QSize(20, 20))
-        self._color_blue.move(left_gap, parent.height() - 60)
+        self._color_blue.move(left_gap, parent.height() - top_padding)
         self._color_blue.clicked.connect(self._toggle_color)
         left_gap += self._color_blue.width() + 10
 
         self._color_yellow = QtGui.QToolButton(parent)
         self._color_yellow.setMaximumSize(QtCore.QSize(20, 20))
-        self._color_yellow.move(left_gap, parent.height() - 60)
+        self._color_yellow.move(left_gap, parent.height() - top_padding)
         self._color_yellow.clicked.connect(self._toggle_color)
 
         self._activate_color_button("white", False)
