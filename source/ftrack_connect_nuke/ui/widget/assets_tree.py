@@ -620,7 +620,7 @@ class AssetItem(TreeItem):
         self.setData(False, self.is_edited_role)
 
         self.setData(self._asset_version.get('comment'), self.comment_role)
-        location = self._asset_version.getComponent('scene').getLocation()
+        location = self._asset_version.getComponent('nukescript').getLocation()
         if location:
             location = location.getName()
         else:

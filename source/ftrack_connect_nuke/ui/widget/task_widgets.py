@@ -322,10 +322,7 @@ class SceneAssetsWidget(QtGui.QWidget):
 
         self._connectors_per_type = dict()
         # for scene_connector in self._scenes_connectors:
-        self._connectors_per_type['nuke_comp_scene'] = NukeSceneAsset()
-        self._connectors_per_type['nuke_precomp_scene'] = NukeSceneAsset()
-        self._connectors_per_type['nuke_roto_scene'] = NukeSceneAsset()
-
+        self._connectors_per_type['comp'] = NukeSceneAsset()
         self._task = None
 
         self.setupUI()
