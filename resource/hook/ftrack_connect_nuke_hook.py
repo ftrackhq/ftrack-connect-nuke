@@ -191,6 +191,23 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
                 icon='nukex'
             ))
 
+        elif sys.platform == 'linux2':
+
+            applications.extend(self._searchFilesystem(
+                expression=['/', 'usr', 'local', 'Nuke.*', 'Nuke\d.+'],
+                label='Nuke {version}',
+                applicationIdentifier='nuke_{version}',
+                icon='nuke'
+            ))
+
+            applications.extend(self._searchFilesystem(
+                expression=['/', 'usr', 'local', 'Nuke.*', 'Nuke\d.+'],
+                label='NukeX {version}',
+                applicationIdentifier='nukex_{version}',
+                icon='nukex',
+                launchArguments=['--nukex']
+            ))
+
         self.logger.debug(
             'Discovered applications:\n{0}'.format(
                 pprint.pformat(applications)
