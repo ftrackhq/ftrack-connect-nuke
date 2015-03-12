@@ -5,10 +5,91 @@ import functools
 import FnAssetAPI
 from FnAssetAPI.ui.toolkit import QtGui
 from ftrack_connect_foundry.ui import delegate
-from ftrack_connect_foundry.ui.tasks_view import TasksView as _TasksView
-from ftrack_connect_foundry.ui.info_view import (
-    WorkingTaskInfoView as _WorkingTaskInfoView, InfoView as _InfoView
-)
+
+
+def _create_import_asset_dialog(parent_menu, connector):
+    ''' Helper function to populate the *parent_menu* with import_asset_dialog widgets.
+    '''
+    identifier  = 'ftrackImportAssetClass'
+
+    from nukescripts import panels
+    # wrappers for initializing the widgets with the correct connector object
+    def wrapImportAssetDialog(*args, **kwargs):
+        from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
+        return FtrackImportAssetDialog(connector=connector)
+
+    globals()[identifier] = wrapImportAssetDialog
+
+    panels.registerWidgetAsPanel(
+        '{0}.{1}'.format(__name__, identifier),
+        'ftrackImportAsset',
+        'ftrackDialogs.ftrackImportAssetDialog'
+    )
+    parent_menu.addCommand(
+        'Import Asset',
+        'pane = nuke.getPaneFor("Properties.1");'
+        'panel = nukescripts.restorePanel("ftrackDialogs.ftrackImportAssetDialog");'
+        'panel.addToPane(pane)'
+    )
+
+def _create_asset_manager_dialog(parent_menu, connector):
+    ''' Helper function to populate the *parent_menu* with asset_manager widgets.
+    '''
+    identifier = 'ftrackAssetManagerDialogClass'
+
+    from nukescripts import panels
+    # wrappers for initializing the widgets with the correct connector object
+    def wrapAssetManagerDialog(*args, **kwargs):
+        from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
+        return FtrackAssetManagerDialog(connector=connector)
+
+    globals()[identifier] = wrapAssetManagerDialog
+
+    # Create the asset manager dialog entry in the menu
+    panels.registerWidgetAsPanel(
+        '{0}.{1}'.format(__name__, identifier),
+        'ftrackAssetManager',
+        'ftrackDialogs.ftrackAssetManagerDialog'
+    )
+
+    parent_menu.addCommand(
+        'Asset Manager',
+        'pane = nuke.getPaneFor("Properties.1");'
+        'panel = nukescripts.restorePanel("ftrackDialogs.ftrackAssetManagerDialog");'
+        'panel.addToPane(pane)'
+    )
+
+
+def _create_info_view_menu(parent_menu):
+    ''' Helper function to populate the *parent_menu* with the info view widgets.
+    '''
+    from ftrack_connect_foundry.ui.info_view import InfoView as _InfoView
+
+    parent_menu.addCommand(
+        _InfoView.getDisplayName(),
+        'pane = nuke.getPaneFor("Properties.1");'
+        'panel = nukescripts.restorePanel("{identifier}");'
+        'panel.addToPane(pane)'.format(
+            identifier=_InfoView.getIdentifier()
+        )
+    )
+
+
+def _create_web_views(parent_menu):
+    from ftrack_connect_foundry.ui.tasks_view import TasksView as _TasksView
+    from ftrack_connect_foundry.ui.info_view import WorkingTaskInfoView as _WorkingTaskInfoView
+
+    # Add Web Views located in the ftrack_connect_foundry package to the
+    # menu for easier access.
+    for widget in [_TasksView, _WorkingTaskInfoView]:
+        parent_menu.addCommand(
+            widget.getDisplayName(),
+            'pane = nuke.getPaneFor("Properties.1");'
+            'panel = nukescripts.restorePanel("{identifier}");'
+            'panel.addToPane(pane)'.format(
+                identifier=widget.getIdentifier()
+            )
+        )
 
 class Delegate(delegate.Delegate):
     def __init__(self, bridge):
@@ -29,15 +110,6 @@ class Delegate(delegate.Delegate):
         from ftrack_connect_nuke.ui.widget.load_script import ScriptOpenerDialog
         Connector.registerAssets()
 
-        # wrappers for initializing the widgets with the correct connector object
-        def wrapImportAssetDialog(*args, **kwargs):
-            from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
-            return FtrackImportAssetDialog(connector=Connector)
-
-        def wrapAssetManagerDialog(*args, **kwargs):
-            from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
-            return FtrackAssetManagerDialog(connector=Connector)
-
 
         # Populate the ui
         nukeMenu = nuke.menu("Nuke")
@@ -48,62 +120,13 @@ class Delegate(delegate.Delegate):
         # add ftrack publish node to the menu
         ftrackMenu.addCommand('Create Publish Node', lambda: legacy.createFtrackPublish())
 
-        ftrackMenu.addSeparator()
-
-        globals()['ftrackImportAssetClass'] = wrapImportAssetDialog
-
-        panels.registerWidgetAsPanel(
-            '{0}.{1}'.format(__name__, 'ftrackImportAssetClass'),
-            'ftrackImportAsset',
-            'ftrackDialogs.ftrackImportAssetDialog'
-        )
+        _create_import_asset_dialog(ftrackMenu, Connector)
+        _create_asset_manager_dialog(ftrackMenu, Connector)
+        _create_info_view_menu(ftrackMenu)
 
         ftrackMenu.addSeparator()
 
-        ftrackMenu.addCommand(
-            'Import Asset',
-            'pane = nuke.getPaneFor("Properties.1");'
-            'panel = nukescripts.restorePanel("ftrackDialogs.ftrackImportAssetDialog");'
-            'panel.addToPane(pane)'
-        )
-
-        globals()['ftrackAssetManagerDialogClass'] = wrapAssetManagerDialog
-
-        # Create the asset manager dialog entry in the menu
-        panels.registerWidgetAsPanel(
-            '{0}.{1}'.format(__name__, 'ftrackAssetManagerDialogClass'),
-            'ftrackAssetManager',
-            'ftrackDialogs.ftrackAssetManagerDialog'
-        )
-        ftrackMenu.addCommand(
-            'Asset Manager',
-            'pane = nuke.getPaneFor("Properties.1");'
-            'panel = nukescripts.restorePanel("ftrackDialogs.ftrackAssetManagerDialog");'
-            'panel.addToPane(pane)'
-        )
-        ftrackMenu.addCommand(
-            _InfoView.getDisplayName(),
-            'pane = nuke.getPaneFor("Properties.1");'
-            'panel = nukescripts.restorePanel("{identifier}");'
-            'panel.addToPane(pane)'.format(
-                identifier=_InfoView.getIdentifier()
-            )
-        )
-
-        ftrackMenu.addSeparator()
-
-        # Add Web Views located in the ftrack_connect_foundry package to the
-        # menu for easier access.
-        for widget in [_TasksView, _WorkingTaskInfoView]:
-            ftrackMenu.addCommand(
-                widget.getDisplayName(),
-                'pane = nuke.getPaneFor("Properties.1");'
-                'panel = nukescripts.restorePanel("{identifier}");'
-                'panel.addToPane(pane)'.format(
-                    identifier=widget.getIdentifier()
-                )
-            )
-
+        _create_web_views(ftrackMenu)
 
         # Add new entries in the ftrack menu.
         ftrackMenu.addSeparator()
