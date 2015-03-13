@@ -25,10 +25,7 @@ from ftrack_connect_nuke.connector import nukeassets
 from knobs import TableKnob, BrowseKnob, HeaderKnob
 from ftrack_connect.ui.theme import applyTheme
 
-try:
-    ftrack.setup()
-except:
-    pass
+ftrack.setup()
 
 current_module = ".".join(__name__.split(".")[:-1])+'.legacy'
 
