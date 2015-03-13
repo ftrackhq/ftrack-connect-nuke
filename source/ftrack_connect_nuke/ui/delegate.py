@@ -76,6 +76,8 @@ def _create_info_view_menu(parent_menu):
 
 
 def _create_web_views(parent_menu):
+    ''' Helper function to populate the *parent_menu* with the taskView and workingTaskInfoView.
+    '''
     from ftrack_connect_foundry.ui.tasks_view import TasksView as _TasksView
     from ftrack_connect_foundry.ui.info_view import WorkingTaskInfoView as _WorkingTaskInfoView
 
