@@ -70,6 +70,7 @@ class ScriptOpenerDialog(BaseDialog):
             spacing=8,
             margin=(8, 2, 8, 2),
         )
+        self.set_css(self.main_container)
 
     @property
     def current_scene_version(self):
@@ -81,8 +82,7 @@ class ScriptOpenerDialog(BaseDialog):
         self._validate()
 
     def set_scene_version(self, scene_version):
-        current = self._scene_version_widget._stackLayout.currentWidget()
-        if not isinstance(current, scene_widgets.NoSceneVersionWidget):
+        if scene_version:
             size = (1400, 910)
         else:
             size = (1276, 638)
@@ -116,7 +116,7 @@ class ScriptOpenerDialog(BaseDialog):
     def load_scene(self):
         import nuke
         current_scene_version = self.current_scene_version
-        path = current_scene_version.getComponent(name='scene').getFilesystemPath()
+        path = current_scene_version.getComponent(name='nukescript').getFilesystemPath()
         if not path or not os.path.exists(path):
             self.header.setMessage('file %s does not exist!', 'error')
             return

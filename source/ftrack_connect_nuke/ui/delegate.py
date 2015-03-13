@@ -111,9 +111,8 @@ class Delegate(delegate.Delegate):
 
         # The new load and publish script dialog's are waiting for some style
         # fixes.
-        if False:
-            ftrackMenu.addCommand('Publish script', ScriptPublisherDialog)
-            ftrackMenu.addCommand('Load script', ScriptOpenerDialog)
+        ftrackMenu.addCommand('Publish script', ScriptPublisherDialog)
+        ftrackMenu.addCommand('Load script', ScriptOpenerDialog)
 
         # Add ftrack publish node
         toolbar = nuke.toolbar("Nodes")

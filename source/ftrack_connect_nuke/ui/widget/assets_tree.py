@@ -5,6 +5,8 @@ import os
 import re
 import datetime
 import urllib
+import sys
+import traceback
 
 from PySide import QtGui, QtCore
 from ftrack_connect_nuke.ui.controller import Controller
@@ -127,6 +129,8 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
             locations = index.data(TreeItem.location_role)
             available = index.data(TreeItem.is_available_role)
 
+            main_color = QtGui.QColor()
+            main_color.setNamedColor('#333')
             legend_color = QtGui.QColor()
             legend_color.setNamedColor(self._view.asset_color(asset_type))
 
@@ -151,6 +155,9 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
                 background_comment = self._background_comment.lighter(111)
                 size_thumbnail = self._thumnbail_child_size
 
+            background_comment = main_color
+            background = QtGui.QColor()
+            background.setNamedColor('#222')
             # Draw background
             if option.state & QtGui.QStyle.State_Selected:
                 painter.setPen(
@@ -173,7 +180,7 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
             painter.setPen(QtGui.QPen(legend_color, 0, QtCore.Qt.SolidLine))
             painter.setBrush(legend_color)
 
-            painter.drawRoundedRect(type_indicator_rect, 3, 3)
+            # painter.drawRoundedRect(type_indicator_rect, 3, 3)
 
             padding_left += self._type_indicator_width
             padding_top += self._padding_content["top"]
@@ -229,7 +236,7 @@ class TreeDelegateStyle(QtGui.QStyledItemDelegate):
 
                     padding_top_legend = padding_top + thumbnail_rect.height() - 6
                     painter.drawText(
-                        padding_left + 5,
+                        padding_left + 2,
                         padding_top_legend, asset_type
                     )
 
@@ -615,7 +622,7 @@ class AssetItem(TreeItem):
         self.setData(False, self.is_edited_role)
 
         self.setData(self._asset_version.get('comment'), self.comment_role)
-        location = self._asset_version.getComponent('scene').getLocation()
+        location = self._asset_version.getComponent('nukescript').getLocation()
         if location:
             location = location.getName()
         else:
@@ -701,7 +708,7 @@ class AssetsTree(QtGui.QTreeView):
     def __init__(self, parent=None, show_thumbnail=True):
         super(AssetsTree, self).__init__(parent)
         css_list = """
-        QTreeView { background: #666; margin: 0px; padding-top: 3px;
+        /*QTreeView { background: #666; margin: 0px; padding-top: 3px;
                     border-top-right-radius: 0px;
                     border-top-left-radius: 0px;
                     border-bottom-right-radius: 4px;
@@ -715,7 +722,7 @@ class AssetsTree(QtGui.QTreeView):
         QScrollBar { border: 0; border-radius: 6px;
                      background-color: #333; margin: 0px;}
         QScrollBar::handle {background: #222; border: 0px solid #111;}
-        QScrollBar::sub-line, QScrollBar::add-line {height: 0px; width: 0px;}
+        QScrollBar::sub-line, QScrollBar::add-line {height: 0px; width: 0px;}*/
         """
         self.setStyleSheet(css_list)
 
@@ -803,20 +810,22 @@ class AssetsTree(QtGui.QTreeView):
         self.set_assets()
         self.update_display(asset_types, filter)
 
-    def _get_versions(self, assets):
+    def _get_versions(self, taskId):
         self._assets.clear()
 
-        task = ftrack.Task(assets)
-        asset = task.getAssets(assetTypes=['comp'])
-        if not asset:
+        task = ftrack.Task(taskId)
+        assets = task.getAssets(assetTypes=['comp'])
+
+        if not assets:
             return
 
-        asset_versions = asset[0].getVersions()
         asset_type = 'comp'
-        for asset_version in asset_versions:
-            if asset_type not in self._assets.keys():
-                self._assets['comp'] = []
-            self._assets['comp'].append(asset_version)
+
+        for asset in assets:
+            for asset_version in asset.getVersions():
+                if asset_type not in self._assets.keys():
+                    self._assets['comp'] = []
+                self._assets['comp'].append(asset_version)
 
     def set_assets(self):
         for asset_type, scene_versions in self._assets.iteritems():
@@ -839,7 +848,12 @@ class AssetsTree(QtGui.QTreeView):
         self._model.clear()
 
     def create_item(self, asset_version, asset_role):
-        item = AssetItem(self, asset_version, asset_role)
+        try:
+            item = AssetItem(self, asset_version, asset_role)
+        except:
+            traceback.print_exc(file=sys.stdout)
+            return
+
         item.signal.asset_regenerated.connect(self._item_regenerated)
         self.create_asset.emit(item)
 
