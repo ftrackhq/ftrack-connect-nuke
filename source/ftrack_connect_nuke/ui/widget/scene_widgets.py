@@ -357,7 +357,7 @@ class SingleSceneVersionWidget(QtGui.QWidget):
 
         # TODO ---
         try:
-            scene_path = self.scene_version.getComponent(name='scene').getFilesystemPath()
+            scene_path = self.scene_version.getComponent(name='comp').getFilesystemPath()
             logging.debug(scene_path)
 
         except Exception as err:

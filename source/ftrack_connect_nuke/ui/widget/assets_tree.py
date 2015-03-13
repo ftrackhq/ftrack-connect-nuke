@@ -5,6 +5,8 @@ import os
 import re
 import datetime
 import urllib
+import sys
+import traceback
 
 from PySide import QtGui, QtCore
 from ftrack_connect_nuke.ui.controller import Controller
@@ -808,20 +810,22 @@ class AssetsTree(QtGui.QTreeView):
         self.set_assets()
         self.update_display(asset_types, filter)
 
-    def _get_versions(self, assets):
+    def _get_versions(self, taskId):
         self._assets.clear()
 
-        task = ftrack.Task(assets)
-        asset = task.getAssets(assetTypes=['comp'])
-        if not asset:
+        task = ftrack.Task(taskId)
+        assets = task.getAssets(assetTypes=['comp'])
+
+        if not assets:
             return
 
-        asset_versions = asset[0].getVersions()
         asset_type = 'comp'
-        for asset_version in asset_versions:
-            if asset_type not in self._assets.keys():
-                self._assets['comp'] = []
-            self._assets['comp'].append(asset_version)
+
+        for asset in assets:
+            for asset_version in asset.getVersions():
+                if asset_type not in self._assets.keys():
+                    self._assets['comp'] = []
+                self._assets['comp'].append(asset_version)
 
     def set_assets(self):
         for asset_type, scene_versions in self._assets.iteritems():
@@ -844,7 +848,12 @@ class AssetsTree(QtGui.QTreeView):
         self._model.clear()
 
     def create_item(self, asset_version, asset_role):
-        item = AssetItem(self, asset_version, asset_role)
+        try:
+            item = AssetItem(self, asset_version, asset_role)
+        except:
+            traceback.print_exc(file=sys.stdout)
+            return
+
         item.signal.asset_regenerated.connect(self._item_regenerated)
         self.create_asset.emit(item)
 
