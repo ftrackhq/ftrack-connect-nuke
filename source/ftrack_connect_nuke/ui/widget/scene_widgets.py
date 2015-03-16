@@ -258,6 +258,7 @@ class SingleSceneVersionWidget(QtGui.QWidget):
 
         self._tab_widget = QtGui.QTabWidget(self)
         css_tab = """
+        /*
         QTabWidget::pane { border-top: 2px solid #151515; top: -2px;
                            border-top-left-radius: 0px;
                            border-top-right-radius: 0px;
@@ -272,6 +273,7 @@ class SingleSceneVersionWidget(QtGui.QWidget):
                                 border-top-right-radius: 4px; }
         QTabBar::tab:hover { background: #222; }
         QTabBar::tab:!selected { margin-top: 2px; }
+        */
         """
         self._tab_widget.setStyleSheet(css_tab)
 
@@ -355,7 +357,7 @@ class SingleSceneVersionWidget(QtGui.QWidget):
 
         # TODO ---
         try:
-            scene_path = self.scene_version.getComponent(name='scene').getFilesystemPath()
+            scene_path = self.scene_version.getComponent(name='comp').getFilesystemPath()
             logging.debug(scene_path)
 
         except Exception as err:

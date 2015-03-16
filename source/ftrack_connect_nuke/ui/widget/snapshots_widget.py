@@ -44,7 +44,7 @@ class SnapshotsWidget(QtGui.QWidget):
 
         self._no_snapshot = QtGui.QFrame(self._snapshot_frame)
         self._no_snapshot.setStyleSheet(
-            "QFrame{background: #000; border:0px;}")
+            "QFrame{/*background: #000;*/ border:0px;}")
         layout_no_snapshot = QtGui.QHBoxLayout(self._no_snapshot)
         label_no_snapshot = QtGui.QLabel(
             "No snapshot available...", self._no_snapshot)
@@ -235,12 +235,12 @@ class SnapshotsView(QtGui.QGraphicsView):
         self._scale_factor = 1.15
 
         css_frame = """
-        background: #000;
+        /*background: #000;
         border-top: 2px solid #000;
         border-left: 2px solid #000;
         border-right: 2px solid #000;
         border-top-left-radius: 4px;
-        border-top-right-radius: 4px;
+        border-top-right-radius: 4px;*/
         """
         self.setStyleSheet(css_frame)
 
@@ -282,7 +282,7 @@ class SnapshotsView(QtGui.QGraphicsView):
         self._pixmap = pixmap
         if pixmap == None:
             pixmap = QtGui.QPixmap(self._scene.width(), self._scene.height())
-            pixmap.fill(QtCore.Qt.black)
+            pixmap.fill(QtCore.Qt.red)
         self._item.setPixmap(pixmap)
         self.center()
 
@@ -403,39 +403,40 @@ class SnapshotsEditButtons(QtGui.QWidget):
         # Colors buttons
 
         left_gap = 10
+        top_padding = 80
         self._color_white = QtGui.QToolButton(parent)
         self._color_white.setMaximumSize(QtCore.QSize(20, 20))
-        self._color_white.move(left_gap, parent.height() - 60)
+        self._color_white.move(left_gap, parent.height() - top_padding)
         self._color_white.clicked.connect(self._toggle_color)
         left_gap += self._color_white.width() + 10
 
         self._color_black = QtGui.QToolButton(parent)
         self._color_black.setMaximumSize(QtCore.QSize(20, 20))
-        self._color_black.move(left_gap, parent.height() - 60)
+        self._color_black.move(left_gap, parent.height() - top_padding)
         self._color_black.clicked.connect(self._toggle_color)
         left_gap += self._color_black.width() + 10
 
         self._color_red = QtGui.QToolButton(parent)
         self._color_red.setMaximumSize(QtCore.QSize(20, 20))
-        self._color_red.move(left_gap, parent.height() - 60)
+        self._color_red.move(left_gap, parent.height() - top_padding)
         self._color_red.clicked.connect(self._toggle_color)
         left_gap += self._color_red.width() + 10
 
         self._color_green = QtGui.QToolButton(parent)
         self._color_green.setMaximumSize(QtCore.QSize(20, 20))
-        self._color_green.move(left_gap, parent.height() - 60)
+        self._color_green.move(left_gap, parent.height() - top_padding)
         self._color_green.clicked.connect(self._toggle_color)
         left_gap += self._color_green.width() + 10
 
         self._color_blue = QtGui.QToolButton(parent)
         self._color_blue.setMaximumSize(QtCore.QSize(20, 20))
-        self._color_blue.move(left_gap, parent.height() - 60)
+        self._color_blue.move(left_gap, parent.height() - top_padding)
         self._color_blue.clicked.connect(self._toggle_color)
         left_gap += self._color_blue.width() + 10
 
         self._color_yellow = QtGui.QToolButton(parent)
         self._color_yellow.setMaximumSize(QtCore.QSize(20, 20))
-        self._color_yellow.move(left_gap, parent.height() - 60)
+        self._color_yellow.move(left_gap, parent.height() - top_padding)
         self._color_yellow.clicked.connect(self._toggle_color)
 
         self._activate_color_button("white", False)
