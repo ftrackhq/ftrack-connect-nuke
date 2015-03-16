@@ -35,12 +35,13 @@ class ScriptPublisherDialog(BaseDialog):
         self.initiate_tasks()
         self.exec_()
 
+
     def setupUI(self):
         super(ScriptPublisherDialog, self).setupUI()
 
-        self.resize(1300, 900)
-        self.setMinimumWidth(1300)
-        self.setMinimumHeight(900)
+        self.resize(1226, 790)
+        self.setMinimumWidth(1226)
+        self.setMinimumHeight(790)
 
         # self.tasks_frame.setStyleSheet("background-color:grey;")
 
@@ -150,13 +151,6 @@ class ScriptPublisherDialog(BaseDialog):
 
         self._asset_version.setStyleSheet(css_asset_version)
 
-        fix_css = '''
-        #ftrack-edit-field {
-            background-color: #444;
-        }
-        '''
-        self.append_css(fix_css)
-
         self.right_top_container_layout.addWidget(asset_title_label)
         self.right_top_container_layout.addWidget(self._asset_name)
         self.right_top_container_layout.addItem(asset_spacer)
@@ -182,6 +176,7 @@ class ScriptPublisherDialog(BaseDialog):
         )
 
         self.append_css(self.global_css)
+        self.set_css(self.main_container)
         self._connect_script_signals()
 
     def _connect_script_signals(self):
@@ -333,7 +328,7 @@ class ScriptPublisherDialog(BaseDialog):
         asset = ftrack.Asset(asset_id)
         version = asset.createVersion(comment=comment, taskid=task.getId())
         version.createComponent(
-            name='scene',
+            name='nukescript',
             path=tmp_script
         )
 

@@ -186,6 +186,91 @@ class BaseDialog(QtGui.QDialog):
     def append_css(self, css):
         self.setStyleSheet(self.styleSheet()+css)
 
+    def set_css(self, parent):
+        css = '''
+        QFrame {
+            /*background-color: #444;*/
+        }
+        QPushButton, QComboBox, QCheckBox {
+            color: none;
+            background: none;
+            background-color: none;
+        }
+        QTabBar::tab {
+            padding: 6px 10px;
+            background: #333;
+            border-radius: 0px;
+        }
+        QTabBar::tab:selected {
+            background: #333;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+        QTabBar::tab:hover {
+            background: #444;
+        }
+        QTabBar::tab:!selected {
+            margin-top: 2px;
+        }
+        QLineEdit {
+            background-color: none;
+            background: none;
+        }
+        #ftrack-edit-field {
+            background-color: #333333;
+        }
+        QTreeView {
+            background: #333333;
+            margin: 0px;
+            padding-top: 3px;
+            border-top-right-radius: 0px;
+            border-top-left-radius: 0px;
+            border-bottom-right-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        QTreeView::item {
+            background: none;
+        }
+        QTreeView::item:selected {
+            background: #dde4cb;
+        }
+        QTreeView::branch:has-siblings:!adjoins-item {
+            background: #555;
+        }
+        QTreeView::branch:has-siblings:adjoins-item {
+            background: #555;
+        }
+        QTreeView::branch:!has-children:!has-siblings:adjoins-item {
+            background: #555;
+        }
+        QTreeView::branch:has-children:!has-siblings:closed {
+            background: #555;
+        }
+        QScrollBar {
+            border: 0;
+            border-radius: 6px;
+            background-color: #333;
+            margin: 0px;
+        }
+        QScrollBar::handle {
+            background: #222;
+            border: 0px solid #111;
+        }
+        QScrollBar::sub-line, QScrollBar::add-line {
+            height: 0px;
+            width: 0px;
+        }
+        QTabWidget::pane {
+            border-top: 1px solid #333;
+            top: -2px;
+        }
+        QGraphicsView {
+            background-color: #000;
+            border: none;
+        }
+        '''
+        parent.setStyleSheet(css)
+
     def modify_layouts(self, parent, margin, spacing=None, alignment=None):
         for child in parent.findChildren(QtGui.QLayout):
             if spacing:

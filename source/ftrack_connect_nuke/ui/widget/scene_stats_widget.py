@@ -84,27 +84,28 @@ class StatisticWidget(QtGui.QWidget):
         layout.setSpacing(0)
 
         self._stats_cbbox = QtGui.QComboBox(self)
+        self._stats_cbbox.setObjectName('stat-combo')
         self._stats_cbbox.addItems(self._tracked_elts)
         self._stats_cbbox.setMinimumHeight(25)
         self._stats_cbbox.currentIndexChanged.connect(self.set_graph)
 
         css_combobox = """
-    QComboBox { padding: 2px 18px 2px 3px;
-                border-top-right-radius: 4px;
-                border-top-left-radius: 4px;
-                border-bottom-right-radius: 0px;
-                border-bottom-left-radius: 0px;
-                background: #AAA; color: #333; }
-    QComboBox::on { background: #DDD; color: #333; }
-    QComboBox::drop-down { subcontrol-origin: padding;
-                           subcontrol-position: top right;
-                           width: 15px; border: 0px;
-                           border-top-right-radius: 4px;
-                           border-bottom-right-radius: 0px; }
-    QComboBox::down-arrow { image: url(':ftrack/image/integration/branch-open') }
-    QAbstractItemView { background: #888; border: 0px; }
-    """
-        self._stats_cbbox.setStyleSheet(css_combobox)
+        QComboBox { padding: 2px 18px 2px 3px;
+                    border-top-right-radius: 4px;
+                    border-top-left-radius: 4px;
+                    border-bottom-right-radius: 0px;
+                    border-bottom-left-radius: 0px;
+                    background: #AAA; color: #333; }
+        QComboBox::on { background: #DDD; color: #333; }
+        QComboBox::drop-down { subcontrol-origin: padding;
+                               subcontrol-position: top right;
+                               width: 15px; border: 0px;
+                               border-top-right-radius: 4px;
+                               border-bottom-right-radius: 0px; }
+        QComboBox::down-arrow { image: url(':ftrack/image/integration/branch-open') }
+        QAbstractItemView { background: #888; border: 0px; }
+        """
+        # self._stats_cbbox.setStyleSheet(css_combobox)
 
         layout.addWidget(self._stats_cbbox)
 
@@ -162,8 +163,11 @@ class GraphWidget(QtGui.QWidget):
         self._pad_right = 20
         self._pad_bottom = 50
 
-        self._color_back_2 = QtGui.QColor(170, 170, 170)
-        self._color_back_1 = QtGui.QColor(187, 187, 187)
+        self._color_back_2 = QtGui.QColor()
+        self._color_back_1 = QtGui.QColor()
+
+        self._color_back_2.setNamedColor('#222')
+        self._color_back_1.setNamedColor('#333')
         self._color_dot_lines = QtGui.QColor(150, 150, 150)
         self._color_dot_lines_hover = QtGui.QColor(80, 80, 80)
         self._color_axis_text = QtGui.QColor(80, 80, 80)

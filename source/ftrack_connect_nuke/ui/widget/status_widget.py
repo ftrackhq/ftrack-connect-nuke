@@ -135,18 +135,18 @@ class StatusComboBox(QtGui.QComboBox):
             self.addItem(status.getName())
 
         css_combobox = """
-    QComboBox { padding: 2px 18px 2px 3px; border-radius: 4px;
-                background: #AAA; color: #333; }
-    QComboBox::on { background: #DDD; color: #333; }
-    QComboBox::drop-down { subcontrol-origin: padding;
-                           subcontrol-position: top right;
-                           width: 15px; border: 0px;
-                           border-top-right-radius: 3px;
-                           border-bottom-right-radius: 3px; }
-    QComboBox::down-arrow { image: url(':ftrack/image/integration/branch-open') }
-    QAbstractItemView { background: #888; border: 0px; }
-    """
-        self.setStyleSheet(css_combobox)
+        QComboBox { padding: 2px 18px 2px 3px; border-radius: 4px;
+                    background: #AAA; color: #333; }
+        QComboBox::on { background: #DDD; color: #333; }
+        QComboBox::drop-down { subcontrol-origin: padding;
+                               subcontrol-position: top right;
+                               width: 15px; border: 0px;
+                               border-top-right-radius: 3px;
+                               border-bottom-right-radius: 3px; }
+        QComboBox::down-arrow { image: url(':ftrack/image/integration/branch-open') }
+        QAbstractItemView { background: #888; border: 0px; }
+        """
+        # self.setStyleSheet(css_combobox)
         self.activated.connect(self._changed_text)
 
     def set_status(self, status_name):
