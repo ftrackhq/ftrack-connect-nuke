@@ -103,7 +103,7 @@ class BrowseKnob():
 
 # Header widget cache used to fix bug in Nuke that causes the HeaderKnob
 # to be instansiated multiple times. Handle destroy event to ensure that it
-# is re-created if pane and header gets destoryed.
+# is re-created if pane and header gets destroyed.
 HEADER_WIDGET_CACHE = dict()
 
 
