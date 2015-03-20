@@ -52,18 +52,24 @@ class FtrackPublishLocale(specifications.LocaleSpecification):
 class BrowseKnob():
 
     def __init__(self):
-        self.current_task = ftrack.Task(
-            os.getenv('FTRACK_TASKID',
-                os.getenv('FTRACK_SHOTID')
-            )
+        entity_id = os.getenv('FTRACK_TASKID',
+            os.getenv('FTRACK_SHOTID')
         )
 
-        self.targetTask = self.current_task.getEntityRef()
+        self.path = 'No task selected'
+
+        self.targetTask = None
+        if entity_id:
+            current_task = ftrack.Task(entity_id)
+            self.targetTask = current_task.getEntityRef()
+            self.path = HelpFunctions.getPath(current_task, slash=True)
+
         session = FnAssetAPI.SessionManager.currentSession()
         self.context = session.createContext()
         self.context.access = self.context.kWrite
         self.context.locale = FtrackPublishLocale()
         self.spec = specifications.ImageSpecification()
+            
         self.spec.referenceHint = self.targetTask
 
     def makeUI(self):
@@ -76,7 +82,7 @@ class BrowseKnob():
         self.mainWidget.setLayout(self.hlayout)
 
         self._lineEdit = QtGui.QLineEdit()
-        self._lineEdit.setText(HelpFunctions.getPath(self.current_task, slash=True))
+        self._lineEdit.setText(self.path)
         self.hlayout.addWidget(self._lineEdit)
 
         self._browse = QtGui.QPushButton("Browse")
