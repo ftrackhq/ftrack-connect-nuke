@@ -2,23 +2,23 @@
 # :copyright: Copyright (c) 2014 ftrack
 
 import functools
+
 import FnAssetAPI
-from FnAssetAPI.ui.toolkit import QtGui
 from ftrack_connect_foundry.ui import delegate
+import ftrack_connect_nuke.ui.knobs
 
 
-def _create_import_asset_dialog(parent_menu, connector):
-    ''' Helper function to populate the *parent_menu* with import_asset_dialog widgets.
-    '''
+def register_import_asset_dialog(parent_menu, connector):
+    '''Register import asset dialog to *parent_menu* using *connector*.'''
     identifier  = 'ftrackImportAssetClass'
 
     from nukescripts import panels
-    # wrappers for initializing the widgets with the correct connector object
-    def wrapImportAssetDialog(*args, **kwargs):
-        from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
-        return FtrackImportAssetDialog(connector=connector)
+    import ftrack_connect.ui.widget.import_asset
 
-    globals()[identifier] = wrapImportAssetDialog
+    globals()[identifier] = functools.partial(
+        ftrack_connect.ui.widget.import_asset.FtrackImportAssetDialog,
+        connector=connector
+    )
 
     panels.registerWidgetAsPanel(
         '{0}.{1}'.format(__name__, identifier),
@@ -26,34 +26,34 @@ def _create_import_asset_dialog(parent_menu, connector):
         'ftrackDialogs.ftrackImportAssetDialog'
     )
     parent_menu.addCommand(
-        'Import Asset',
+        'Import asset',
+        'import ftrack_connect_nuke.ui.delegate;'
         'pane = nuke.getPaneFor("Properties.1");'
         'panel = nukescripts.restorePanel("ftrackDialogs.ftrackImportAssetDialog");'
         'panel.addToPane(pane)'
     )
 
-def _create_asset_manager_dialog(parent_menu, connector):
-    ''' Helper function to populate the *parent_menu* with asset_manager widgets.
-    '''
-    identifier = 'ftrackAssetManagerDialogClass'
+
+def register_asset_manager_dialog(parent_menu, connector):
+    '''Register asset manager dialog to *parent_menu* using *connector*.'''
+    identifier  = 'ftrackAssetManagerDialogClass'
 
     from nukescripts import panels
-    # wrappers for initializing the widgets with the correct connector object
-    def wrapAssetManagerDialog(*args, **kwargs):
-        from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
-        return FtrackAssetManagerDialog(connector=connector)
+    import ftrack_connect.ui.widget.asset_manager
 
-    globals()[identifier] = wrapAssetManagerDialog
+    globals()[identifier] = functools.partial(
+        ftrack_connect.ui.widget.asset_manager.FtrackAssetManagerDialog,
+        connector=connector
+    )
 
-    # Create the asset manager dialog entry in the menu
     panels.registerWidgetAsPanel(
         '{0}.{1}'.format(__name__, identifier),
         'ftrackAssetManager',
         'ftrackDialogs.ftrackAssetManagerDialog'
     )
-
     parent_menu.addCommand(
-        'Asset Manager',
+        'Asset manager',
+        'import ftrack_connect_nuke.ui.delegate;'
         'pane = nuke.getPaneFor("Properties.1");'
         'panel = nukescripts.restorePanel("ftrackDialogs.ftrackAssetManagerDialog");'
         'panel.addToPane(pane)'
@@ -99,7 +99,7 @@ class Delegate(delegate.Delegate):
 
         self.moduleName =  ".".join(__name__.split(".")[:-1])
 
-    def populate_ftrack(self):
+    def populateMenu(self, menu):
 
         import nuke
         import legacy
@@ -114,31 +114,28 @@ class Delegate(delegate.Delegate):
 
 
         # Populate the ui
-        nukeMenu = nuke.menu("Nuke")
-        ftrackMenu = nukeMenu.addMenu("&ftrack")
-
-        ftrackMenu.addSeparator()
+        menu.addSeparator()
 
         # add ftrack publish node to the menu
-        ftrackMenu.addCommand('Create Publish Node', lambda: legacy.createFtrackPublish())
+        menu.addCommand('Create Publish Node', lambda: legacy.createFtrackPublish())
 
-        _create_import_asset_dialog(ftrackMenu, Connector)
-        _create_asset_manager_dialog(ftrackMenu, Connector)
-        _create_info_view_menu(ftrackMenu)
+        register_import_asset_dialog(menu, Connector)
+        register_asset_manager_dialog(menu, Connector)
+        _create_info_view_menu(menu)
 
-        ftrackMenu.addSeparator()
+        menu.addSeparator()
 
-        _create_web_views(ftrackMenu)
+        _create_web_views(menu)
 
         # Add new entries in the ftrack menu.
-        ftrackMenu.addSeparator()
-        ftrackMenu.addCommand('Publish gizmo', GizmoPublisherDialog)
+        menu.addSeparator()
+        menu.addCommand('Publish gizmo', GizmoPublisherDialog)
 
         # The new load and publish script dialog's are waiting for some style
         # fixes.
         if False:
-            ftrackMenu.addCommand('Publish script', ScriptPublisherDialog)
-            ftrackMenu.addCommand('Load script', ScriptOpenerDialog)
+            menu.addCommand('Publish script', ScriptPublisherDialog)
+            menu.addCommand('Load script', ScriptOpenerDialog)
 
         # Add ftrack publish node
         toolbar = nuke.toolbar("Nodes")
@@ -160,4 +157,7 @@ class Delegate(delegate.Delegate):
         host = FnAssetAPI.SessionManager.currentSession().getHost()
 
         if host and host.getIdentifier() == 'uk.co.foundry.nuke':
-            self.populate_ftrack()
+            import nuke
+            nukeMenu = nuke.menu("Nuke")
+            menu = nukeMenu.addMenu("&ftrack")
+            self.populateMenu(menu)
