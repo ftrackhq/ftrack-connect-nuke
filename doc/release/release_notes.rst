@@ -9,7 +9,7 @@ Release notes
 *************
 
 .. release:: 0.1.2
-    :date: 2015-03-06
+    :date: 2015-03-18
 
     .. change:: new
         :tags: Gizmo, Assets
