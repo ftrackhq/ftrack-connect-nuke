@@ -255,6 +255,8 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
             self.plugin_path, 'FOUNDRY_ASSET_PLUGIN_PATH', environment
         )
 
+        environment['NUKE_USE_FNASSETAPI'] = '1'
+
         return environment
 
 
