@@ -43,7 +43,6 @@ def open_published_script(entity_reference):
 
         nuke.scriptClear()
         nuke.scriptOpen(tf.name)
-        FnAssetAPI.logging.warning(tf.name)
 
         foundry.assetmgr.utils.storeTemporaryRootNodeData(
             'entityReference', entity_reference
