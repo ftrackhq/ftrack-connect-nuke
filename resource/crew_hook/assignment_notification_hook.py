@@ -2,16 +2,54 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
+import shutil
+import tempfile
 
 import ftrack_legacy
 import ftrack
-import foundry.assetmgr.commands
+import foundry.assetmgr.utils
+import nuke
+
 from FnAssetAPI import logging
+import FnAssetAPI
+from FnAssetAPI.decorators import ensureManager
+
 import pprint
 
 from ftrack_connect_nuke.ui.widget import crew
 
 _session = ftrack.Session()
+
+
+@ensureManager
+def open_published_script(entity_reference):
+
+    session = FnAssetAPI.SessionManager.currentSession()
+
+    context = session.createContext()
+
+    with context.scopedOverride():
+
+        context.access = context.kRead
+        context.locale = FnAssetAPI.specifications.DocumentLocale()
+
+        path = session.resolveIfReference(entity_reference, context)
+
+        # Make a temporary file copy to work around the save as issue.
+        _, tf_suffix = os.path.splitext(path)
+
+        tf = tempfile.NamedTemporaryFile(suffix='_v1{0}'.format(tf_suffix))
+        shutil.copy2(path, tf.name)
+
+        nuke.scriptClear()
+        nuke.scriptOpen(tf.name)
+        FnAssetAPI.logging.warning(tf.name)
+
+        foundry.assetmgr.utils.storeTemporaryRootNodeData(
+            'entityReference', entity_reference
+        )
+
+    return entity_reference
 
 
 def callback(event):
@@ -54,11 +92,11 @@ def callback(event):
 
     component = components[0]
 
-    entityRef = 'ftrack://{component_id}?entityType=component'.format(
+    entity_reference = 'ftrack://{component_id}?entityType=component'.format(
         component_id=component['id']
     )
 
-    foundry.assetmgr.commands.openPublishedScript(entityRef)
+    open_published_script(entity_reference)
 
     if crew.crew_hub:
         data = crew.gather_crew_presence_data_from_environment()
