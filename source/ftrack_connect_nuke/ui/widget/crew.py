@@ -191,6 +191,14 @@ class NukeCrew(QtGui.QDialog):
     def _enter_chat(self):
         '''.'''
         user = ftrack_legacy.getUser(getpass.getuser())
+
+        parents = ftrack_legacy.Task(os.environ.get('FTRACK_TASKID')).getParents()
+        parents.reverse()
+
+        names = []
+        for parent in parents[1:]:
+            names.append(parent.getName())
+
         data = {
             'user': {
                 'name': user.getName(),
@@ -198,7 +206,8 @@ class NukeCrew(QtGui.QDialog):
             },
             'application': {
                 'identifier': 'nuke',
-                'label': 'Nuke {0}'.format(nuke.NUKE_VERSION_STRING)
+                'label': 'Nuke {0}'.format(nuke.NUKE_VERSION_STRING),
+                'context_name': ' / '.join(names)
             },
             'context': {
                 'project_id': 'my_project_id',
