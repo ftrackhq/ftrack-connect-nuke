@@ -86,12 +86,12 @@ class UserClassifier(object):
             '_lookup contains "{0}"'.format(str(self._lookup))
         )
 
-    def __call__(self, user_id):
+    def __call__(self, user_id, applications):
         '''Classify user and return relevant group.'''
         try:
-            return self._lookup[user_id]
+            return self._lookup[user_id], False
         except KeyError:
-            return 'others'
+            return 'others', False
 
 
 class NukeCrew(QtGui.QDialog):
@@ -192,12 +192,32 @@ class NukeCrew(QtGui.QDialog):
         '''.'''
         user = ftrack_legacy.getUser(getpass.getuser())
 
-        parents = ftrack_legacy.Task(os.environ.get('FTRACK_TASKID')).getParents()
-        parents.reverse()
-
         names = []
-        for parent in parents[1:]:
-            names.append(parent.getName())
+        containers = []
+        if os.environ.get('FTRACK_TASKID'):
+            task = ftrack_legacy.Task(
+                os.environ.get('FTRACK_TASKID')
+            )
+            parents = task.getParents()
+            parents.reverse()
+
+            for parent in parents[1:]:
+                names.append(parent.getName())
+
+            for parent in parents:
+                containers.append({
+                    'id': parent.getId(),
+                    'name': parent.getName()
+                })
+
+            containers.append({
+                'id': task.getId(),
+                'name': task.getName()
+            })
+
+        logging.info(
+            u'containers contains "{0}"'.format(containers)
+        )
 
         data = {
             'user': {
@@ -211,7 +231,7 @@ class NukeCrew(QtGui.QDialog):
             },
             'context': {
                 'project_id': 'my_project_id',
-                'containers': []
+                'containers': containers
             }
         }
 
