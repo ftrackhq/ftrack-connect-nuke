@@ -3,6 +3,7 @@
 
 import logging
 
+import FnAssetAPI.logging
 import ftrack_legacy
 import ftrack
 
@@ -12,10 +13,13 @@ log = logging.getLogger(__name__)
 
 def callback(event):
     '''Handle get events callback.'''
-    log.warning('Get events!')
     context = event['data']['context']
     cases = []
     events = []
+
+    FnAssetAPI.logging.info(
+        'Get notification events from context:\n{0}.'.format(context)
+    )
 
     if context['asset']:
         cases.append(
@@ -37,6 +41,15 @@ def callback(event):
             '(parent_id in ({task_ids}) and action in '
             '("update.custom_attribute.fend", "update.custom_attribute.fstart"))'.format(
                 task_ids=','.join(context['task'])
+            )
+        )
+
+    if context['user']:
+        cases.append(
+            '(feeds.owner_id in ({user_ids}) and action is '
+            '"db.append.task:user" and feeds.distance is "0" '
+            'and feeds.relation is "assigned")'.format(
+                user_ids=','.join(context['user'])
             )
         )
 
