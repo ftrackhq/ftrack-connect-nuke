@@ -194,6 +194,7 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
         elif sys.platform == 'linux2':
 
             applications.extend(self._searchFilesystem(
+                versionExpression=r'Nuke(?P<version>.*)\/.+$',
                 expression=['/', 'usr', 'local', 'Nuke.*', 'Nuke\d.+'],
                 label='Nuke {version}',
                 applicationIdentifier='nuke_{version}',
@@ -201,6 +202,7 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
             ))
 
             applications.extend(self._searchFilesystem(
+                versionExpression=r'Nuke(?P<version>.*)\/.+$',
                 expression=['/', 'usr', 'local', 'Nuke.*', 'Nuke\d.+'],
                 label='NukeX {version}',
                 applicationIdentifier='nukex_{version}',
