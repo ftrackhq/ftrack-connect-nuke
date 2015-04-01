@@ -23,6 +23,58 @@ from ftrack_connect.ui.widget.header import Header
 
 session = ftrack.Session()
 
+crew_hub = None
+
+
+def gather_crew_presence_data_from_environment():
+    '''Return crew presence data from environment.'''
+    user = ftrack_legacy.getUser(getpass.getuser())
+
+    names = []
+    containers = []
+    if os.environ.get('FTRACK_TASKID'):
+        task = ftrack_legacy.Task(
+            os.environ.get('FTRACK_TASKID')
+        )
+        parents = task.getParents()
+        parents.reverse()
+
+        for parent in parents[1:]:
+            names.append(parent.getName())
+
+        for parent in parents:
+            containers.append({
+                'id': parent.getId(),
+                'name': parent.getName()
+            })
+
+        containers.append({
+            'id': task.getId(),
+            'name': task.getName()
+        })
+
+    logging.info(
+        u'containers contains "{0}"'.format(containers)
+    )
+
+    data = {
+        'user': {
+            'name': user.getName(),
+            'id': user.getId()
+        },
+        'application': {
+            'identifier': 'nuke',
+            'label': 'Nuke {0}'.format(nuke.NUKE_VERSION_STRING),
+            'context_name': ' / '.join(names)
+        },
+        'context': {
+            'project_id': 'my_project_id',
+            'containers': containers
+        }
+    }
+
+    return data
+
 
 class NukeCrewHub(ftrack_connect.crew_hub.SignalCrewHub):
 
@@ -120,7 +172,9 @@ class NukeCrew(QtGui.QDialog):
             self
         )
 
-        self._hub = NukeCrewHub()
+        global crew_hub
+        crew_hub = NukeCrewHub()
+        self._hub = crew_hub
 
         self._classifier = UserClassifier()
         self._classifier.update_context(
@@ -190,51 +244,7 @@ class NukeCrew(QtGui.QDialog):
 
     def _enter_chat(self):
         '''.'''
-        user = ftrack_legacy.getUser(getpass.getuser())
-
-        names = []
-        containers = []
-        if os.environ.get('FTRACK_TASKID'):
-            task = ftrack_legacy.Task(
-                os.environ.get('FTRACK_TASKID')
-            )
-            parents = task.getParents()
-            parents.reverse()
-
-            for parent in parents[1:]:
-                names.append(parent.getName())
-
-            for parent in parents:
-                containers.append({
-                    'id': parent.getId(),
-                    'name': parent.getName()
-                })
-
-            containers.append({
-                'id': task.getId(),
-                'name': task.getName()
-            })
-
-        logging.info(
-            u'containers contains "{0}"'.format(containers)
-        )
-
-        data = {
-            'user': {
-                'name': user.getName(),
-                'id': user.getId()
-            },
-            'application': {
-                'identifier': 'nuke',
-                'label': 'Nuke {0}'.format(nuke.NUKE_VERSION_STRING),
-                'context_name': ' / '.join(names)
-            },
-            'context': {
-                'project_id': 'my_project_id',
-                'containers': containers
-            }
-        }
-
+        data = gather_crew_presence_data_from_environment()
         self._hub.enter(data)
 
     def on_refresh_event(self):

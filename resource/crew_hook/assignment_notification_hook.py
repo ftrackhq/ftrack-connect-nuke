@@ -9,6 +9,8 @@ import foundry.assetmgr.commands
 from FnAssetAPI import logging
 import pprint
 
+from ftrack_connect_nuke.ui.widget import crew
+
 _session = ftrack.Session()
 
 
@@ -57,6 +59,10 @@ def callback(event):
     )
 
     foundry.assetmgr.commands.openPublishedScript(entityRef)
+
+    if crew.crew_hub:
+        data = crew.gather_crew_presence_data_from_environment()
+        crew.crew_hub.updatePresence(data)
 
 
 def register(registry, **kw):
