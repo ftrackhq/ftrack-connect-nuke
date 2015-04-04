@@ -5,10 +5,14 @@
 import ftrack_connect_nuke
 import ftrack_connect
 try:
-    # part of nuke
+    # Part of nuke 9.0dev < build 69
     import foundry.assetmgr
 except:
-    # included in ftrack-connect-foundry
-    import assetmgr_nuke
+    try:
+        # Part of nuke 9.0dev >= build 69
+        import nuke.assetmgr
+    except:
+        # included in ftrack-connect-foundry
+        import assetmgr_nuke
 
 import nuke
