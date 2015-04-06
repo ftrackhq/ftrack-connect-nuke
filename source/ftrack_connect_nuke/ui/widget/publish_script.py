@@ -245,7 +245,7 @@ class ScriptPublisherDialog(BaseDialog):
         task = self.current_task
         asset_type = self.asset_conn_combo.currentText()
         # connector = self._connectors_per_type[asset_type]
-        asset_name = task.getName() + "_" + asset_type
+        asset_name = 'Nuke scene'
         self._asset_name.setText(asset_name)
 
         asset = self.current_task.getAssets(assetTypes=[asset_type])
