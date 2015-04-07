@@ -15,4 +15,10 @@ except:
         # included in ftrack-connect-foundry
         import assetmgr_nuke
 
+try:
+    # This is required to get build 76 to start.
+    import nuke.assetmgr.host
+except ImportError:
+    pass
+
 import nuke

@@ -7,7 +7,6 @@ import tempfile
 
 import ftrack_legacy
 import ftrack
-import foundry.assetmgr.utils
 import nuke
 
 from FnAssetAPI import logging
@@ -44,7 +43,7 @@ def open_published_script(entity_reference):
         nuke.scriptClear()
         nuke.scriptOpen(tf.name)
 
-        foundry.assetmgr.utils.storeTemporaryRootNodeData(
+        nuke.assetmgr.utils.storeTemporaryRootNodeData(
             'entityReference', entity_reference
         )
 
