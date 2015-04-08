@@ -4,6 +4,8 @@
 import os
 import shutil
 import tempfile
+import uuid
+import pprint
 
 import ftrack_legacy
 import ftrack
@@ -12,8 +14,6 @@ import nuke
 from FnAssetAPI import logging
 import FnAssetAPI
 from FnAssetAPI.decorators import ensureManager
-
-import pprint
 
 _session = ftrack.Session()
 
@@ -50,13 +50,20 @@ def open_published_script(entity_reference):
             return
 
         # Make a temporary file copy to work around the save as issue.
-        _, tf_suffix = os.path.splitext(path)
+        _, extension = os.path.splitext(path)
 
-        tf = tempfile.NamedTemporaryFile(suffix='_v1{0}'.format(tf_suffix))
-        shutil.copy2(path, tf.name)
+        temporary_script_name = os.path.join(
+            tempfile.gettempdir(),
+            '{random}{ext}'.format(
+                random=uuid.uuid4().hex,
+                ext=extension
+            )
+        )
+
+        shutil.copy2(path, temporary_script_name)
 
         nuke.scriptClear()
-        nuke.scriptOpen(tf.name)
+        nuke.scriptOpen(temporary_script_name)
 
         nuke.assetmgr.utils.storeTemporaryRootNodeData(
             'entityReference', entity_reference
