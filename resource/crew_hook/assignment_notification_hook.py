@@ -7,7 +7,6 @@ import tempfile
 
 import ftrack_legacy
 import ftrack
-import foundry.assetmgr.utils
 import nuke
 
 from FnAssetAPI import logging
@@ -21,7 +20,11 @@ _session = ftrack.Session()
 
 @ensureManager
 def open_published_script(entity_reference):
+    '''Open script based on *entity_reference*.
 
+    This method is based on `nuke.assetmgr.commands.openPublishedScript`.
+
+    '''
     session = FnAssetAPI.SessionManager.currentSession()
 
     context = session.createContext()
@@ -31,7 +34,20 @@ def open_published_script(entity_reference):
         context.access = context.kRead
         context.locale = FnAssetAPI.specifications.DocumentLocale()
 
-        path = session.resolveIfReference(entity_reference, context)
+        try:
+            path = session.resolveIfReference(entity_reference, context)
+        except FnAssetAPI.exceptions.InvalidEntityReference:
+            FnAssetAPI.logging.warning(
+                'Could not resolve file path for '
+                'entity reference "{0}".'.format(entity_reference)
+            )
+            raise
+
+        if not os.path.isfile(path):
+            FnAssetAPI.logging.warning(
+                '"{0}" is not a valid file path.'.format(path)
+            )
+            return
 
         # Make a temporary file copy to work around the save as issue.
         _, tf_suffix = os.path.splitext(path)
@@ -41,9 +57,8 @@ def open_published_script(entity_reference):
 
         nuke.scriptClear()
         nuke.scriptOpen(tf.name)
-        FnAssetAPI.logging.warning(tf.name)
 
-        foundry.assetmgr.utils.storeTemporaryRootNodeData(
+        nuke.assetmgr.utils.storeTemporaryRootNodeData(
             'entityReference', entity_reference
         )
 
@@ -88,13 +103,16 @@ def callback(event):
         components, key=lambda component: component['version']['version']
     )
 
-    component = components[0]
+    if components:
+        component = components[0]
 
-    entity_reference = 'ftrack://{component_id}?entityType=component'.format(
-        component_id=component['id']
-    )
+        entity_reference = 'ftrack://{component_id}?entityType=component'.format(
+            component_id=component['id']
+        )
 
-    open_published_script(entity_reference)
+        open_published_script(entity_reference)
+    else:
+        FnAssetAPI.logging.warning('No valid component found.')
 
 
 def register(registry, **kw):
