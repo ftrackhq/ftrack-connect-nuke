@@ -8,7 +8,7 @@ import logging
 import re
 import os
 
-import ftrack
+import ftrack_legacy as ftrack
 import ftrack_connect.application
 
 
@@ -191,6 +191,23 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
                 icon='nukex'
             ))
 
+        elif sys.platform == 'linux2':
+
+            applications.extend(self._searchFilesystem(
+                expression=['/', 'usr', 'local', 'Nuke.*', 'Nuke\d.+'],
+                label='Nuke {version}',
+                applicationIdentifier='nuke_{version}',
+                icon='nuke'
+            ))
+
+            applications.extend(self._searchFilesystem(
+                expression=['/', 'usr', 'local', 'Nuke.*', 'Nuke\d.+'],
+                label='NukeX {version}',
+                applicationIdentifier='nukex_{version}',
+                icon='nukex',
+                launchArguments=['--nukex']
+            ))
+
         self.logger.debug(
             'Discovered applications:\n{0}'.format(
                 pprint.pformat(applications)
@@ -253,6 +270,20 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
         )
         environment = ftrack_connect.application.appendPath(
             self.plugin_path, 'FOUNDRY_ASSET_PLUGIN_PATH', environment
+        )
+
+        # Set the FTRACK_EVENT_PLUGIN_PATH to include the notification callback
+        # hooks.
+        environment = ftrack_connect.application.appendPath(
+            os.path.join(
+                self.plugin_path, 'crew_hook'
+            ), 'FTRACK_EVENT_PLUGIN_PATH', environment
+        )
+
+        environment = ftrack_connect.application.appendPath(
+            os.path.join(
+                self.plugin_path, '..', 'ftrack_python_api'
+            ), 'FTRACK_PYTHON_API_PLUGIN_PATH', environment
         )
 
         return environment

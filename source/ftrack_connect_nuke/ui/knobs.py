@@ -2,7 +2,8 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
-import ftrack
+
+import ftrack_legacy as ftrack
 import getpass
 
 import FnAssetAPI

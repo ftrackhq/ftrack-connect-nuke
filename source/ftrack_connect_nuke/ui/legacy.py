@@ -2,8 +2,7 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
-import shutil
-import ftrack
+import ftrack_legacy
 import clique
 import glob
 import tempfile
@@ -15,17 +14,18 @@ import FnAssetAPI
 
 import nuke
 import nukescripts
-import ftrack_connect
 import ftrack_connect_nuke
 
-from ftrack_connect.connector import FTComponent, FTAssetObject, HelpFunctions
+from ftrack_connect.connector import (
+    FTComponent, FTAssetObject, HelpFunctions
+)
 from ftrack_connect_nuke import connector
 from ftrack_connect_nuke.connector import nukeassets
 
 from knobs import TableKnob, BrowseKnob, HeaderKnob
 from ftrack_connect.ui.theme import applyTheme
 
-ftrack.setup()
+ftrack_legacy.setup()
 
 current_module = ".".join(__name__.split(".")[:-1])+'.legacy'
 
@@ -42,7 +42,7 @@ class ProgressDialog(QtGui.QDialog):
 
 
 def refAssetManager():
-    # Imported inline to avoid crashes in nuke.
+    # Inline to avoid Nuke crashing on startup without traceback.
     from ftrack_connect.connector import PanelComInstance
     panelComInstance = PanelComInstance.instance()
     panelComInstance.refreshListeners()
@@ -73,7 +73,7 @@ def checkForNewAssets():
     if message != '':
         nuke.message(message)
 
-@ftrack.withGetCache
+@ftrack_legacy.withGetCache
 def addPublishKnobsToGroupNode(g):
     tab = nuke.Tab_Knob('ftrackpub', 'ftrack Publish')
     g.addKnob(tab)
@@ -210,7 +210,7 @@ def get_dependencies():
                 knob_value = attribute.value()
                 if 'ftrack' in knob_value:
                    version_id = knob_value.split('ftrack://')[-1].split('?')[0]
-                   dependency_version = ftrack.AssetVersion(version_id)
+                   dependency_version = ftrack_legacy.AssetVersion(version_id)
                    print 'dependency %s found' % dependency_version
                    dependencies[node['name'].value()] = dependency_version
 

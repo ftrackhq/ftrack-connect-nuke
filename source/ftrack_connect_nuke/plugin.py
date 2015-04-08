@@ -5,7 +5,11 @@ import ftrack_connect_foundry.plugin
 import ftrack_connect_foundry.bridge
 import ftrack_connect_nuke.manager
 import ftrack_connect.ui.theme
+import ftrack_connect.event_hub_thread
 
+# Start thread to handle events from ftrack.
+eventHubThread = ftrack_connect.event_hub_thread.EventHubThread()
+eventHubThread.start()
 
 ftrack_connect.ui.theme.applyFont()
 

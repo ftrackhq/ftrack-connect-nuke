@@ -2,7 +2,7 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 from PySide import QtGui, QtCore
-import ftrack
+import ftrack_legacy as ftrack
 from scene_stats_widget import StatisticWidget
 from status_widget import StatusWidget
 import urllib
