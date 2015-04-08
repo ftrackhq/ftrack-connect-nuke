@@ -81,21 +81,21 @@ def callback(event):
     # TODO: See if this can be done by using the Locations API in the new
     # API.
     componentInLocation = location.getComponent(
-        result['components'][0]['id']
+        new_version['components'][0]['id']
     )
 
     accessPath = componentInLocation.getFilesystemPath()
 
     importObj = FTAssetObject(
-        componentId=result['components'][0]['id'],
+        componentId=new_version['components'][0]['id'],
         filePath=accessPath,
-        componentName=result['components'][0]['name'],
-        assetVersionId=result['id']
+        componentName=new_version['components'][0]['name'],
+        assetVersionId=new_version['id']
     )
 
     Connector.changeVersion(
         iAObj=importObj,
-        applicationObject=_getNodeName(result['asset']['id'])
+        applicationObject=_getNodeName(new_version['asset']['id'])
     )
 
 
