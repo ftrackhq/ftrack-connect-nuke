@@ -6,9 +6,12 @@ import ftrack
 import nuke
 from FnAssetAPI import logging
 import pprint
+import urlparse
 
 from ftrack_connect.connector import FTAssetObject
 from ftrack_connect_nuke.connector import Connector
+
+_session = ftrack.Session()
 
 
 def _getNodeName(assetId):
@@ -36,16 +39,44 @@ def callback(event):
         pprint.pformat(event['data']))
     )
 
-    location = ftrack_legacy.Location('ftrack.connect')
-
-    session = ftrack.Session()
-
-    # TODO: Update this to pick which Component to use in a more sophisticated
-    # way.
-    result = session.query(
-        'select components, id, asset.name from '
+    new_version = _session.query(
+        'select components.id, components.name, id, asset.name, asset.id from '
         'AssetVersion where id is "{0}"'.format(event['data']['version_id'])
     ).all()[0]
+
+    for node in nuke.allNodes():
+        if node.Class() == 'Read':
+            knob = node.knob('file')
+
+            if (knob and knob.value() and 'ftrack://' in knob.value()):
+                component_id = knob.value()
+
+                url = urlparse.urlparse(component_id)
+                component_id = url.netloc
+
+                node_component = _session.query(
+                    'select id, name, version.id, version.asset.id from '
+                    'Component where id is "{0}"'.format(component_id)
+                ).all()[0]
+
+                if node_component['version']['asset']['id'] == new_version['asset']['id']:
+                    logging.info('Found matching asset.')
+
+                    # Update the value of the read node to match the new
+                    # component.
+                    for component in new_version['components']:
+
+                        # Match the name to use the same component.
+                        if component['name'] == node_component['name']:
+                            knob.setValue(
+                                'ftrack://{0}?entityType=component'.format(
+                                    component['id']
+                                )
+                            )
+
+                            return
+
+    location = ftrack_legacy.Location('ftrack.connect')
 
     # TODO: See if this can be done by using the Locations API in the new
     # API.
