@@ -224,6 +224,9 @@ class NukeCrew(QtGui.QDialog):
         for task in context['task']:
             self.notification_list.addContext(task, 'task', False)
 
+        for user in context['user']:
+            self.notification_list.addContext(user, 'user', False)
+
         self.notification_list.reload()
 
     def _update_crew_context(self, context):
@@ -234,6 +237,7 @@ class NukeCrew(QtGui.QDialog):
     def _read_context_from_environment(self):
         '''Read context from environment.'''
         context = collections.defaultdict(list)
+        session = ftrack.Session()
 
         component_ids = []
 
@@ -248,7 +252,6 @@ class NukeCrew(QtGui.QDialog):
                 component_ids.append(component_id)
 
         if component_ids:
-            session = ftrack.Session()
             components = session.query(
                 'select version.asset_id, version.id from Component where id in'
                 ' ({0})'.format(','.join(component_ids))
@@ -262,5 +265,10 @@ class NukeCrew(QtGui.QDialog):
 
         context['task'].append(os.environ['FTRACK_SHOTID'])
         context['task'].append(os.environ['FTRACK_TASKID'])
+        context['user'].append(
+            session.query(
+                'User where username is "{0}"'.format(getpass.getuser())
+            )[0]['id']
+        )
 
         return context
