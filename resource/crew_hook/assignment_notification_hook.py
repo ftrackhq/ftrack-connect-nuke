@@ -4,6 +4,8 @@
 import os
 import shutil
 import tempfile
+import uuid
+import pprint
 
 import ftrack_legacy
 import ftrack
@@ -13,8 +15,6 @@ from FnAssetAPI import logging
 import FnAssetAPI
 from FnAssetAPI.decorators import ensureManager
 
-import pprint
-
 from ftrack_connect_nuke.ui.widget import crew
 
 _session = ftrack.Session()
@@ -22,7 +22,11 @@ _session = ftrack.Session()
 
 @ensureManager
 def open_published_script(entity_reference):
+    '''Open script based on *entity_reference*.
 
+    This method is based on `nuke.assetmgr.commands.openPublishedScript`.
+
+    '''
     session = FnAssetAPI.SessionManager.currentSession()
 
     context = session.createContext()
@@ -32,16 +36,36 @@ def open_published_script(entity_reference):
         context.access = context.kRead
         context.locale = FnAssetAPI.specifications.DocumentLocale()
 
-        path = session.resolveIfReference(entity_reference, context)
+        try:
+            path = session.resolveIfReference(entity_reference, context)
+        except FnAssetAPI.exceptions.InvalidEntityReference:
+            FnAssetAPI.logging.warning(
+                'Could not resolve file path for '
+                'entity reference "{0}".'.format(entity_reference)
+            )
+            raise
+
+        if not os.path.isfile(path):
+            FnAssetAPI.logging.warning(
+                '"{0}" is not a valid file path.'.format(path)
+            )
+            return
 
         # Make a temporary file copy to work around the save as issue.
-        _, tf_suffix = os.path.splitext(path)
+        _, extension = os.path.splitext(path)
 
-        tf = tempfile.NamedTemporaryFile(suffix='_v1{0}'.format(tf_suffix))
-        shutil.copy2(path, tf.name)
+        temporary_script_name = os.path.join(
+            tempfile.gettempdir(),
+            '{random}{ext}'.format(
+                random=uuid.uuid4().hex,
+                ext=extension
+            )
+        )
+
+        shutil.copy2(path, temporary_script_name)
 
         nuke.scriptClear()
-        nuke.scriptOpen(tf.name)
+        nuke.scriptOpen(temporary_script_name)
 
         nuke.assetmgr.utils.storeTemporaryRootNodeData(
             'entityReference', entity_reference
@@ -88,13 +112,16 @@ def callback(event):
         components, key=lambda component: component['version']['version']
     )
 
-    component = components[0]
+    if components:
+        component = components[0]
 
-    entity_reference = 'ftrack://{component_id}?entityType=component'.format(
-        component_id=component['id']
-    )
+        entity_reference = 'ftrack://{component_id}?entityType=component'.format(
+            component_id=component['id']
+        )
 
-    open_published_script(entity_reference)
+        open_published_script(entity_reference)
+    else:
+        FnAssetAPI.logging.warning('No valid component found.')
 
     if crew.crew_hub:
         data = crew.gather_crew_presence_data_from_environment()
