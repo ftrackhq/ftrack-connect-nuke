@@ -281,9 +281,15 @@ class NukeCrew(QtGui.QDialog):
         component_ids = []
 
         for node in nuke.allNodes():
-            component_id = node.knob('componentId')
-            if component_id and component_id.value():
-                component_id = component_id.value()
+            knob = node.knob('componentId')
+
+            if not knob and node.Class() == 'Read':
+                knob = node.knob('file')
+
+            if (
+                knob and knob.value()
+            ):
+                component_id = knob.value()
 
                 if 'ftrack://' in component_id:
                     url = urlparse.urlparse(component_id)
