@@ -11,7 +11,7 @@ Release notes
 .. release:: next
 
     .. change:: fix
-        :tags: Hook, Linux
+        :tags: Hook, Centos
 
         Added support for launching plugin on Centos.
 
