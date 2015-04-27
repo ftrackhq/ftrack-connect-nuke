@@ -97,14 +97,14 @@ def addPublishKnobsToGroupNode(g):
     existingAssetsKnob = nuke.Enumeration_Knob('fassetnameexisting', 'Existing assets:', ['New'])
     g.addKnob(existingAssetsKnob)
 
-    nameKnob = nuke.String_Knob('ftrackassetname', 'Assetname:', '')
+    nameKnob = nuke.String_Knob('ftrackassetname', 'Asset name:', '')
     g.addKnob(nameKnob)
 
     hrefKnob = nuke.String_Knob('componentId', 'componentId', '')
     hrefKnob.setVisible(False)
     g.addKnob(hrefKnob)
 
-    typeKnob = nuke.Enumeration_Knob('ftrackassettype', 'Assettype:', ['No inputs connected'])
+    typeKnob = nuke.Enumeration_Knob('ftrackassettype', 'Asset type:', ['No inputs connected'])
     typeKnob.setFlag(nuke.STARTLINE)
     g.addKnob(typeKnob)
 
@@ -232,7 +232,7 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
 
         assetVersion = asset.createVersion(comment=comment, taskid=currentTaskId)
 
-        if assetType in ['img', 'cam', 'geo']:
+        if assetType in ['img', 'cam', 'geo', 'mov', 'render']:
             if assetType == 'img':
                 imgAsset = nukeassets.ImageSequenceAsset()
                 publishedComponents = imgAsset.publishContent(content, assetVersion, progressCallback=publishProgress.setProgress)
@@ -244,6 +244,13 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
             elif assetType == 'geo':
                 geoAsset = nukeassets.GeometryAsset()
                 publishedComponents = geoAsset.publishContent(content, assetVersion, progressCallback=publishProgress.setProgress)
+
+            elif assetType == 'render':
+                renderAsset = nukeassets.RenderAsset()
+                publishedComponents = renderAsset.publishContent(
+                    content, assetVersion,
+                    progressCallback=publishProgress.setProgress
+                )
 
             if n['fscript'].value():
                 if n['fcopy'].value():
@@ -357,17 +364,33 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
 
                             # always check how many frames are actually available
                             frames = inNode['file'].value()
-                            prefix, padding, extension = frames.split('.')
-                            root = os.path.dirname(prefix)
-                            files = glob.glob("%s/*.%s"% (root, extension))
-                            collections = clique.assemble(files)
 
-                            for collection in collections[0]:
-                                if prefix in collection.head:
-                                    indexes = list(collection.indexes)
-                                    first = str(indexes[0])
-                                    last = str(indexes[-1])
-                                    break
+                            try:
+                                # Try to collect the sequence prefix, padding
+                                # and extension. If this fails with a ValueError
+                                # we are probably handling a non-sequence file.
+                                # If so rely on the first_frame and last_frame
+                                # of the root node.
+                                prefix, padding, extension = frames.split('.')
+                            except ValueError:
+                                FnAssetAPI.logging.debug(
+                                    'Could not determine prefix, padding '
+                                    'and extension from "".'.format(frames)
+                                )
+                                assetType = 'no-img'
+                            else:
+                                root = os.path.dirname(prefix)
+                                files = glob.glob('{0}/*.{1}'.format(
+                                    root, extension
+                                ))
+                                collections = clique.assemble(files)
+
+                                for collection in collections[0]:
+                                    if prefix in collection.head:
+                                        indexes = list(collection.indexes)
+                                        first = str(indexes[0])
+                                        last = str(indexes[-1])
+                                        break
 
                         try:
                             compNameComp = inNode['fcompname'].value()
@@ -471,7 +494,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
             elif assetType == 'geo':
                 assetTypes = ['geo', 'cam']
             else:
-                assetTypes = ['']
+                assetTypes = ['render']
 
             g['ftrackassettype'].setValues(assetTypes)
 
