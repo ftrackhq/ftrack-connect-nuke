@@ -221,15 +221,25 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
     header = getHeaderKnob(n)
 
     if not currentTask:
-        header.setMessage('Could not find currenttask', 'warning')
+        header.setMessage('Could not find current task', 'warning')
     else:
         publishProgress = nuke.ProgressTask('Publishing assets')
         publishProgress.setProgress(0)
         currentTaskId = currentTask.getId()
-
         assetType = n['ftrackassettype'].value()
-        asset = shot.createAsset(assetName, assetType)
 
+        publishProgress.setMessage('Validating asset types')
+        try:
+            ftrack.AssetType(assetType)
+        except ftrack.FTrackError:
+            header.setMessage(
+                'No Asset type with short name "{0}" found. Contact your '
+                'system administrator to add it.'.format(assetType), 'warning'
+            )
+            return
+
+        publishProgress.setMessage('Creating new version')
+        asset = shot.createAsset(assetName, assetType)
         assetVersion = asset.createVersion(comment=comment, taskid=currentTaskId)
 
         if assetType in ['img', 'cam', 'geo', 'mov', 'render']:
@@ -285,14 +295,14 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
             header.setMessage("Can't publish this assettype yet", 'info')
             return
 
-        publishProgress.setProgress(100)
+        publishProgress.setMessage('Setting up version dependencies')
         dependencies = get_dependencies()
         if dependencies:
             for name, version in dependencies.items():
                 assetVersion.addUsesVersions(versions=version)
 
-
         assetVersion.publish()
+        publishProgress.setProgress(100)
 
         header.setMessage('Asset published!')
 
@@ -316,11 +326,13 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
             # Add new labels
             cmdString = ''
             assetType = None
+            availableAssetTypes = ['']
             inputMissmatch = None
 
             tableWidget = g['ftable'].getObject().tableWidget
             tableWidget.setRowCount(0)
             components = []
+
             for inputNode in range(g.inputs()):
                 inNode = g.input(inputNode)
 
@@ -349,13 +361,14 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                             if first == '0.0' and last == '0.0':
                                 first = str(int(nuke.root().knob("first_frame").value()))
                                 last = str(int(nuke.root().knob("last_frame").value()))
-                        elif inNode.Class() == 'Write':
 
+                            availableAssetTypes = ['img', 'render']
+
+                        elif inNode.Class() == 'Write':
 
                             # use the timeline to define the amount of frames
                             first = str(int(nuke.root().knob("first_frame").value()))
                             last = str(int(nuke.root().knob("last_frame").value()))
-
 
                             # then in case check if the limit are set
                             if inNode['use_limit'].value():
@@ -377,7 +390,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                                     'Could not determine prefix, padding '
                                     'and extension from "".'.format(frames)
                                 )
-                                assetType = 'no-img'
+                                availableAssetTypes = ['render']
                             else:
                                 root = os.path.dirname(prefix)
                                 files = glob.glob('{0}/*.{1}'.format(
@@ -391,6 +404,8 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                                         first = str(indexes[0])
                                         last = str(indexes[-1])
                                         break
+
+                                availableAssetTypes = ['img']
 
                         try:
                             compNameComp = inNode['fcompname'].value()
@@ -422,7 +437,11 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                         if compNameComp == '':
                             compNameComp = nameComp
 
-                        components.append((fileComp, compNameComp, first, last, nameComp))
+                        components.append(
+                            (fileComp, compNameComp, first, last, nameComp)
+                        )
+
+                        availableAssetTypes = ['geo', 'cam']
 
             rowCount = len(components)
 
@@ -489,14 +508,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
 
                 rowCntr += 1
 
-            if assetType == 'img':
-                assetTypes = ['img']
-            elif assetType == 'geo':
-                assetTypes = ['geo', 'cam']
-            else:
-                assetTypes = ['render']
-
-            g['ftrackassettype'].setValues(assetTypes)
+            g['ftrackassettype'].setValues(availableAssetTypes)
 
             if inputMissmatch:
                 tableWidget.setRowCount(0)

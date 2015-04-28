@@ -396,10 +396,18 @@ class RenderAsset(GenericAsset):
 
     def importAsset(self, iAObj=None):
         '''Import asset as new node.'''
-        newNode = nuke.createNode(iAObj.filePath)
-        newNode['name'].setValue(iAObj.assetName)
-        self.addFTab(newNode)
-        self.setFTab(newNode, iAObj)
+        resultingNode = nuke.createNode('Read', inpanel=False)
+        resultingNode['name'].setValue(
+            HelpFunctions.safeString(iAObj.assetName) + '_' +
+            HelpFunctions.safeString(iAObj.componentName)
+        )
+
+        resultingNode['file'].fromUserText(
+            HelpFunctions.safeString(iAObj.filePath)
+        )
+
+        self.addFTab(resultingNode)
+        self.setFTab(resultingNode, iAObj)
 
 
 def registerAssetTypes():
