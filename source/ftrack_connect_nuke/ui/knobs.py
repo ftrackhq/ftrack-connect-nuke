@@ -5,6 +5,7 @@ import os
 
 import ftrack_legacy as ftrack
 import getpass
+import functools
 
 import FnAssetAPI
 from FnAssetAPI.ui.toolkit import QtGui, QtCore
@@ -102,8 +103,15 @@ class BrowseKnob():
 
 
 # Header widget cache used to fix bug in Nuke that causes the HeaderKnob
-# to be instansiated multiple times.
+# to be instansiated multiple times. Handle destroy event to ensure that it
+# is re-created if pane and header gets destroyed.
 HEADER_WIDGET_CACHE = dict()
+
+
+def handleHeaderDestroyed(cacheId, *args, **kwargs):
+    '''Remove header from dictionary.'''
+    if cacheId in HEADER_WIDGET_CACHE:
+        HEADER_WIDGET_CACHE.pop(cacheId)
 
 
 class HeaderKnob():
@@ -120,6 +128,9 @@ class HeaderKnob():
                 getpass.getuser(), parent=None
             )
             applyTheme(headerWidget, 'integration')
+            headerWidget.destroyed.connect(
+                functools.partial(handleHeaderDestroyed, cacheId)
+            )
 
             HEADER_WIDGET_CACHE[cacheId] = headerWidget
 

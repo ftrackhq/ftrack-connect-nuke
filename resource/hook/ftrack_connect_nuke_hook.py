@@ -194,6 +194,7 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
         elif sys.platform == 'linux2':
 
             applications.extend(self._searchFilesystem(
+                versionExpression=r'Nuke(?P<version>.*)\/.+$',
                 expression=['/', 'usr', 'local', 'Nuke.*', 'Nuke\d.+'],
                 label='Nuke {version}',
                 applicationIdentifier='nuke_{version}',
@@ -201,6 +202,7 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
             ))
 
             applications.extend(self._searchFilesystem(
+                versionExpression=r'Nuke(?P<version>.*)\/.+$',
                 expression=['/', 'usr', 'local', 'Nuke.*', 'Nuke\d.+'],
                 label='NukeX {version}',
                 applicationIdentifier='nukex_{version}',
@@ -285,6 +287,8 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
                 self.plugin_path, '..', 'ftrack_python_api'
             ), 'FTRACK_PYTHON_API_PLUGIN_PATH', environment
         )
+
+        environment['NUKE_USE_FNASSETAPI'] = '1'
 
         return environment
 

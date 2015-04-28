@@ -8,8 +8,15 @@
 Release notes
 *************
 
+.. release:: next
+
+    .. change:: fix
+        :tags: Hook, Centos
+
+        Added support for launching plugin on Centos.
+
 .. release:: 0.1.2
-    :date: 2015-03-06
+    :date: 2015-03-18
 
     .. change:: new
         :tags: Gizmo, Assets

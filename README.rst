@@ -8,7 +8,7 @@ ftrack integration with NUKE.
 Documentation
 *************
 
-Full documentation can be found at https://doc.ftrack.com/ftrack-connect-nuke
+Full documentation can be found at http://ftrack-connect-nuke.rtd.ftrack.com/en/latest/
 
 *********************
 Copyright and license
