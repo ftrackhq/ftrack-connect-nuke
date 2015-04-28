@@ -242,7 +242,7 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
         asset = shot.createAsset(assetName, assetType)
         assetVersion = asset.createVersion(comment=comment, taskid=currentTaskId)
 
-        if assetType in ['img', 'cam', 'geo', 'mov', 'render']:
+        if assetType in ['img', 'cam', 'geo', 'render']:
             if assetType == 'img':
                 imgAsset = nukeassets.ImageSequenceAsset()
                 publishedComponents = imgAsset.publishContent(content, assetVersion, progressCallback=publishProgress.setProgress)
