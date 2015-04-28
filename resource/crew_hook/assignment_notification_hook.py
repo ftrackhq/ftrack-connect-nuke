@@ -15,6 +15,8 @@ from FnAssetAPI import logging
 import FnAssetAPI
 from FnAssetAPI.decorators import ensureManager
 
+from ftrack_connect_nuke.ui.widget import crew
+
 _session = ftrack.Session()
 
 
@@ -120,6 +122,10 @@ def callback(event):
         open_published_script(entity_reference)
     else:
         FnAssetAPI.logging.warning('No valid component found.')
+
+    if crew.crew_hub:
+        data = crew.gather_crew_presence_data_from_environment()
+        crew.crew_hub.updatePresence(data)
 
 
 def register(registry, **kw):
