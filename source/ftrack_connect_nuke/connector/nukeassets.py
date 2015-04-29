@@ -377,13 +377,58 @@ class NukeSceneAsset(GizmoAsset):
             self.setFTab(resultingNode, iAObj)
 
 
+class RenderAsset(GenericAsset):
+    '''Render asset.'''
+
+    def publishContent(self, content, assetVersion, progressCallback=None):
+        '''Return components to publish.'''
+        components = []
+
+        for row in content:
+            filename = row[0]
+            componentName = row[1]
+
+            components.append(
+                FTComponent(componentname=componentName, path=filename)
+            )
+
+        try:
+            node = nuke.toNode(
+                HelpFunctions.safeString(content[0][4])
+            )
+            thumbnail = Connector.createThumbNail(node)
+            if thumbnail:
+                components.append(
+                    FTComponent(componentname='thumbnail', path=thumbnail)
+                )
+        except Exception:
+            pass
+
+        return components
+
+    def importAsset(self, iAObj=None):
+        '''Import asset as new node.'''
+        resultingNode = nuke.createNode('Read', inpanel=False)
+        resultingNode['name'].setValue(
+            HelpFunctions.safeString(iAObj.assetName) + '_' +
+            HelpFunctions.safeString(iAObj.componentName)
+        )
+
+        resultingNode['file'].fromUserText(
+            HelpFunctions.safeString(iAObj.filePath)
+        )
+
+        self.addFTab(resultingNode)
+        self.setFTab(resultingNode, iAObj)
+
+
 def registerAssetTypes():
     assetHandler = FTAssetHandlerInstance.instance()
     assetHandler.registerAssetType(name='cam', cls=CameraAsset)
     assetHandler.registerAssetType(name='img', cls=ImageSequenceAsset)
     assetHandler.registerAssetType(name='geo', cls=GeometryAsset)
+    assetHandler.registerAssetType(name='render', cls=RenderAsset)
+
     # new mill asset types
     assetHandler.registerAssetType(name='nuke_gizmo', cls=GizmoAsset)
     assetHandler.registerAssetType(name='comp', cls=NukeSceneAsset)
-
-
