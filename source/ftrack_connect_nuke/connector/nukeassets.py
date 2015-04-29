@@ -392,6 +392,18 @@ class RenderAsset(GenericAsset):
                 FTComponent(componentname=componentName, path=filename)
             )
 
+        try:
+            node = nuke.toNode(
+                HelpFunctions.safeString(content[0][4])
+            )
+            thumbnail = Connector.createThumbNail(node)
+            if thumbnail:
+                components.append(
+                    FTComponent(componentname='thumbnail', path=thumbnail)
+                )
+        except Exception:
+            pass
+
         return components
 
     def importAsset(self, iAObj=None):
