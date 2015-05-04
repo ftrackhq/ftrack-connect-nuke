@@ -7,15 +7,13 @@ import tempfile
 import uuid
 import pprint
 
-import ftrack_legacy
 import ftrack
+import ftrack_api
 import nuke
 
 from FnAssetAPI import logging
 import FnAssetAPI
 from FnAssetAPI.decorators import ensureManager
-
-_session = ftrack.Session()
 
 
 @ensureManager
@@ -83,6 +81,8 @@ def callback(event):
         pprint.pformat(event['data']))
     )
 
+    _session = ftrack_api.Session()
+
     task_id = event['data']['task_id']
     task = _session.get('Task', task_id)
 
@@ -125,9 +125,15 @@ def callback(event):
 def register(registry, **kw):
     '''Register hook.'''
 
+    # Validate that registry is instance of ftrack.Registry, if not
+    # return early since the register method probably is called
+    # from the new API.
+    if not isinstance(registry, ftrack.Registry):
+        return
+
     logging.info('Register assignment notification hook')
 
-    ftrack_legacy.EVENT_HUB.subscribe(
+    ftrack.EVENT_HUB.subscribe(
         'topic=ftrack.crew.notification.assignment',
         callback
     )

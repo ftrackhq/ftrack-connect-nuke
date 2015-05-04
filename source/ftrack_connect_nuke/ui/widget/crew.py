@@ -12,8 +12,8 @@ from PySide import QtGui
 from FnAssetAPI import logging
 import nuke
 import ftrack_connect.crew_hub
+import ftrack_api
 import ftrack
-import ftrack_legacy
 from ftrack_connect.ui.widget import notification_list as _notification_list
 from ftrack_connect.ui.widget import crew as _crew
 import ftrack_connect.ui.theme
@@ -21,7 +21,7 @@ import ftrack_connect.ui.theme
 from ftrack_connect.ui.widget.header import Header
 
 
-session = ftrack.Session()
+session = ftrack_api.Session()
 
 
 class NukeCrewHub(ftrack_connect.crew_hub.SignalCrewHub):
@@ -72,7 +72,7 @@ class UserClassifier(object):
 
             for task_id in context['task']:
                 try:
-                    managers = ftrack_legacy.Task(task_id).getManagers()
+                    managers = ftrack.Task(task_id).getManagers()
                     for manager in managers:
                         self._lookup[manager.get('userid')] = 'supervisors'
                 except Exception:
@@ -190,7 +190,7 @@ class NukeCrew(QtGui.QDialog):
 
     def _enter_chat(self):
         '''.'''
-        user = ftrack_legacy.getUser(getpass.getuser())
+        user = ftrack.getUser(getpass.getuser())
         data = {
             'user': {
                 'name': user.getName(),
@@ -237,7 +237,7 @@ class NukeCrew(QtGui.QDialog):
     def _read_context_from_environment(self):
         '''Read context from environment.'''
         context = collections.defaultdict(list)
-        session = ftrack.Session()
+        session = ftrack_api.Session()
 
         component_ids = []
 

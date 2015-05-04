@@ -3,7 +3,7 @@
 
 import os
 
-import ftrack_legacy as ftrack
+import ftrack
 import getpass
 import functools
 

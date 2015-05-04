@@ -7,7 +7,7 @@ import glob
 
 import nuke
 
-import ftrack_legacy as ftrack
+import ftrack
 
 import os
 import traceback

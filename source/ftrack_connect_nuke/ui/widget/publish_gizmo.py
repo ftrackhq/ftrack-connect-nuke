@@ -4,7 +4,7 @@
 from PySide import QtGui, QtCore
 import os
 import re
-import ftrack_legacy as ftrack
+import ftrack
 from FnAssetAPI import logging
 
 from script_editor_widget import ScriptEditorWidget

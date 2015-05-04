@@ -1,8 +1,8 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-import ftrack_legacy
 import ftrack
+import ftrack_api
 import nuke
 from FnAssetAPI import logging
 import pprint
@@ -36,9 +36,9 @@ def callback(event):
         pprint.pformat(event['data']))
     )
 
-    location = ftrack_legacy.Location('ftrack.connect')
+    location = ftrack.Location('ftrack.connect')
 
-    session = ftrack.Session()
+    session = ftrack_api.Session()
 
     # TODO: Update this to pick which Component to use in a more sophisticated
     # way.
@@ -71,9 +71,16 @@ def callback(event):
 def register(registry, **kw):
     '''Register hook.'''
 
+    # Validate that registry is instance of ftrack.Registry, if not
+    # return early since the register method probably is called
+    # from the new API.
+    if not isinstance(registry, ftrack.Registry):
+        logging.info('First argument not of type `ftrack.Registry`.')
+        return
+
     logging.info('Register version notification hook')
 
-    ftrack_legacy.EVENT_HUB.subscribe(
+    ftrack.EVENT_HUB.subscribe(
         'topic=ftrack.crew.notification.version',
         callback
     )
