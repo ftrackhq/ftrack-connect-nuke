@@ -8,7 +8,7 @@ import json
 
 from ftrack_connect_nuke.connector.nukeassets import NukeSceneAsset
 import nuke
-import ftrack_legacy as ftrack
+import ftrack
 
 from comment_widget import CommentWidget
 from task_widgets import TaskWidget

@@ -4,7 +4,7 @@
 import os
 import getpass
 
-import ftrack_legacy as ftrack
+import ftrack
 from PySide import QtGui, QtCore
 from ftrack_connect.ui.widget import header
 from ftrack_connect_nuke.ui.controller import Controller

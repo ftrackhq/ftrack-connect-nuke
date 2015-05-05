@@ -11,7 +11,7 @@ import traceback
 from PySide import QtGui, QtCore
 from ftrack_connect_nuke.ui.controller import Controller
 
-import ftrack_legacy as ftrack
+import ftrack
 
 from ftrack_connect.ui import resource
 from FnAssetAPI import logging

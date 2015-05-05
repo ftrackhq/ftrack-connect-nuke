@@ -2,7 +2,7 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
-import ftrack_legacy
+import ftrack
 import clique
 import glob
 import tempfile
@@ -25,7 +25,7 @@ from ftrack_connect_nuke.connector import nukeassets
 from knobs import TableKnob, BrowseKnob, HeaderKnob
 from ftrack_connect.ui.theme import applyTheme
 
-ftrack_legacy.setup()
+ftrack.setup()
 
 current_module = ".".join(__name__.split(".")[:-1])+'.legacy'
 
@@ -73,7 +73,7 @@ def checkForNewAssets():
     if message != '':
         nuke.message(message)
 
-@ftrack_legacy.withGetCache
+@ftrack.withGetCache
 def addPublishKnobsToGroupNode(g):
     tab = nuke.Tab_Knob('ftrackpub', 'ftrack Publish')
     g.addKnob(tab)
@@ -210,7 +210,7 @@ def get_dependencies():
                 knob_value = attribute.value()
                 if 'ftrack' in knob_value:
                    version_id = knob_value.split('ftrack://')[-1].split('?')[0]
-                   dependency_version = ftrack_legacy.AssetVersion(version_id)
+                   dependency_version = ftrack.AssetVersion(version_id)
                    print 'dependency %s found' % dependency_version
                    dependencies[node['name'].value()] = dependency_version
 
