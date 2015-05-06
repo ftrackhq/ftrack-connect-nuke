@@ -118,10 +118,10 @@ setup(
     dependency_links=[
         ('https://bitbucket.org/ftrack/lowdown/get/0.1.0.zip'
          '#egg=lowdown-0.1.0'),
-        ('https://bitbucket.org/ftrack/ftrack-connect/get/0.1.9.zip'
-        '#egg=ftrack-connect-0.1.9'),
+        ('https://bitbucket.org/ftrack/ftrack-connect/get/0.1.10.zip'
+         '#egg=ftrack-connect-0.1.10'),
         ('https://bitbucket.org/ftrack/ftrack-connect-foundry/get/master.zip'
-        '#egg=ftrack-connect-foundry-0.1.0')
+         '#egg=ftrack-connect-foundry-0.1.0')
     ],
     data_files=data_files
 )
