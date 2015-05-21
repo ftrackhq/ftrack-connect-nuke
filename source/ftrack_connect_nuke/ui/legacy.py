@@ -25,8 +25,6 @@ from ftrack_connect_nuke.connector import nukeassets
 from knobs import TableKnob, BrowseKnob, HeaderKnob
 from ftrack_connect.ui.theme import applyTheme
 
-ftrack.setup()
-
 current_module = ".".join(__name__.split(".")[:-1])+'.legacy'
 
 class ProgressDialog(QtGui.QDialog):

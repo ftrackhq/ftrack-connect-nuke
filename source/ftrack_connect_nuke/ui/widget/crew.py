@@ -175,28 +175,6 @@ class NukeCrew(QtGui.QDialog):
 
         self.on_refresh_event()
 
-        self._enter_chat()
-
-    def _enter_chat(self):
-        '''.'''
-        user = ftrack.getUser(getpass.getuser())
-        data = {
-            'user': {
-                'name': user.getName(),
-                'id': user.getId()
-            },
-            'application': {
-                'identifier': 'nuke',
-                'label': 'Nuke {0}'.format(nuke.NUKE_VERSION_STRING)
-            },
-            'context': {
-                'project_id': 'my_project_id',
-                'containers': []
-            }
-        }
-
-        self._hub.enter(data)
-
     def on_refresh_event(self):
         '''Handle refresh events.'''
         context = self._read_context_from_environment()
