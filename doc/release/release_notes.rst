@@ -8,7 +8,16 @@
 Release notes
 *************
 
-.. release:: next
+.. release:: 0.1.4
+
+    .. change:: new
+        :tags: Publish
+
+        Added support for publishing other render types than image sequences.
+        This requires a new asset type on the ftrack server. :ref:`Read more <release/migration/next/new_render_asset_type>`
+
+.. release:: 0.1.3
+    :date: 2015-04-17
 
     .. change:: fix
         :tags: Hook, Centos

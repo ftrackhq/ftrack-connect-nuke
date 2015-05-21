@@ -92,7 +92,7 @@ connect_ftrack_new_api_dependency_link = (
 
 connect_dependency_link = (
     'https://bitbucket.org/ftrack/ftrack-connect/get/backlog/crew/story.zip'
-    '#egg=ftrack-connect-0.1.8'
+    '#egg=ftrack-connect-0.1.10'
 )
 
 connect_foundry_dependency_link = (
@@ -116,8 +116,8 @@ setup(
         '': 'source'
     },
     setup_requires=[
-        'sphinx >= 1.2.2, < 2',
-        'sphinx_rtd_theme >= 0.1.6, < 2',
+        'sphinx == 1.2.2',
+        'sphinx_rtd_theme == 0.1.7',
         'lowdown >= 0.1.0, < 1'
     ],
     install_requires=[
