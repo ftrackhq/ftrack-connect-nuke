@@ -109,7 +109,7 @@ class NukeCrew(QtGui.QDialog):
             self
         )
 
-        self._hub = ftrack_connect_nuke.crew_hub._crew_hub
+        self._hub = ftrack_connect_nuke.crew_hub.crew_hub
 
         self._classifier = UserClassifier()
         self._classifier.update_context(
