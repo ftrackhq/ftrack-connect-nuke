@@ -11,7 +11,6 @@ from PySide import QtGui
 
 from FnAssetAPI import logging
 import nuke
-import ftrack_connect.crew_hub
 import ftrack_api
 import ftrack
 from ftrack_connect.ui.widget import notification_list as _notification_list
@@ -19,19 +18,9 @@ from ftrack_connect.ui.widget import crew as _crew
 import ftrack_connect.ui.theme
 
 from ftrack_connect.ui.widget.header import Header
-
+import ftrack_connect_nuke.crew_hub
 
 session = ftrack_api.Session()
-
-
-class NukeCrewHub(ftrack_connect.crew_hub.SignalCrewHub):
-
-    def isInterested(self, data):
-        '''Return if interested in user with *data*.'''
-
-        # In first version we are interested in all users since all users
-        # are visible in the list.
-        return True
 
 
 class UserClassifier(object):
@@ -120,7 +109,7 @@ class NukeCrew(QtGui.QDialog):
             self
         )
 
-        self._hub = NukeCrewHub()
+        self._hub = ftrack_connect_nuke.crew_hub.crew_hub
 
         self._classifier = UserClassifier()
         self._classifier.update_context(
@@ -185,28 +174,6 @@ class NukeCrew(QtGui.QDialog):
         )
 
         self.on_refresh_event()
-
-        self._enter_chat()
-
-    def _enter_chat(self):
-        '''.'''
-        user = ftrack.getUser(getpass.getuser())
-        data = {
-            'user': {
-                'name': user.getName(),
-                'id': user.getId()
-            },
-            'application': {
-                'identifier': 'nuke',
-                'label': 'Nuke {0}'.format(nuke.NUKE_VERSION_STRING)
-            },
-            'context': {
-                'project_id': 'my_project_id',
-                'containers': []
-            }
-        }
-
-        self._hub.enter(data)
 
     def on_refresh_event(self):
         '''Handle refresh events.'''
