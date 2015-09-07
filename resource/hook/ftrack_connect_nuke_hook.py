@@ -92,7 +92,7 @@ class LaunchApplicationAction(object):
                 'variant': application.get('variant', None),
                 'description': application.get('description', None),
                 'icon': application.get('icon', 'default'),
-                'applicationIdentifier': applicationIdentifier
+                'applicationIdentifier': application_identifier
             })
 
         return {
