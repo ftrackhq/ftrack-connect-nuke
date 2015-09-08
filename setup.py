@@ -86,8 +86,8 @@ data_files.append(
 )
 
 connect_dependency_link = (
-    'https://bitbucket.org/ftrack/ftrack-connect/get/backlog/crew/story.zip'
-    '#egg=ftrack-connect-0.1.10'
+    'https://bitbucket.org/ftrack/ftrack-connect/get/0.1.14.zip'
+    '#egg=ftrack-connect-0.1.14'
 )
 
 connect_foundry_dependency_link = (
