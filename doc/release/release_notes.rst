@@ -8,7 +8,7 @@
 Release notes
 *************
 
-.. release:: Upcoming
+.. release:: 0.1.5
 
     .. change:: new
         :tags: Crew
