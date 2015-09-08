@@ -155,10 +155,6 @@ class NukeCrew(QtGui.QDialog):
                 )
 
                 added_user_ids.append(_user['id'])
-        
-        self._hub.populateUnreadConversations(
-            current_user.getId(), added_user_ids
-        )
 
         self.tab_panel = QtGui.QTabWidget(parent=self)
         self.tab_panel.addTab(self.chat, 'Chat')
