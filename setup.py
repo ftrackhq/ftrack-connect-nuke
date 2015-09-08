@@ -85,11 +85,6 @@ data_files.append(
     )
 )
 
-connect_ftrack_new_api_dependency_link = (
-    'file://{0}#egg=ftrack-python-api'
-    .format(os.environ['FTRACK_PYTHON_API'].replace('\\', '/'))
-)
-
 connect_dependency_link = (
     'https://bitbucket.org/ftrack/ftrack-connect/get/backlog/crew/story.zip'
     '#egg=ftrack-connect-0.1.10'
@@ -121,7 +116,7 @@ setup(
         'lowdown >= 0.1.0, < 1'
     ],
     install_requires=[
-        'ftrack-python-api',
+        'ftrack-python-api >= 0.7 < 1',
         'ftrack-connect >= 0.1, < 1',
         'ftrack-connect-foundry >= 0.1.0, < 2'
     ],
@@ -135,8 +130,7 @@ setup(
         ('https://bitbucket.org/ftrack/lowdown/get/0.1.0.zip'
          '#egg=lowdown-0.1.0'),
         connect_dependency_link,
-        connect_foundry_dependency_link,
-        connect_ftrack_new_api_dependency_link
+        connect_foundry_dependency_link
     ],
     data_files=data_files
 )
