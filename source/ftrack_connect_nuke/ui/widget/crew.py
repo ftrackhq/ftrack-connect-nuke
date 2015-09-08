@@ -188,7 +188,7 @@ class NukeCrew(QtGui.QDialog):
 
         self.on_refresh_event()
 
-        if not self._hub.compatible_server_version:
+        if not self._hub.compatibleServerVersion:
             logging.info('Incompatible server version.')
 
             self.blockingOverlay = ftrack_connect.ui.widget.overlay.BlockingOverlay(
