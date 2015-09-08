@@ -8,6 +8,13 @@
 Release notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: new
+        :tags: Crew
+
+        Added support for crew chat and in-app notifications.
+
 .. release:: 0.1.4
 
     .. change:: new
