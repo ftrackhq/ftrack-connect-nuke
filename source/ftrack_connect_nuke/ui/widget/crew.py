@@ -22,6 +22,24 @@ import ftrack_connect_nuke.crew_hub
 
 session = ftrack_api.Session()
 
+NUKE_OVERLAY_STYLE = '''
+    BlockingOverlay {
+        background-color: rgba(58, 58, 58, 200);
+        border: none;
+    }
+
+    BlockingOverlay QFrame#content {
+        padding: 0px;
+        border: 80px solid transparent;
+        background-color: transparent;
+        border-image: none;
+    }
+
+    BlockingOverlay QLabel {
+        background: transparent;
+    }
+'''
+
 
 class UserClassifier(object):
     '''Class to classify users based on your context.'''
@@ -123,23 +141,7 @@ class NukeCrew(QtGui.QDialog):
             parent=self
         )
 
-        self.chat.chat.busyOverlay.setStyleSheet('''
-            BlockingOverlay {
-                background-color: rgba(58, 58, 58, 200);
-                border: none;
-            }
-
-            BlockingOverlay QFrame#content {
-                padding: 0px;
-                border: 80px solid transparent;
-                background-color: transparent;
-                border-image: none;
-            }
-
-            BlockingOverlay QLabel {
-                background: transparent;
-            }
-        ''')
+        self.chat.chat.busyOverlay.setStyleSheet(NUKE_OVERLAY_STYLE)
 
         added_user_ids = []
         for _user in session.query(
@@ -166,23 +168,7 @@ class NukeCrew(QtGui.QDialog):
 
         # TODO: This styling should probably be done in a global stylesheet
         # for the entire Nuke plugin.
-        self.notification_list.overlay.setStyleSheet('''
-            BlockingOverlay {
-                background-color: rgba(58, 58, 58, 200);
-                border: none;
-            }
-
-            BlockingOverlay QFrame#content {
-                padding: 0px;
-                border: 80px solid transparent;
-                background-color: transparent;
-                border-image: none;
-            }
-
-            BlockingOverlay QLabel {
-                background: transparent;
-            }
-        ''')
+        self.notification_list.overlay.setStyleSheet(NUKE_OVERLAY_STYLE)
 
         self.vertical_layout.setContentsMargins(0, 0, 0, 0)
         self.vertical_layout.addLayout(self.horizontal_layout)
@@ -201,6 +187,17 @@ class NukeCrew(QtGui.QDialog):
         )
 
         self.on_refresh_event()
+
+        if not self._hub.compatibleServerVersion:
+            logging.info('Incompatible server version.')
+
+            self.blockingOverlay = ftrack_connect.ui.widget.overlay.BlockingOverlay(
+                self, message='Incompatible server version.'
+            )
+            self.blockingOverlay.setStyleSheet(NUKE_OVERLAY_STYLE)
+            self.blockingOverlay.show()
+        else:
+            self._hub.populateUnreadConversations(current_user.getId(), added_user_ids)
 
     def on_refresh_event(self):
         '''Handle refresh events.'''
