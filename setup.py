@@ -116,7 +116,7 @@ setup(
         'lowdown >= 0.1.0, < 1'
     ],
     install_requires=[
-        'ftrack-python-api >= 0.7 < 1',
+        'ftrack-python-api >= 0.7, < 1',
         'ftrack-connect >= 0.1, < 1',
         'ftrack-connect-foundry >= 0.1.0, < 2'
     ],
