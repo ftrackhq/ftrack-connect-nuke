@@ -163,10 +163,18 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
             ))
 
             applications.extend(self._searchFilesystem(
-                expression=prefix + ['Nuke.*', 'NukeX\d.+.app'],
+                expression=prefix + ['Nuke.*', 'NukeX\d.\d+.\d+(?! Non\-commercial).app'],
                 label='NukeX',
                 variant='{version}',
                 applicationIdentifier='nukex_{version}',
+                icon='nukex'
+            ))
+
+            applications.extend(self._searchFilesystem(
+                expression=prefix + ['Nuke.*', 'NukeX\d.+(?: Non\-commercial).app'],
+                label='NukeX',
+                variant='{version} Non-commercial',
+                applicationIdentifier='nukex_{version}_non_commercial',
                 icon='nukex'
             ))
 
