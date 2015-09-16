@@ -8,7 +8,15 @@
 Release notes
 *************
 
+.. release:: upcoming
+
+    .. change:: fixed
+
+        Non-commercial NukeX appears as regular NukeX when started from
+        actions.
+
 .. release:: 0.1.5
+    :date: 2015-09-08
 
     .. change:: new
         :tags: Crew
