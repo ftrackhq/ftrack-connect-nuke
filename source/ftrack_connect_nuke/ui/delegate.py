@@ -1,14 +1,13 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2014 ftrack
 
-import functools
 import FnAssetAPI
-from FnAssetAPI.ui.toolkit import QtGui
 from ftrack_connect_foundry.ui import delegate
 from ftrack_connect_foundry.ui.tasks_view import TasksView as _TasksView
 from ftrack_connect_foundry.ui.info_view import (
     WorkingTaskInfoView as _WorkingTaskInfoView, InfoView as _InfoView
 )
+
 
 class Delegate(delegate.Delegate):
     def __init__(self, bridge):
@@ -21,6 +20,8 @@ class Delegate(delegate.Delegate):
         import nuke
         import legacy
         from nukescripts import panels
+
+        from ftrack_connect_nuke.ui.widget.crew import NukeCrew
         from ftrack_connect_nuke.connector import Connector
 
         from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
@@ -29,7 +30,8 @@ class Delegate(delegate.Delegate):
         from ftrack_connect_nuke.ui.widget.load_script import ScriptOpenerDialog
         Connector.registerAssets()
 
-        # wrappers for initializing the widgets with the correct connector object
+        # wrappers for initializing the widgets with
+        # the correct connector object
         def wrapImportAssetDialog(*args, **kwargs):
             from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
             return FtrackImportAssetDialog(connector=Connector)
@@ -37,7 +39,6 @@ class Delegate(delegate.Delegate):
         def wrapAssetManagerDialog(*args, **kwargs):
             from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
             return FtrackAssetManagerDialog(connector=Connector)
-
 
         # Populate the ui
         nukeMenu = nuke.menu("Nuke")
@@ -104,16 +105,27 @@ class Delegate(delegate.Delegate):
                 )
             )
 
+        ftrackMenu.addSeparator()
+
+        # Create the crew dialog entry in the menu
+        panels.registerWidgetAsPanel(
+            'ftrack_connect_nuke.ui.widget.crew.NukeCrew',
+            'Crew',
+            'widget.Crew'
+        )
+        ftrackMenu.addCommand(
+            'Crew',
+            'pane = nuke.getPaneFor("Properties.1");'
+            'panel = nukescripts.restorePanel("widget.Crew");'
+            'panel.addToPane(pane)'
+        )
 
         # Add new entries in the ftrack menu.
         ftrackMenu.addSeparator()
         ftrackMenu.addCommand('Publish gizmo', GizmoPublisherDialog)
 
-        # The new load and publish script dialog's are waiting for some style
-        # fixes.
-        if False:
-            ftrackMenu.addCommand('Publish script', ScriptPublisherDialog)
-            ftrackMenu.addCommand('Load script', ScriptOpenerDialog)
+        ftrackMenu.addCommand('Publish script', ScriptPublisherDialog)
+        ftrackMenu.addCommand('Load script', ScriptOpenerDialog)
 
         # Add ftrack publish node
         toolbar = nuke.toolbar("Nodes")

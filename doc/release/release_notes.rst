@@ -8,6 +8,22 @@
 Release notes
 *************
 
+.. release:: 0.1.6
+    :date: 2015-09-22
+
+    .. change:: fixed
+
+        Non-commercial NukeX appears as regular NukeX when started from
+        actions.
+
+.. release:: 0.1.5
+    :date: 2015-09-08
+
+    .. change:: new
+        :tags: Crew
+
+        Added support for crew chat and in-app notifications.
+
 .. release:: 0.1.4
 
     .. change:: new

@@ -85,6 +85,16 @@ data_files.append(
     )
 )
 
+connect_dependency_link = (
+    'https://bitbucket.org/ftrack/ftrack-connect/get/0.1.14.zip'
+    '#egg=ftrack-connect-0.1.14'
+)
+
+connect_foundry_dependency_link = (
+    'https://bitbucket.org/ftrack/ftrack-connect-foundry/get/master.zip'
+    '#egg=ftrack-connect-foundry-0.1.0'
+)
+
 # Configuration.
 setup(
     name='ftrack-connect-nuke',
@@ -101,11 +111,12 @@ setup(
         '': 'source'
     },
     setup_requires=[
-        'sphinx == 1.2.2',
-        'sphinx_rtd_theme == 0.1.7',
+        'sphinx >= 1.2.2, < 2',
+        'sphinx_rtd_theme >= 0.1.6, < 2',
         'lowdown >= 0.1.0, < 1'
     ],
     install_requires=[
+        'ftrack-python-api >= 0.7, < 1',
         'ftrack-connect >= 0.1, < 1',
         'ftrack-connect-foundry >= 0.1.0, < 2'
     ],
@@ -118,10 +129,8 @@ setup(
     dependency_links=[
         ('https://bitbucket.org/ftrack/lowdown/get/0.1.0.zip'
          '#egg=lowdown-0.1.0'),
-        ('https://bitbucket.org/ftrack/ftrack-connect/get/0.1.10.zip'
-         '#egg=ftrack-connect-0.1.10'),
-        ('https://bitbucket.org/ftrack/ftrack-connect-foundry/get/master.zip'
-         '#egg=ftrack-connect-foundry-0.1.0')
+        connect_dependency_link,
+        connect_foundry_dependency_link
     ],
     data_files=data_files
 )

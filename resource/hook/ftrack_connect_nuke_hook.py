@@ -89,6 +89,8 @@ class LaunchApplicationAction(object):
             items.append({
                 'actionIdentifier': self.identifier,
                 'label': label,
+                'variant': application.get('variant', None),
+                'description': application.get('description', None),
                 'icon': application.get('icon', 'default'),
                 'applicationIdentifier': application_identifier
             })
@@ -138,7 +140,9 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
 
             dict(
                 'identifier': 'name_version',
-                'label': 'Name version',
+                'label': 'Name',
+                'variant': 'version',
+                'description': 'description',
                 'path': 'Absolute path to the file',
                 'version': 'Version of the application',
                 'icon': 'URL or name of predefined icon'
@@ -152,15 +156,25 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
 
             applications.extend(self._searchFilesystem(
                 expression=prefix + ['Nuke.*', 'Nuke\d[\w.]+.app'],
-                label='Nuke {version}',
+                label='Nuke',
+                variant='{version}',
                 applicationIdentifier='nuke_{version}',
                 icon='nuke'
             ))
 
             applications.extend(self._searchFilesystem(
-                expression=prefix + ['Nuke.*', 'NukeX\d.+.app'],
-                label='NukeX {version}',
+                expression=prefix + ['Nuke.*', 'NukeX\d.\d+.\d+(?! Non\-commercial).app'],
+                label='NukeX',
+                variant='{version}',
                 applicationIdentifier='nukex_{version}',
+                icon='nukex'
+            ))
+
+            applications.extend(self._searchFilesystem(
+                expression=prefix + ['Nuke.*', 'NukeX\d.+(?: Non\-commercial).app'],
+                label='NukeX',
+                variant='{version} Non-commercial',
+                applicationIdentifier='nukex_{version}_non_commercial',
                 icon='nukex'
             ))
 
@@ -176,7 +190,8 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
             applications.extend(self._searchFilesystem(
                 expression=prefix + ['Nuke.*', 'Nuke\d.+.exe'],
                 versionExpression=nuke_version_expression,
-                label='Nuke {version}',
+                label='Nuke',
+                variant='{version}',
                 applicationIdentifier='nuke_{version}',
                 icon='nuke'
             ))
@@ -186,7 +201,8 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
                 expression=prefix + ['Nuke.*', 'Nuke\d.+.exe'],
                 versionExpression=nuke_version_expression,
                 launchArguments=['--nukex'],
-                label='NukeX {version}',
+                label='NukeX',
+                variant='{version}',
                 applicationIdentifier='nukex_{version}',
                 icon='nukex'
             ))
@@ -196,7 +212,8 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
             applications.extend(self._searchFilesystem(
                 versionExpression=r'Nuke(?P<version>.*)\/.+$',
                 expression=['/', 'usr', 'local', 'Nuke.*', 'Nuke\d.+'],
-                label='Nuke {version}',
+                label='Nuke',
+                variant='{version}',
                 applicationIdentifier='nuke_{version}',
                 icon='nuke'
             ))
@@ -204,7 +221,8 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
             applications.extend(self._searchFilesystem(
                 versionExpression=r'Nuke(?P<version>.*)\/.+$',
                 expression=['/', 'usr', 'local', 'Nuke.*', 'Nuke\d.+'],
-                label='NukeX {version}',
+                label='NukeX',
+                variant='{version}',
                 applicationIdentifier='nukex_{version}',
                 icon='nukex',
                 launchArguments=['--nukex']
@@ -272,6 +290,20 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
         )
         environment = ftrack_connect.application.appendPath(
             self.plugin_path, 'FOUNDRY_ASSET_PLUGIN_PATH', environment
+        )
+
+        # Set the FTRACK_EVENT_PLUGIN_PATH to include the notification callback
+        # hooks.
+        environment = ftrack_connect.application.appendPath(
+            os.path.join(
+                self.plugin_path, 'crew_hook'
+            ), 'FTRACK_EVENT_PLUGIN_PATH', environment
+        )
+
+        environment = ftrack_connect.application.appendPath(
+            os.path.join(
+                self.plugin_path, '..', 'ftrack_python_api'
+            ), 'FTRACK_PYTHON_API_PLUGIN_PATH', environment
         )
 
         environment['NUKE_USE_FNASSETAPI'] = '1'
