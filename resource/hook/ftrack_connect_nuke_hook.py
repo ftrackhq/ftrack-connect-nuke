@@ -10,6 +10,7 @@ import os
 
 import ftrack
 import ftrack_connect.application
+import ftrack_connect_nuke
 
 
 class LaunchApplicationAction(object):
@@ -67,6 +68,11 @@ class LaunchApplicationAction(object):
                 getpass.getuser(), self.identifier
             ),
             self.launch
+        )
+
+        ftrack.EVENT_HUB.subscribe(
+            'topic=ftrack.connect.plugin.debug-information',
+            self.get_version_information
         )
 
     def discover(self, event):
@@ -130,6 +136,15 @@ class LaunchApplicationAction(object):
             application_identifier, context
         )
 
+    def get_version_information(self, event):
+        '''Return version information.'''
+        return [
+            dict(
+                name='ftrack connect nuke',
+                version=ftrack_connect_nuke.__version__
+            )
+        ]
+
 
 class ApplicationStore(ftrack_connect.application.ApplicationStore):
 
@@ -163,7 +178,9 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
             ))
 
             applications.extend(self._searchFilesystem(
-                expression=prefix + ['Nuke.*', 'NukeX\d.\d+.\d+(?! Non\-commercial).app'],
+                expression=prefix + [
+                    'Nuke.*', 'NukeX\d.\d+.\d+(?! Non\-commercial).app'
+                ],
                 label='NukeX',
                 variant='{version}',
                 applicationIdentifier='nukex_{version}',
@@ -171,7 +188,9 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
             ))
 
             applications.extend(self._searchFilesystem(
-                expression=prefix + ['Nuke.*', 'NukeX\d.+(?: Non\-commercial).app'],
+                expression=prefix + [
+                    'Nuke.*', 'NukeX\d.+(?: Non\-commercial).app'
+                ],
                 label='NukeX',
                 variant='{version} Non-commercial',
                 applicationIdentifier='nukex_{version}_non_commercial',
