@@ -8,6 +8,8 @@ from ftrack_connect_foundry.ui.info_view import (
     WorkingTaskInfoView as _WorkingTaskInfoView, InfoView as _InfoView
 )
 
+import ftrack_connect.ui.theme
+
 
 class Delegate(delegate.Delegate):
     def __init__(self, bridge):
@@ -148,3 +150,7 @@ class Delegate(delegate.Delegate):
 
         if host and host.getIdentifier() == 'uk.co.foundry.nuke':
             self.populate_ftrack()
+
+            # Set font on QApplication once UI is created.
+            # We do this once since it takes some time to apply the font.
+            ftrack_connect.ui.theme.applyFont()

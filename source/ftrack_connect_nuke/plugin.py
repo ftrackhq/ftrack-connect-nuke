@@ -4,9 +4,6 @@
 import ftrack_connect_foundry.plugin
 import ftrack_connect_foundry.bridge
 import ftrack_connect_nuke.manager
-import ftrack_connect.ui.theme
-
-ftrack_connect.ui.theme.applyFont()
 
 
 class Plugin(ftrack_connect_foundry.plugin.Plugin):
