@@ -8,6 +8,14 @@
 Release notes
 *************
 
+.. release:: upcoming
+    
+    .. change:: fixed
+
+        Importing `ftrack_connect_nuke` module without
+        `QtGui.QApplication <https://srinikom.github.io/pyside-docs/PySide/QtGui/QApplication.html>`_
+        causes segmentation fault.
+
 .. release:: 0.1.6
     :date: 2015-09-22
 
