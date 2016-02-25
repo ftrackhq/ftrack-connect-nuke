@@ -113,7 +113,10 @@ def addPublishKnobsToGroupNode(g):
     copyFilesKnob = nuke.Boolean_Knob('fcopy', 'Force copy files', True)
     copyFilesKnob.setFlag(nuke.STARTLINE)
     copyFilesKnob.setTooltip(
-        'Check this to force copying the files to a managed Location.'
+        'This will force the selection of a managed ftrack Location and the '
+        'files will be copied to a new place when published to ftrack. If not '
+        'checked ftrack will pick a Location depending on the Storage scenario '
+        'and any custom Location plugins.'
     )
     g.addKnob(copyFilesKnob)
 
