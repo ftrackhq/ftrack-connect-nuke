@@ -55,8 +55,11 @@ or create a new one by giving it a name.
 
 These options are available when publishing:
 
-:Copy files:            Publish will copy the files to another location and publish them
-                        from there.
+:Force copy files:
+    This will force the selection of a managed ftrack `Location` and the files
+    will be copied to a new place when published to ftrack. If not checked
+    ftrack will pick a `Location` depending on the Storage scenario and any
+    custom `Location` plugins. 
 :Attach Nuke script:    Attaches the Nuke script as a component on the published
                         version.
 
