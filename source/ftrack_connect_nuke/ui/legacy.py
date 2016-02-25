@@ -110,8 +110,11 @@ def addPublishKnobsToGroupNode(g):
     tableKnob.setFlag(nuke.STARTLINE)
     g.addKnob(tableKnob)
 
-    copyFilesKnob = nuke.Boolean_Knob('fcopy', 'Copy files', True)
+    copyFilesKnob = nuke.Boolean_Knob('fcopy', 'Force copy files', True)
     copyFilesKnob.setFlag(nuke.STARTLINE)
+    copyFilesKnob.setTooltip(
+        'Check this to force copying the files to a managed Location.'
+    )
     g.addKnob(copyFilesKnob)
 
     scriptKnob = nuke.Boolean_Knob('fscript', 'Attach nukescript', 1)
