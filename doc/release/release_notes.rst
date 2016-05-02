@@ -8,7 +8,8 @@
 Release notes
 *************
 
-.. release:: upcoming
+.. release:: 0.1.7
+    :date: 2016-05-02
 
     .. change:: changed
         :tags: Publish
