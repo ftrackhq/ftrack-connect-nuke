@@ -8,8 +8,15 @@
 Release notes
 *************
 
-.. release:: upcoming
-    
+.. release:: 0.1.7
+    :date: 2016-05-02
+
+    .. change:: changed
+        :tags: Publish
+
+        Update text on publish node knob from `copy files` to `force copy files`
+        and add tooltip.
+
     .. change:: fixed
 
         Importing `ftrack_connect_nuke` module without
