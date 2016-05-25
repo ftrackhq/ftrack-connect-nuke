@@ -2,7 +2,6 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
-import shutil
 import ftrack
 import clique
 import glob
@@ -15,17 +14,16 @@ import FnAssetAPI
 
 import nuke
 import nukescripts
-import ftrack_connect
 import ftrack_connect_nuke
 
-from ftrack_connect.connector import FTComponent, FTAssetObject, HelpFunctions
+from ftrack_connect.connector import (
+    FTComponent, FTAssetObject, HelpFunctions
+)
 from ftrack_connect_nuke import connector
 from ftrack_connect_nuke.connector import nukeassets
 
 from knobs import TableKnob, BrowseKnob, HeaderKnob
 from ftrack_connect.ui.theme import applyTheme
-
-ftrack.setup()
 
 current_module = ".".join(__name__.split(".")[:-1])+'.legacy'
 
@@ -42,7 +40,7 @@ class ProgressDialog(QtGui.QDialog):
 
 
 def refAssetManager():
-    # Imported inline to avoid crashes in nuke.
+    # Inline to avoid Nuke crashing on startup without traceback.
     from ftrack_connect.connector import PanelComInstance
     panelComInstance = PanelComInstance.instance()
     panelComInstance.refreshListeners()
@@ -112,8 +110,14 @@ def addPublishKnobsToGroupNode(g):
     tableKnob.setFlag(nuke.STARTLINE)
     g.addKnob(tableKnob)
 
-    copyFilesKnob = nuke.Boolean_Knob('fcopy', 'Copy files', True)
+    copyFilesKnob = nuke.Boolean_Knob('fcopy', 'Force copy files', True)
     copyFilesKnob.setFlag(nuke.STARTLINE)
+    copyFilesKnob.setTooltip(
+        'This will force the selection of a managed ftrack Location and the '
+        'files will be copied to a new place when published to ftrack. If not '
+        'checked ftrack will pick a Location depending on the Storage scenario '
+        'and any custom Location plugins.'
+    )
     g.addKnob(copyFilesKnob)
 
     scriptKnob = nuke.Boolean_Knob('fscript', 'Attach nukescript', 1)

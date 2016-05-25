@@ -6,7 +6,9 @@ import re
 import glob
 
 import nuke
+
 import ftrack
+
 import os
 import traceback
 from nukecon import Connector
@@ -49,10 +51,17 @@ class GenericAsset(FTAssetType):
         resultingNode.addKnob(btn)
         btn = nuke.String_Knob('assetType')
         resultingNode.addKnob(btn)
+        btn = nuke.String_Knob('assetId')
+        resultingNode.addKnob(btn)
 
     def setFTab(self, resultingNode, iAObj):           
         componentId = ftrack.Component(iAObj.componentId).getEntityRef()
         assetVersionId = ftrack.AssetVersion(iAObj.assetVersionId).getEntityRef()
+
+        resultingNode.knob('assetId').setValue(
+            HelpFunctions.safeString(iAObj.assetId)
+        )
+
         resultingNode.knob('componentId').setValue(
             HelpFunctions.safeString(componentId)
         )
@@ -71,6 +80,7 @@ class GenericAsset(FTAssetType):
         resultingNode.knob('assetType').setValue(
             HelpFunctions.safeString(iAObj.assetType)
         )
+
 
 class ImageSequenceAsset(GenericAsset):
     def __init__(self):

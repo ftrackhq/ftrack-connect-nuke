@@ -2,6 +2,7 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
+
 import ftrack
 import getpass
 import functools

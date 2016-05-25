@@ -8,6 +8,43 @@
 Release notes
 *************
 
+.. release:: Upcoming
+    .. change:: fixed
+        :tags: Ui
+
+        The load script / publish menu entries script are broken.
+
+.. release:: 0.1.7
+    :date: 2016-05-02
+
+    .. change:: changed
+        :tags: Publish
+
+        Update text on publish node knob from `copy files` to `force copy files`
+        and add tooltip.
+
+    .. change:: fixed
+
+        Importing `ftrack_connect_nuke` module without
+        `QtGui.QApplication <https://srinikom.github.io/pyside-docs/PySide/QtGui/QApplication.html>`_
+        causes segmentation fault.
+
+.. release:: 0.1.6
+    :date: 2015-09-22
+
+    .. change:: fixed
+
+        Non-commercial NukeX appears as regular NukeX when started from
+        actions.
+
+.. release:: 0.1.5
+    :date: 2015-09-08
+
+    .. change:: new
+        :tags: Crew
+
+        Added support for crew chat and in-app notifications.
+
 .. release:: 0.1.4
 
     .. change:: new
