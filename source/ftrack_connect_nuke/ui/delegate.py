@@ -28,8 +28,6 @@ class Delegate(delegate.Delegate):
 
         from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
 
-        from ftrack_connect_nuke.ui.widget.publish_script import ScriptPublisherDialog
-        from ftrack_connect_nuke.ui.widget.load_script import ScriptOpenerDialog
         Connector.registerAssets()
 
         # wrappers for initializing the widgets with
@@ -125,9 +123,6 @@ class Delegate(delegate.Delegate):
         # Add new entries in the ftrack menu.
         ftrackMenu.addSeparator()
         ftrackMenu.addCommand('Publish gizmo', GizmoPublisherDialog)
-
-        ftrackMenu.addCommand('Publish script', ScriptPublisherDialog)
-        ftrackMenu.addCommand('Load script', ScriptOpenerDialog)
 
         # Add ftrack publish node
         toolbar = nuke.toolbar("Nodes")

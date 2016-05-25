@@ -8,6 +8,12 @@
 Release notes
 *************
 
+.. release:: Upcoming
+    .. change:: fixed
+        :tags: Ui
+
+        The load script / publish menu entries script are broken.
+
 .. release:: 0.1.7
     :date: 2016-05-02
 
