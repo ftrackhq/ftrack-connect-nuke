@@ -17,7 +17,7 @@ Release notes
     .. change:: fixed
         :tags: Ui
 
-        Using gizmo publisher Nuke segfault on exit.
+        Closing Nuke while gizmo publisher is open causes segmentation fault.
 
 .. release:: 0.1.7
     :date: 2016-05-02
