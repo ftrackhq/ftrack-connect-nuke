@@ -13,6 +13,11 @@ Release notes
         :tags: Ui
 
         The load script / publish menu entries script are broken.
+    
+    .. change:: fixed
+        :tags: Ui
+
+        Closing Nuke while gizmo publisher is open causes segmentation fault.
 
 .. release:: 0.1.7
     :date: 2016-05-02

@@ -18,7 +18,7 @@ class GizmoPublisherDialog(BaseDialog):
     def __init__(self):
 
         super(GizmoPublisherDialog, self).__init__(
-            QtGui.QApplication.activeWindow()
+            QtGui.QApplication.desktop()
         )
         applyTheme(self, 'integration')
         self.setupUI()

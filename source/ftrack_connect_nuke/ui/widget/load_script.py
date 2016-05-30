@@ -16,7 +16,8 @@ class ScriptOpenerDialog(BaseDialog):
 
     def __init__(self):
         super(ScriptOpenerDialog, self).__init__(
-            QtGui.QApplication.activeWindow())
+            QtGui.QApplication.desktop()
+        )
 
         applyTheme(self, 'integration')
         self.initiate_tasks()

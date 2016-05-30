@@ -26,7 +26,8 @@ class ScriptPublisherDialog(BaseDialog):
         # for the snapshot working (For some reason it can't get it from a
         # default value..)
         super(ScriptPublisherDialog, self).__init__(
-            QtGui.QApplication.activeWindow())
+            QtGui.QApplication.desktop()
+        )
         # self.setFTrackTitle("Publish script...")
         applyTheme(self, 'integration')
         self._connectors_per_type = {}
