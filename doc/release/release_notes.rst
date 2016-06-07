@@ -8,7 +8,10 @@
 Release notes
 *************
 
-.. release:: Upcoming
+
+.. release:: 0.1.8
+    :date: 2016-06-07
+
     .. change:: fixed
         :tags: Ui
 
