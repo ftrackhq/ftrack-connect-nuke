@@ -38,6 +38,8 @@ class TableKnob():
         self.tableWidget.setTextElideMode(QtCore.Qt.ElideLeft)
         self.tableWidget.setMinimumHeight(200)
 
+        self.tableWidget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+
         self.tableWidget.updateValue = self.updateValue
 
         return self.tableWidget
