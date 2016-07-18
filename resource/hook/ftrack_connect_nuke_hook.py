@@ -337,14 +337,10 @@ def register(registry, **kw):
         'ftrack_plugin:ftrack_connect_nuke_hook.register'
     )
 
-    # Validate that registry is an instance of ftrack.Registry. If not,
-    # assume that register is being called from a new or incompatible API and
-    # return without doing anything.
-    if not isinstance(registry, ftrack.Registry):
-        logger.debug(
-            'Not subscribing plugin as passed argument {0!r} is not an '
-            'ftrack.Registry instance.'.format(registry)
-        )
+    # Validate that registry is the event handler registry. If not,
+    # assume that register is being called to regiter Locations or from a new
+    # or incompatible API, and return without doing anything.
+    if registry is not ftrack.EVENT_HANDLERS:
         return
 
     # Create store containing applications.
