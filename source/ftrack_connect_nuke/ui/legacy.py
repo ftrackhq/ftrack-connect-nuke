@@ -579,4 +579,6 @@ def ftrackPublishHieroInit():
 
 
 def getHeaderKnob(node):
-    return node.knobs().get('fheader').getObject().headerWidget
+    header_object = node.knobs().get('fheader').getObject()
+    if header_object:
+        return header_object.headerWidget

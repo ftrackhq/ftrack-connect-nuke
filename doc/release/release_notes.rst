@@ -8,6 +8,12 @@
 Release notes
 *************
 
+.. release:: Upcoming
+    .. change:: fixed
+        :tags: Ui
+
+        Nuke raise an error while trying to reload a previously published script.
+
 
 .. release:: Upcoming
 
