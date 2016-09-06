@@ -9,18 +9,17 @@ Release notes
 *************
 
 .. release:: Upcoming
-    .. change:: fixed
-        :tags: Ui
-
-        Nuke raise an error while trying to reload a previously published script.
-
-
-.. release:: Upcoming
 
     .. change:: fixed
         :tags: Hook
 
         Launch hook is registered twice.
+
+    .. change:: fixed
+        :tags: Ui
+
+        Nuke raise an error while trying to reload a previously published
+        script.
 
 .. release:: 0.1.8
     :date: 2016-06-07
