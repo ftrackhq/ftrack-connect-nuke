@@ -33,6 +33,11 @@ Release notes
         :tags: Ui
 
         Closing Nuke while gizmo publisher is open causes segmentation fault.
+    
+    .. change:: changed
+        :tags: Publish
+
+        Component Table is not editable.
 
 .. release:: 0.1.7
     :date: 2016-05-02
