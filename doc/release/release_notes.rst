@@ -8,7 +8,8 @@
 Release notes
 *************
 
-.. release:: Upcoming
+.. release:: 0.1.9
+    :date: 2016-09-16
 
     .. change:: fixed
         :tags: Hook
