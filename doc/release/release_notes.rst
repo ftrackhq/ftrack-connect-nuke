@@ -8,6 +8,14 @@
 Release notes
 *************
 
+
+.. release:: Upcoming
+
+    .. change:: fixed
+        :tags: User interface
+
+        Nuke does not allow to change version of imported almebic.
+
 .. release:: 0.1.9
     :date: 2016-09-16
 
