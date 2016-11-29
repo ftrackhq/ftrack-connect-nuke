@@ -7,6 +7,7 @@ import clique
 import glob
 import tempfile
 import uuid
+import urlparse
 
 from FnAssetAPI.ui.toolkit import QtGui
 
@@ -22,10 +23,15 @@ from ftrack_connect.connector import (
 from ftrack_connect_nuke import connector
 from ftrack_connect_nuke.connector import nukeassets
 
+import ftrack_connect.util
+import ftrack_connect.asset_version_scanner
+
 from knobs import TableKnob, BrowseKnob, HeaderKnob
 from ftrack_connect.ui.theme import applyTheme
 
 current_module = ".".join(__name__.split(".")[:-1])+'.legacy'
+
+
 
 class ProgressDialog(QtGui.QDialog):
     def __init__(self):
@@ -46,30 +52,81 @@ def refAssetManager():
     panelComInstance.refreshListeners()
 
 
-def checkForNewAssets():
+def handle_scan_result(result, scanned_ftrack_nodes):
+    '''Handle scan *result*.'''
+    message = []
+    for partial_result, ftrack_node in zip(result, scanned_ftrack_nodes):
+        if partial_result is None:
+            # The version was not found on the server, probably because it has
+            # been deleted.
+            continue
+
+        scanned = partial_result.get('scanned')
+        latest = partial_result.get('latest')
+        if scanned['version'] != latest['version']:
+            message.append(
+                '{0} can be updated from v{1} to v{2}'.format(
+                    ftrack_node, scanned['version'], latest['version']
+                )
+            )
+
+    if message:
+        nuke.message('\n'.join(message))
+
+
+def scan_for_new_assets():
+    '''Scan scene for outdated asset versions'''
     allAssets = connector.Connector.getAssets()
     message = ''
-    for ftNode in allAssets:
-        n = nuke.toNode(HelpFunctions.safeString(ftNode[1]))
-        n.knob('componentId').value()
-        componentName = n.knob('componentName').value()
-        assetVersionId = n.knob('assetVersionId').value()
-        assetVersionNumber = n.knob('assetVersion').value()
-        n.knob('assetName').value()
-        n.knob('assetType').value()
 
-        assetVersion = connector.Connector.objectById(assetVersionId)
-        if assetVersion:
-            asset = assetVersion.getAsset()
-            versions = asset.getVersions(componentNames=[componentName])
-            if len(versions) > 0:
-                latestversion = versions[-1].getVersion()
-                if latestversion != int(assetVersionNumber):
-                    message += ftNode[1] + ' can be updated from v:' + str(assetVersionNumber)
-                    message += ' to v:' + str(latestversion) + '\n'
+    check_items = []
+    scanned_ftrack_nodes = []
 
-    if message != '':
-        nuke.message(message)
+    for ftrack_node in allAssets:
+        ftrack_node = ftrack_node[1]
+        n = nuke.toNode(HelpFunctions.safeString(ftrack_node))
+        ftrack_asset_version_id_url = n.knob('assetVersionId').value()
+
+        # parse the url returned from the node
+        url = urlparse.urlparse(ftrack_asset_version_id_url)
+        query = urlparse.parse_qs(url.query)
+        entityType = query.get('entityType')[0]
+
+        # here the correct data we need.
+        asset_version_id = url.netloc
+        component_name = n.knob('componentName').value()
+
+        if asset_version_id is None:
+            nuke.message(
+                'FTrack node "{0}" does not contain data!'.format(ftrack_node)
+            )
+            continue
+
+        new_item = {
+            'asset_version_id': asset_version_id,
+            'component_name': component_name   
+        }
+        check_items.append(new_item)
+        scanned_ftrack_nodes.append(ftrack_node)
+
+    if scanned_ftrack_nodes:
+        import ftrack_api
+        session = ftrack_api.Session(
+            auto_connect_event_hub=False,
+            plugin_paths=None
+        )
+        scanner = ftrack_connect.asset_version_scanner.Scanner(
+            session=session,
+            result_handler=(
+                lambda result: ftrack_connect.util.invoke_in_main_thread(
+                    handle_scan_result,
+                    result,
+                    scanned_ftrack_nodes
+                )
+            )
+        )
+        scanner.scan(check_items)
+
 
 @ftrack.withGetCache
 def addPublishKnobsToGroupNode(g):
