@@ -15,16 +15,17 @@ import FnAssetAPI
 
 import nuke
 import nukescripts
-import ftrack_connect_nuke
 
 from ftrack_connect.connector import (
     FTComponent, FTAssetObject, HelpFunctions
 )
+import ftrack_connect.util
+import ftrack_connect.asset_version_scanner
+
+import ftrack_connect_nuke
 from ftrack_connect_nuke import connector
 from ftrack_connect_nuke.connector import nukeassets
 
-import ftrack_connect.util
-import ftrack_connect.asset_version_scanner
 
 from knobs import TableKnob, BrowseKnob, HeaderKnob
 from ftrack_connect.ui.theme import applyTheme
