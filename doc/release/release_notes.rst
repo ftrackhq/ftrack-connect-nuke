@@ -11,6 +11,13 @@ Release notes
 
 .. release:: Upcoming
 
+
+    .. change:: improve
+        :tags: API, Assets
+
+        Nuke is slow on checking outdated version during startup.
+
+
     .. change:: fixed
         :tags: User interface
 
