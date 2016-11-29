@@ -75,7 +75,7 @@ def handle_scan_result(result, scanned_ftrack_nodes):
 
 
 def scan_for_new_assets():
-    '''Scan scene for outdated asset versions'''
+    '''Scan scene for outdated asset versions.'''
     allAssets = connector.Connector.getAssets()
     message = ''
 
@@ -87,12 +87,10 @@ def scan_for_new_assets():
         n = nuke.toNode(HelpFunctions.safeString(ftrack_node))
         ftrack_asset_version_id_url = n.knob('assetVersionId').value()
 
-        # parse the url returned from the node
         url = urlparse.urlparse(ftrack_asset_version_id_url)
         query = urlparse.parse_qs(url.query)
         entityType = query.get('entityType')[0]
 
-        # here the correct data we need.
         asset_version_id = url.netloc
         component_name = n.knob('componentName').value()
 
