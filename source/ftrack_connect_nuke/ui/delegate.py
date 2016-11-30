@@ -131,7 +131,7 @@ class Delegate(delegate.Delegate):
 
         # Set calbacks
         nuke.addOnScriptLoad(legacy.refAssetManager)
-        nuke.addOnScriptLoad(legacy.checkForNewAssets)
+        nuke.addOnScriptLoad(legacy.scan_for_new_assets)
         nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='Write')
         nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='WriteGeo')
         nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='Read')

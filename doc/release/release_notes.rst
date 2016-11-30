@@ -12,6 +12,11 @@ Release notes
 .. release:: Upcoming
 
     .. change:: fixed
+        :tags: API, Assets
+
+        Scanning for new asset versions at scene startup is very slow.
+
+    .. change:: fixed
         :tags: User interface
 
         Nuke does not allow to change version of imported almebic.
