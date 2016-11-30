@@ -11,10 +11,10 @@ Release notes
 
 .. release:: Upcoming
 
-    .. change:: improve
+    .. change:: fixed
         :tags: API, Assets
 
-        Nuke is slow on checking outdated version during startup.
+        Scanning for new asset versions at scene startup is very slow.
 
     .. change:: fixed
         :tags: User interface
