@@ -9,6 +9,14 @@ Release notes
 *************
 
 
+.. release:: 0.1.11
+    :date: 2016-12-01
+
+    .. change:: changed
+        :tags: API
+
+        Switched to require ftrack-python-api > 1.0.0.
+
 .. release:: 0.1.10
     :date: 2016-12-01
 
