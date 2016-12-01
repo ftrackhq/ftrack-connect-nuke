@@ -9,7 +9,8 @@ Release notes
 *************
 
 
-.. release:: Upcoming
+.. release:: 0.1.10
+    :date: 2016-12-01
 
     .. change:: fixed
         :tags: API, Assets
