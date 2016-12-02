@@ -8,6 +8,12 @@
 Release notes
 *************
 
+.. release:: Upcoming
+    
+    .. change:: fixed
+        :tags: Ui
+
+        Nuke has two tabs called ftrack.
 
 .. release:: 0.1.11
     :date: 2016-12-01

@@ -621,7 +621,7 @@ def addFtrackComponentField(n=None):
         componentName = 'sequence'
     elif n.Class() in ['WriteGeo']:
         componentName = 'alembic'
-    componentKnob = nuke.String_Knob('fcompname', 'Component Name:', componentName)
+    componentKnob = nuke.String_Knob('fcompname', 'componentName', componentName)
     n.addKnob(componentKnob)
 
 

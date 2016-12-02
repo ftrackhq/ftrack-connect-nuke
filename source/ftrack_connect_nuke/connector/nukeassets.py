@@ -37,8 +37,11 @@ class GenericAsset(FTAssetType):
         return True
 
     def addFTab(self, resultingNode):
-        tab = nuke.Tab_Knob('ftrack')
-        resultingNode.addKnob(tab)
+        knobs = resultingNode.knobs().keys()
+        if 'ftracktab' not in knobs:
+            tab = nuke.Tab_Knob('ftracktab', 'ftrack')
+            resultingNode.addKnob(tab)
+
         btn = nuke.String_Knob('componentId')
         resultingNode.addKnob(btn)
         btn = nuke.String_Knob('componentName')
