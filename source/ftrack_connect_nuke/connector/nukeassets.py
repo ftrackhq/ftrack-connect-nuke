@@ -387,7 +387,7 @@ class NukeSceneAsset(GizmoAsset):
             self.setFTab(resultingNode, iAObj)
 
 
-class RenderAsset(GenericAsset):
+class RenderAsset(ImageSequenceAsset):
     '''Render asset.'''
 
     def publishContent(self, content, assetVersion, progressCallback=None):
