@@ -216,7 +216,6 @@ class ImageSequenceAsset(GenericAsset):
         try:
             node = nuke.toNode(HelpFunctions.safeString(content[0][4]))
             thumbnail = Connector.createThumbNail(node)
-            print thumbnail
             if thumbnail:
                 publishedComponents.append(FTComponent(componentname='thumbnail', path=thumbnail))
         except:
@@ -397,7 +396,6 @@ class RenderAsset(ImageSequenceAsset):
         for row in content:
             filename = row[0]
             componentName = row[1]
-            print filename, componentName
 
             components.append(
                 FTComponent(componentname=componentName, path=filename)
