@@ -9,6 +9,14 @@ Release notes
 *************
 
 
+.. release:: 0.1.12
+    :date: 2016-12-06
+
+    .. change:: changed
+        :tags: Internal
+
+        Switched to use Connect > 0.1.32.
+
 .. release:: 0.1.11
     :date: 2016-12-01
 
