@@ -1,5 +1,7 @@
 ..
-    :copyright: Copyright (c) 2015 ftrack
+    :copyright: Copyright (c) 2016 ftrack
+
+.. _getting_started:
 
 ***************
 Getting started
@@ -14,3 +16,11 @@ To get started with the NUKE integration, follow the instructions below.
 
 .. image:: /image/getting_started-select_asset_maganger.png
 
+5. The integration currently depends on a few asset types being present in ftrack.
+   From System Settings -> Workflow -> Asset types, make sure the asset types
+   with the following codes are available:
+
+   * `comp`
+   * `img`
+   * `render`
+   * `nuke_gizmo`

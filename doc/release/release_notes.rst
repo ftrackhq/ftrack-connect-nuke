@@ -9,6 +9,13 @@ Release notes
 *************
 
 
+.. release:: Upcoming
+
+    .. change:: changed
+        :tags: Documentation
+
+        Added :ref:`getting_started` instructions.
+
 .. release:: 0.1.11
     :date: 2016-12-01
 
