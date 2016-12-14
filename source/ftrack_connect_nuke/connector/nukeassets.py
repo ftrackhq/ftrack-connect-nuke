@@ -392,22 +392,10 @@ class RenderAsset(GenericAsset):
     def changeVersion(self, iAObj=None, applicationObject=None):
         '''Change current version of the give **iAObj**.'''
         n = nuke.toNode(HelpFunctions.safeString(applicationObject))
-        proxyPath = ''
-        try:
-            proxyPath = ftrack.AssetVersion(
-                iAObj.assetVersionId
-            ).getComponent(name='proxy').getImportPath()
-        except:
-            print 'No proxy'
-
         n['file'].fromUserText(
             HelpFunctions.safeString(iAObj.filePath)
         )
-        if proxyPath != '':
-            n['proxy'].fromUserText(proxyPath)
-
         self.setFTab(n, iAObj)
-
         return True
 
     def publishContent(self, content, assetVersion, progressCallback=None):
