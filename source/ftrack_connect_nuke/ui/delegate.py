@@ -34,11 +34,11 @@ class Delegate(delegate.Delegate):
         # the correct connector object
         def wrapImportAssetDialog(*args, **kwargs):
             from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
-            return FtrackImportAssetDialog(connector=Connector)
+            return FtrackImportAssetDialog(connector=Connector())
 
         def wrapAssetManagerDialog(*args, **kwargs):
             from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
-            return FtrackAssetManagerDialog(connector=Connector)
+            return FtrackAssetManagerDialog(connector=Connector())
 
         # Populate the ui
         nukeMenu = nuke.menu("Nuke")
