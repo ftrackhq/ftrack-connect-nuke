@@ -8,8 +8,12 @@
 Release notes
 *************
 
-
 .. release:: Upcoming
+
+    .. change:: fixed
+        :tags: API
+
+        Connector does not get initialized correctly.
 
     .. change:: changed
         :tags: Documentation
