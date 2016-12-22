@@ -390,9 +390,7 @@ class RenderAsset(GenericAsset):
     '''Render asset.'''
 
     def changeVersion(self, iAObj=None, applicationObject=None):
-        '''Change current version of the give **iAObj**
-           and **applicationObject**.
-        '''
+        '''Change current version of the give **iAObj** and **applicationObject**.'''
         n = nuke.toNode(HelpFunctions.safeString(applicationObject))
         n['file'].fromUserText(
             HelpFunctions.safeString(iAObj.filePath)
