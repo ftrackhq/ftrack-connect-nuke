@@ -11,6 +11,11 @@ Release notes
 .. release:: Upcoming
 
     .. change:: fixed
+        :tags: Asset
+
+        Render asset can not be versioned.
+
+    .. change:: fixed
         :tags: API
 
         Connector does not get initialized correctly.
