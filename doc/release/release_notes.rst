@@ -8,6 +8,12 @@
 Release notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: fixed
+        :tags: Asset
+
+        Render asset can not be versioned.
 
 .. release:: Upcoming
 
