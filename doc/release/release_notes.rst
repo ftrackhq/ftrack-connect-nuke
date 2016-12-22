@@ -11,11 +11,14 @@ Release notes
 .. release:: Upcoming
 
     .. change:: fixed
+        :tags: Ui
+
+        Nuke has two tabs called ftrack.
+
+    .. change:: fixed
         :tags: Asset
 
         Render asset can not be versioned.
-
-.. release:: Upcoming
 
     .. change:: changed
         :tags: Documentation
