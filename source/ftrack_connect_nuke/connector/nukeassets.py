@@ -224,7 +224,6 @@ class ImageSequenceAsset(GenericAsset):
         try:
             node = nuke.toNode(HelpFunctions.safeString(content[0][4]))
             thumbnail = Connector.createThumbNail(node)
-            print thumbnail
             if thumbnail:
                 publishedComponents.append(FTComponent(componentname='thumbnail', path=thumbnail))
         except:
@@ -397,6 +396,15 @@ class NukeSceneAsset(GizmoAsset):
 
 class RenderAsset(GenericAsset):
     '''Render asset.'''
+
+    def changeVersion(self, iAObj=None, applicationObject=None):
+        '''Change current version of the give *iAObj* and *applicationObject*.'''
+        n = nuke.toNode(HelpFunctions.safeString(applicationObject))
+        n['file'].fromUserText(
+            HelpFunctions.safeString(iAObj.filePath)
+        )
+        self.setFTab(n, iAObj)
+        return True
 
     def publishContent(self, content, assetVersion, progressCallback=None):
         '''Return components to publish.'''

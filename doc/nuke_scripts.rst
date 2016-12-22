@@ -18,6 +18,12 @@ Follow these steps to version control a script:
 When you want to version up, select :menuselection:`Publish script` to a new
 version to increment the name of the script and publish it to ftrack.
 
+.. note::
+
+    To publish nuke scripts, you currently must have an asset type with code
+    `comp`. An error with the message *Asset type not valid* will appear
+    otherwise. You can configure asset types from System settings in ftrack. 
+
 Opening a published script
 ==========================
 

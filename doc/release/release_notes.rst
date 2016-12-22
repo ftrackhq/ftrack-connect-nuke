@@ -9,11 +9,29 @@ Release notes
 *************
 
 .. release:: Upcoming
-    
+
     .. change:: fixed
         :tags: Ui
 
         Nuke has two tabs called ftrack.
+
+    .. change:: fixed
+        :tags: Asset
+
+        Render asset can not be versioned.
+
+    .. change:: changed
+        :tags: Documentation
+
+        Added :ref:`getting_started` instructions.
+
+.. release:: 0.1.12
+    :date: 2016-12-06
+
+    .. change:: changed
+        :tags: Internal
+
+        Switched to use Connect > 0.1.32.
 
 .. release:: 0.1.11
     :date: 2016-12-01
