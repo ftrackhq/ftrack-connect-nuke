@@ -8,7 +8,8 @@
 Release notes
 *************
 
-.. release:: Upcoming
+.. release:: 0.1.13
+    :date: 2017-01-04
 
     .. change:: fixed
         :tags: Ui
@@ -18,7 +19,7 @@ Release notes
     .. change:: fixed
         :tags: Asset
 
-        Render asset can not be versioned.
+        Render asset cannot be versioned.
 
     .. change:: changed
         :tags: Documentation
