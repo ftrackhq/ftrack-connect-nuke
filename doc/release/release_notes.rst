@@ -8,6 +8,14 @@
 Release notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: fixed
+        :tags: Action
+
+        NukeX does not get properly discovered under OSx.
+
+
 .. release:: 0.1.13
     :date: 2017-01-04
 
