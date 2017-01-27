@@ -185,16 +185,6 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
                 icon='nukex'
             ))
 
-            applications.extend(self._searchFilesystem(
-                expression=prefix + [
-                    'Nuke.*', 'NukeX\d.+(?: Non\-commercial).app'
-                ],
-                label='NukeX',
-                variant='{version} Non-commercial',
-                applicationIdentifier='nukex_{version}_non_commercial',
-                icon='nukex'
-            ))
-
         elif sys.platform == 'win32':
             prefix = ['C:\\', 'Program Files.*']
 
