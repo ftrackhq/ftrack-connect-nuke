@@ -15,6 +15,11 @@ Release notes
 
         Connector does not get initialized correctly.
 
+    .. change:: fixed
+        :tags: API
+
+        NukeX does not get properly discovered under OSx.
+
 .. release:: 0.1.13
     :date: 2017-01-04
 
