@@ -11,10 +11,10 @@ from nukescripts import panels
 import nukescripts
 import nuke
 
-from ftrack_connect.connector import (
-    FTAssetHandlerInstance,
-    HelpFunctions,
-    Connector as _Connector)
+
+from ftrack_connect.connector import base as maincon
+from ftrack_connect.connector import FTAssetHandlerInstance
+from ftrack_connect.connector import HelpFunctions
 
 
 def register_scheme(scheme):
@@ -24,7 +24,7 @@ def register_scheme(scheme):
 register_scheme('ftrack')
 
 
-class Connector(_Connector):
+class Connector(maincon.Connector):
     def __init__(self):
         super(Connector, self).__init__()
 
