@@ -11,14 +11,22 @@ Release notes
 .. release:: Upcoming
 
     .. change:: fixed
-        :tags: Asset
-
-        Render asset can not be versioned.
-
-    .. change:: fixed
         :tags: API
 
         Connector does not get initialized correctly.
+
+.. release:: 0.1.13
+    :date: 2017-01-04
+
+    .. change:: fixed
+        :tags: Ui
+
+        Nuke has two tabs called ftrack.
+
+    .. change:: fixed
+        :tags: Asset
+
+        Render asset cannot be versioned.
 
     .. change:: changed
         :tags: Documentation
