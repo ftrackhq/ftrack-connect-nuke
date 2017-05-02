@@ -5,6 +5,8 @@ from PySide import QtGui, QtCore
 import os
 import re
 import ftrack
+import ftrack_api
+
 from FnAssetAPI import logging
 
 from script_editor_widget import ScriptEditorWidget
@@ -22,7 +24,7 @@ class GizmoPublisherDialog(BaseDialog):
         )
         applyTheme(self, 'integration')
         self.setupUI()
-
+        self.session = ftrack_api.Session()
         try:
             ftrack.AssetType('nuke_gizmo')
         except ftrack.FTrackError as error:
@@ -151,16 +153,19 @@ class GizmoPublisherDialog(BaseDialog):
         asset_name = self.asset_name
         comment = self.comment
         file_path = self.gizmo_path
-
         task = self.current_task
-        parent = task.getParent()
+
+        # new api
+        task = self.session.get('Context', task.getId())
+        parent_task = task['parent']
 
         try:
-            asset_id = parent.createAsset(
-                name=asset_name,
-                assetType='nuke_gizmo'
-            ).getId()
-        except ftrack.FTrackError as error:
+            asset = self.session.crate('Asset', {
+                'parent': parent_task,
+                'name': asset_name,
+                'type': 'nuke_gizmo'
+            })
+        except Exception as error:
             if 'Asset type is not valid' in error.message:
                 self.header.setMessage(
                     'No Asset type with short name "nuke_gizmo" found. Contact '
@@ -171,17 +176,18 @@ class GizmoPublisherDialog(BaseDialog):
             # If gizmo is not the issue re-raise.
             raise
 
-        asset = ftrack.Asset(asset_id)
-        version = asset.createVersion(comment=comment, taskid=task.getId())
-        version.createComponent(
-            name='gizmo',
-            path=file_path
-        )
+        version = self.session.create('AssetVersion', {
+            'comment': comment,
+            'asset': asset,
+            'task': task
+        })
 
-        result = version.publish()
-        if result:
-            message = 'Asset %s correctly published' % asset.getName()
-            self.header.setMessage(message, 'info')
+        version.create_component(file_path, {'name': 'gizmo'})
+        version['published'] = True
+        self.session.commit()
+
+        message = 'Asset %s correctly published' % asset.getName()
+        self.header.setMessage(message, 'info')
 
     def _browse_gizmo(self):
         import nuke
