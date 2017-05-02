@@ -160,21 +160,27 @@ class GizmoPublisherDialog(BaseDialog):
         parent_task = task['parent']
 
         try:
-            asset = self.session.crate('Asset', {
-                'parent': parent_task,
-                'name': asset_name,
-                'type': 'nuke_gizmo'
-            })
+            asset_type = self.session.query(
+                'AssetType where short is "nuke_gizmo"'
+            ).one()
+
         except Exception as error:
             if 'Asset type is not valid' in error.message:
                 self.header.setMessage(
-                    'No Asset type with short name "nuke_gizmo" found. Contact '
-                    'your supervisor or system administrator to add it.',
+                    'No Asset type with short name "nuke_gizmo"'
+                    ' found. Contact your supervisor or system'
+                    ' administrator to add it.',
                     'error'
                 )
                 return
             # If gizmo is not the issue re-raise.
             raise
+
+        asset = self.session.create('Asset', {
+            'parent': parent_task,
+            'name': asset_name,
+            'type': asset_type
+        })
 
         version = self.session.create('AssetVersion', {
             'comment': comment,
@@ -183,10 +189,9 @@ class GizmoPublisherDialog(BaseDialog):
         })
 
         version.create_component(file_path, {'name': 'gizmo'})
-        version['published'] = True
         self.session.commit()
 
-        message = 'Asset %s correctly published' % asset.getName()
+        message = 'Asset %s correctly published' % asset['name']
         self.header.setMessage(message, 'info')
 
     def _browse_gizmo(self):
