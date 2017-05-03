@@ -149,38 +149,35 @@ class GizmoPublisherDialog(BaseDialog):
             self._validate_gizmo()
 
     def _publish(self):
-        task = self.current_task
         asset_name = self.asset_name
         comment = self.comment
         file_path = self.gizmo_path
-        task = self.current_task
 
         # new api
-        task = self.session.get('Context', task.getId())
+        task = self.session.get('Task', self.current_task.getId())
         parent_task = task['parent']
 
-        try:
-            asset_type = self.session.query(
-                'AssetType where short is "nuke_gizmo"'
-            ).one()
+        asset_type = self.session.query(
+            'AssetType where short is "nuke_gizmo"'
+        ).one()
 
-        except Exception as error:
-            if 'Asset type is not valid' in error.message:
-                self.header.setMessage(
-                    'No Asset type with short name "nuke_gizmo"'
-                    ' found. Contact your supervisor or system'
-                    ' administrator to add it.',
-                    'error'
-                )
-                return
-            # If gizmo is not the issue re-raise.
-            raise
+        asset = self.session.query(
+            'select parent, name , type.short from'
+            ' Asset where parent.id is "{0}"'
+            ' and name is "{1}"'
+            ' and type.short is "{2}"'.format(
+                parent_task['id'],
+                asset_name,
+                asset_type['short']
+            )
+        ).first()
 
-        asset = self.session.create('Asset', {
-            'parent': parent_task,
-            'name': asset_name,
-            'type': asset_type
-        })
+        if not asset:
+            asset = self.session.create('Asset', {
+                'parent': parent_task,
+                'name': asset_name,
+                'type': asset_type
+            })
 
         version = self.session.create('AssetVersion', {
             'comment': comment,
@@ -191,7 +188,7 @@ class GizmoPublisherDialog(BaseDialog):
         version.create_component(file_path, {'name': 'gizmo'})
         self.session.commit()
 
-        message = 'Asset %s correctly published' % asset['name']
+        message = 'Asset {0} correctly published'.format(asset['name'])
         self.header.setMessage(message, 'info')
 
     def _browse_gizmo(self):
@@ -267,14 +264,20 @@ class GizmoPublisherDialog(BaseDialog):
         pattern_BadChar = re.compile("[^a-zA-Z0-9\._-]")
         asset_name = re.sub(pattern_BadChar, "", self._asset_name.text())
         self._asset_name.setText(asset_name)
-        asset = self.current_task.getAssets(assetTypes=['nuke_gizmo'])
+
+        versions = self.session.query(
+            'select asset, asset.name , asset.type.short from AssetVersion where task.id'
+            ' is "{0}" and asset.type.short is "nuke_gizmo"'
+            ' and asset.name is "{1}"'.format(
+                self.current_task.getId(),
+                asset_name
+            )
+        ).all()
+
         gizmo_version = 0
-        errors = []
-        if asset:
-            asset = asset[0]
-            version = asset.getVersions()
-            if version:
-                gizmo_version = version[-1].get('version')
+
+        if versions:
+            gizmo_version = int(versions[-1]['version'])
 
         self._asset_version.setText("%03d" % gizmo_version)
         self._asset_name.blockSignals(False)
