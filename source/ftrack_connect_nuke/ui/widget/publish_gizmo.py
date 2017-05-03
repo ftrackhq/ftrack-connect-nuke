@@ -185,7 +185,15 @@ class GizmoPublisherDialog(BaseDialog):
             'task': task
         })
 
-        version.create_component(file_path, {'name': 'gizmo'})
+        location = self.session.pick_location()
+
+        print location
+        version.create_component(
+            file_path,
+            {'name': 'gizmo'},
+            location=location
+        )
+
         self.session.commit()
 
         message = 'Asset {0} correctly published'.format(asset['name'])
