@@ -266,8 +266,9 @@ class GizmoPublisherDialog(BaseDialog):
         self._asset_name.setText(asset_name)
 
         versions = self.session.query(
-            'select asset, asset.name , asset.type.short from AssetVersion where task.id'
-            ' is "{0}" and asset.type.short is "nuke_gizmo"'
+            'select asset, asset.name , asset.type.short'
+            ' from AssetVersion where task.id is "{0}"'
+            ' and asset.type.short is "nuke_gizmo"'
             ' and asset.name is "{1}"'.format(
                 self.current_task.getId(),
                 asset_name
