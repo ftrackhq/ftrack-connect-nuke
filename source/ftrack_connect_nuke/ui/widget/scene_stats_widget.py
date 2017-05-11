@@ -5,7 +5,7 @@ import json
 import time
 import os
 
-from PySide import QtGui, QtCore
+from QtExt import QtGui, QtCore
 from FnAssetAPI import logging
 
 

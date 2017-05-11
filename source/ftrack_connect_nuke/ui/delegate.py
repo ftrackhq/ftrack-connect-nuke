@@ -3,10 +3,10 @@
 
 import FnAssetAPI
 from ftrack_connect_foundry.ui import delegate
-from ftrack_connect_foundry.ui.tasks_view import TasksView as _TasksView
-from ftrack_connect_foundry.ui.info_view import (
-    WorkingTaskInfoView as _WorkingTaskInfoView, InfoView as _InfoView
-)
+# from ftrack_connect_foundry.ui.tasks_view import TasksView as _TasksView
+# from ftrack_connect_foundry.ui.info_view import (
+#     WorkingTaskInfoView as _WorkingTaskInfoView, InfoView as _InfoView
+# )
 
 import ftrack_connect.ui.theme
 
@@ -26,7 +26,7 @@ class Delegate(delegate.Delegate):
         from ftrack_connect_nuke.ui.widget.crew import NukeCrew
         from ftrack_connect_nuke.connector import Connector
 
-        from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
+        # from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
 
         Connector.registerAssets()
 
@@ -82,20 +82,23 @@ class Delegate(delegate.Delegate):
             'panel = nukescripts.restorePanel("ftrackDialogs.ftrackAssetManagerDialog");'
             'panel.addToPane(pane)'
         )
-        ftrackMenu.addCommand(
-            _InfoView.getDisplayName(),
-            'pane = nuke.getPaneFor("Properties.1");'
-            'panel = nukescripts.restorePanel("{identifier}");'
-            'panel.addToPane(pane)'.format(
-                identifier=_InfoView.getIdentifier()
-            )
-        )
+        # ftrackMenu.addCommand(
+        #     _InfoView.getDisplayName(),
+        #     'pane = nuke.getPaneFor("Properties.1");'
+        #     'panel = nukescripts.restorePanel("{identifier}");'
+        #     'panel.addToPane(pane)'.format(
+        #         identifier=_InfoView.getIdentifier()
+        #     )
+        # )
 
         ftrackMenu.addSeparator()
 
         # Add Web Views located in the ftrack_connect_foundry package to the
         # menu for easier access.
-        for widget in [_TasksView, _WorkingTaskInfoView]:
+        for widget in [
+            #_TasksView, 
+            # _WorkingTaskInfoView
+        ]:
             ftrackMenu.addCommand(
                 widget.getDisplayName(),
                 'pane = nuke.getPaneFor("Properties.1");'
@@ -122,7 +125,7 @@ class Delegate(delegate.Delegate):
 
         # Add new entries in the ftrack menu.
         ftrackMenu.addSeparator()
-        ftrackMenu.addCommand('Publish gizmo', GizmoPublisherDialog)
+        # ftrackMenu.addCommand('Publish gizmo', GizmoPublisherDialog)
 
         # Add ftrack publish node
         toolbar = nuke.toolbar("Nodes")

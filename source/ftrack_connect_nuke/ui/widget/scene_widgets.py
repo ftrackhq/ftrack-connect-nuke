@@ -1,7 +1,7 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from PySide import QtGui, QtCore
+from QtExt import QtGui, QtCore
 import ftrack
 from scene_stats_widget import StatisticWidget
 from status_widget import StatusWidget

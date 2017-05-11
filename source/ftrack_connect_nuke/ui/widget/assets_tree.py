@@ -8,7 +8,7 @@ import urllib
 import sys
 import traceback
 
-from PySide import QtGui, QtCore
+from QtExt import QtGui, QtCore, QtWidgets
 from ftrack_connect_nuke.ui.controller import Controller
 
 import ftrack

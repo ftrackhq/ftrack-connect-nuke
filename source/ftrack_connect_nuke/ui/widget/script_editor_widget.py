@@ -1,7 +1,7 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from PySide import QtGui, QtCore, QtWebKit
+from QtExt import QtGui, QtCore, QtWebKit
 import re
 import os
 

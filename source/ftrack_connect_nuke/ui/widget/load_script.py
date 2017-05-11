@@ -1,7 +1,7 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from PySide import QtGui, QtCore
+from QtExt import QtGui, QtCore, QtWidgets
 import os
 from base_dialog import BaseDialog
 from task_widgets import TaskWidget
@@ -16,7 +16,7 @@ class ScriptOpenerDialog(BaseDialog):
 
     def __init__(self):
         super(ScriptOpenerDialog, self).__init__(
-            QtGui.QApplication.desktop()
+            QtWidgets.QApplication.desktop()
         )
 
         applyTheme(self, 'integration')
@@ -29,12 +29,12 @@ class ScriptOpenerDialog(BaseDialog):
 
         # CONTENT TASK
 
-        self.splitter = QtGui.QSplitter(self)
+        self.splitter = QtWidgets.QSplitter(self)
         self.splitter.setContentsMargins(10, 10, 10, 10)
         self.splitter.setChildrenCollapsible(False)
 
-        left_widget = QtGui.QWidget(self.splitter)
-        left_layout = QtGui.QVBoxLayout(left_widget)
+        left_widget = QtWidgets.QWidget(self.splitter)
+        left_layout = QtWidgets.QVBoxLayout(left_widget)
         left_layout.setContentsMargins(0, 0, 5, 0)
         self._task_widget = TaskWidget(self)
         self._task_widget.set_read_only(True)
@@ -46,8 +46,8 @@ class ScriptOpenerDialog(BaseDialog):
         self.splitter.addWidget(left_widget)
 
         # CONTENT ASSET
-        right_widget = QtGui.QWidget(self.splitter)
-        right_layout = QtGui.QVBoxLayout(right_widget)
+        right_widget = QtWidgets.QWidget(self.splitter)
+        right_layout = QtWidgets.QVBoxLayout(right_widget)
         right_layout.setContentsMargins(5, 0, 0, 0)
         self._scene_version_widget = scene_widgets.SceneVersionWidget(self)
         self._scene_version_widget.notify.connect(self.header.setMessage)
@@ -62,8 +62,8 @@ class ScriptOpenerDialog(BaseDialog):
         self._save_btn.clicked.connect(self.load_scene)
 
         self.splitter.setSizePolicy(
-            QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Expanding,
         )
 
         self.modify_layouts(

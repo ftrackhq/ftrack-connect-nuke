@@ -2,7 +2,7 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
-from PySide import QtGui, QtCore, QtOpenGL
+from QtExt import QtGui, QtCore, QtOpenGL
 from ftrack_connect.ui import resource
 import tempfile
 

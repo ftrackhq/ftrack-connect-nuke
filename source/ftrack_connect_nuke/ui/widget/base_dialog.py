@@ -5,7 +5,7 @@ import os
 import getpass
 
 import ftrack
-from PySide import QtGui, QtCore
+from QtExt import QtGui, QtCore, QtWidgets
 from ftrack_connect.ui.widget import header
 from ftrack_connect_nuke.ui.controller import Controller
 from ftrack_connect.ui.widget import overlay as _overlay
@@ -20,7 +20,7 @@ class FtrackPublishLocale(specifications.LocaleSpecification):
     _type = "ftrack.publish"
 
 
-class BaseDialog(QtGui.QDialog):
+class BaseDialog(QtWidgets.QDialog):
     def __init__(self, parent=None, disable_tasks_list=False):
         super(BaseDialog, self).__init__(parent=parent)
         self.current_task = ftrack.Task(
@@ -58,24 +58,24 @@ class BaseDialog(QtGui.QDialog):
         self.container_margin.setRight(0)
         self.container_margin.setLeft(0)
 
-        self.global_layout = QtGui.QVBoxLayout()
+        self.global_layout = QtWidgets.QVBoxLayout()
         self.setLayout(self.global_layout)
         self.global_layout.setContentsMargins(self.base_margin)
         self.global_layout.setSpacing(0)
 
         # -- CONTAINERS -- #
-        self.header_container = QtGui.QFrame(self)
-        self.main_container = QtGui.QFrame(self)
-        self.footer_container = QtGui.QFrame(self)
+        self.header_container = QtWidgets.QFrame(self)
+        self.main_container = QtWidgets.QFrame(self)
+        self.footer_container = QtWidgets.QFrame(self)
 
         # self.header_container.setStyleSheet("background-color:black;")
         # self.main_container.setStyleSheet("background-color:grey;")
         # self.footer_container.setStyleSheet("background-color:blue;")
 
         # -- CONTAINERS LAYOUT -- #
-        self.header_container_layout = QtGui.QVBoxLayout()
-        self.main_container_layout = QtGui.QVBoxLayout()
-        self.footer_container_layout = QtGui.QHBoxLayout()
+        self.header_container_layout = QtWidgets.QVBoxLayout()
+        self.main_container_layout = QtWidgets.QVBoxLayout()
+        self.footer_container_layout = QtWidgets.QHBoxLayout()
 
         self.header_container_layout.setContentsMargins(self.container_margin)
         self.main_container_layout.setContentsMargins(self.container_margin)
@@ -106,42 +106,42 @@ class BaseDialog(QtGui.QDialog):
         self.header_container_layout.addWidget(self.header)
 
         # Taks main container
-        self.tasks_frame = QtGui.QFrame(self.header_container)
-        self.tasks_frame_layout = QtGui.QHBoxLayout()
+        self.tasks_frame = QtWidgets.QFrame(self.header_container)
+        self.tasks_frame_layout = QtWidgets.QHBoxLayout()
         self.tasks_frame.setLayout(self.tasks_frame_layout)
 
         self.tasks_frame_layout.setContentsMargins(0, 0, 0, 0)
         self.tasks_frame_layout.setAlignment(QtCore.Qt.AlignTop)
 
-        self.tasks_main_container = QtGui.QWidget(self.tasks_frame)
-        self.tasks_main_container_layout = QtGui.QVBoxLayout()
+        self.tasks_main_container = QtWidgets.QWidget(self.tasks_frame)
+        self.tasks_main_container_layout = QtWidgets.QVBoxLayout()
         self.tasks_main_container.setLayout(self.tasks_main_container_layout)
 
         self.tasks_frame_layout.addWidget(self.tasks_main_container)
         self.main_container_layout.addWidget(self.tasks_frame)
 
         # Task browser widget
-        self.tasks_browse_widget = QtGui.QWidget(self.tasks_main_container)
-        self.tasks_browse_widget_layout = QtGui.QHBoxLayout()
+        self.tasks_browse_widget = QtWidgets.QWidget(self.tasks_main_container)
+        self.tasks_browse_widget_layout = QtWidgets.QHBoxLayout()
         self.tasks_browse_widget.setLayout(self.tasks_browse_widget_layout)
         self.tasks_browse_widget_layout.setContentsMargins(0, 0, 0, 0)
 
         self.tasks_main_container_layout.addWidget(self.tasks_browse_widget)
 
         # Task browser - placeholder label
-        self.tasks_browse_label = QtGui.QLabel(
+        self.tasks_browse_label = QtWidgets.QLabel(
             'My Tasks',
             self.tasks_browse_widget)
         self.tasks_browse_label.setSizePolicy(
-            QtGui.QSizePolicy.Maximum,
-            QtGui.QSizePolicy.Maximum
+            QtWidgets.QSizePolicy.Maximum,
+            QtWidgets.QSizePolicy.Maximum
         )
         if self.disable_tasks_list:
             self.tasks_browse_label.setHidden(True)
         self.tasks_browse_widget_layout.addWidget(self.tasks_browse_label)
 
         # Task browser - combo
-        self.task_label = QtGui.QLabel()
+        self.task_label = QtWidgets.QLabel()
         self.task_label.setMinimumHeight(23)
         self.task_label.setText(
             HelpFunctions.getPath(self.current_task, slash=True)
@@ -151,7 +151,7 @@ class BaseDialog(QtGui.QDialog):
         self.tasks_browse_widget_layout.addWidget(self.task_label)
 
         # Task browser - button
-        self._tasks_btn = QtGui.QPushButton("Browse all tasks...")
+        self._tasks_btn = QtWidgets.QPushButton("Browse all tasks...")
         self._tasks_btn.setMinimumWidth(125)
         self._tasks_btn.setMaximumWidth(125)
         if self.disable_tasks_list:
@@ -162,13 +162,13 @@ class BaseDialog(QtGui.QDialog):
             self.tasks_frame.setHidden(True)
 
         # Footer
-        self._save_btn = QtGui.QPushButton("Save", self.footer_container)
-        self._cancel_btn = QtGui.QPushButton("Cancel", self.footer_container)
-        self.footer_spacer = QtGui.QSpacerItem(
+        self._save_btn = QtWidgets.QPushButton("Save", self.footer_container)
+        self._cancel_btn = QtWidgets.QPushButton("Cancel", self.footer_container)
+        self.footer_spacer = QtWidgets.QSpacerItem(
             0,
             0,
-            QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Minimum
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Minimum
         )
 
         self.footer_container_layout.addItem(self.footer_spacer)
@@ -184,7 +184,7 @@ class BaseDialog(QtGui.QDialog):
         )
 
     def append_css(self, css):
-        self.setStyleSheet(self.styleSheet()+css)
+        self.setStyleSheet(self.styleSheet() + css)
 
     def set_css(self, parent):
         css = '''
@@ -272,7 +272,7 @@ class BaseDialog(QtGui.QDialog):
         parent.setStyleSheet(css)
 
     def modify_layouts(self, parent, margin, spacing=None, alignment=None):
-        for child in parent.findChildren(QtGui.QLayout):
+        for child in parent.findChildren(QtWidgets.QLayout):
             if spacing:
                 child.setSpacing(spacing)
             child.setContentsMargins(*margin)
