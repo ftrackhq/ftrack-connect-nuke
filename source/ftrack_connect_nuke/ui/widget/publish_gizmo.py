@@ -185,9 +185,11 @@ class GizmoPublisherDialog(BaseDialog):
             'task': task
         })
 
+        # Commit version so component can be added.
+        self.session.commit()
+
         location = self.session.pick_location()
 
-        print location
         version.create_component(
             file_path,
             {'name': 'gizmo'},
