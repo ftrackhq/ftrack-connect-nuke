@@ -164,7 +164,7 @@ class GizmoPublisherDialog(BaseDialog):
         asset = self.session.query(
             'select parent, name , type.short from'
             ' Asset where parent.id is "{0}"'
-            ' and name is "{1}"'
+            u' and name is "{1}"'
             ' and type.short is "{2}"'.format(
                 parent_task['id'],
                 asset_name,
