@@ -162,10 +162,10 @@ class GizmoPublisherDialog(BaseDialog):
         ).one()
 
         asset = self.session.query(
-            'select parent, name , type.short from'
-            ' Asset where parent.id is "{0}"'
+            u'select parent, name , type.short from'
+            u' Asset where parent.id is "{0}"'
             u' and name is "{1}"'
-            ' and type.short is "{2}"'.format(
+            u' and type.short is "{2}"'.format(
                 parent_task['id'],
                 asset_name,
                 asset_type['short']
@@ -198,7 +198,7 @@ class GizmoPublisherDialog(BaseDialog):
 
         self.session.commit()
 
-        message = 'Asset {0} correctly published'.format(asset['name'])
+        message = u'Asset {0} correctly published'.format(asset['name'])
         self.header.setMessage(message, 'info')
 
     def _browse_gizmo(self):
@@ -230,18 +230,18 @@ class GizmoPublisherDialog(BaseDialog):
             return
 
         elif not os.path.isfile(file_path):
-            error = "%s is not a file..." % file_path
+            error = u"%s is not a file..." % file_path
             self.header.setMessage(error, 'warning')
             return
 
         elif not os.access(file_path, os.R_OK):
-            error = "Impossible to open the file %s" % file_path
+            error = u"Impossible to open the file %s" % file_path
             self.header.setMessage(error, 'error')
             return
 
         file_name = os.path.basename(file_path)
         if not file_name.endswith(".gizmo"):
-            error = "This file '%s' is not a gizmo. It should have the extension '.gizmo'" % file_name
+            error = u"This file '%s' is not a gizmo. It should have the extension '.gizmo'" % file_name
             self.header.setMessage(error, 'error')
             return
 
@@ -252,7 +252,7 @@ class GizmoPublisherDialog(BaseDialog):
             self._asset_name.setText(asset_name)
 
         except Exception as err:
-            error = "Impossible to read the file %s [%s]" % (file_name, str(err))
+            error = u"Impossible to read the file %s [%s]" % (file_name, str(err))
             self.header.setMessage(error, 'error')
             return
 
@@ -276,10 +276,10 @@ class GizmoPublisherDialog(BaseDialog):
         self._asset_name.setText(asset_name)
 
         versions = self.session.query(
-            'select asset, asset.name , asset.type.short'
-            ' from AssetVersion where task.id is "{0}"'
-            ' and asset.type.short is "nuke_gizmo"'
-            ' and asset.name is "{1}"'.format(
+            u'select asset, asset.name , asset.type.short'
+            u' from AssetVersion where task.id is "{0}"'
+            u' and asset.type.short is "nuke_gizmo"'
+            u' and asset.name is "{1}"'.format(
                 self.current_task.getId(),
                 asset_name
             )
@@ -330,7 +330,7 @@ class GizmoPublisherDialog(BaseDialog):
 
         for stack_pushed in sorted(stacks_pushed):
             if stack_pushed not in stacks_set:
-                error = "The gizmo is incorrect, one variable pushed havn't \
+                error = u"The gizmo is incorrect, one variable pushed havn't \
 been set [%s]" % stack_pushed
                 errors.append(error)
 
@@ -355,7 +355,7 @@ been set [%s]" % stack_pushed
             errors.append(error)
 
         if len(layers) != 0:
-            warning = "<strong>This gizmo add %d layer(s) to your script.</strong><br/>\
+            warning = u"<strong>This gizmo add %d layer(s) to your script.</strong><br/>\
 This can interact with the layers already set in your script (The built-in layers \
 or those set by certain inputs such as the EXR files). Please check carefully the \
 validity of these layers before publishing the gizmos" % len(layers)
