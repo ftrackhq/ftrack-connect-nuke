@@ -10,6 +10,11 @@ Release notes
 
 .. release:: Upcoming
 
+    .. changed:: changed
+        :tags: Internal
+
+        Gizmo publisher is not using new api.
+
     .. change:: fixed
         :tags: API
 
