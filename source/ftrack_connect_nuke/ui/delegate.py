@@ -3,10 +3,6 @@
 
 import FnAssetAPI
 from ftrack_connect_foundry.ui import delegate
-# from ftrack_connect_foundry.ui.tasks_view import TasksView as _TasksView
-# from ftrack_connect_foundry.ui.info_view import (
-#     WorkingTaskInfoView as _WorkingTaskInfoView, InfoView as _InfoView
-# )
 
 import ftrack_connect.ui.theme
 
@@ -26,7 +22,9 @@ class Delegate(delegate.Delegate):
         from ftrack_connect_nuke.ui.widget.crew import NukeCrew
         from ftrack_connect_nuke.connector import Connector
 
-        # from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
+        current_nuke_major_version = nuke.env.get('NukeVersionMajor')
+
+        from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
 
         Connector.registerAssets()
 
@@ -82,31 +80,43 @@ class Delegate(delegate.Delegate):
             'panel = nukescripts.restorePanel("ftrackDialogs.ftrackAssetManagerDialog");'
             'panel.addToPane(pane)'
         )
-        # ftrackMenu.addCommand(
-        #     _InfoView.getDisplayName(),
-        #     'pane = nuke.getPaneFor("Properties.1");'
-        #     'panel = nukescripts.restorePanel("{identifier}");'
-        #     'panel.addToPane(pane)'.format(
-        #         identifier=_InfoView.getIdentifier()
-        #     )
-        # )
 
-        ftrackMenu.addSeparator()
+        # disable for nuke 11
+        # TODO: RE ENABLE ONCE THE WEBKIT IS AVAILABLE
+        if current_nuke_major_version < 11:
 
-        # Add Web Views located in the ftrack_connect_foundry package to the
-        # menu for easier access.
-        for widget in [
-            #_TasksView, 
-            # _WorkingTaskInfoView
-        ]:
+            from ftrack_connect_foundry.ui.info_view import InfoView as _InfoView
+
+
             ftrackMenu.addCommand(
-                widget.getDisplayName(),
+                _InfoView.getDisplayName(),
                 'pane = nuke.getPaneFor("Properties.1");'
                 'panel = nukescripts.restorePanel("{identifier}");'
                 'panel.addToPane(pane)'.format(
-                    identifier=widget.getIdentifier()
+                    identifier=_InfoView.getIdentifier()
                 )
             )
+
+        ftrackMenu.addSeparator()
+        if current_nuke_major_version < 11:
+
+            from ftrack_connect_foundry.ui.info_view import WorkingTaskInfoView as _WorkingTaskInfoView
+            from ftrack_connect_foundry.ui.tasks_view import TasksView as _TasksView
+
+            # Add Web Views located in the ftrack_connect_foundry package to the
+            # menu for easier access.
+            for widget in [
+                _TasksView, 
+                _WorkingTaskInfoView
+            ]:
+                ftrackMenu.addCommand(
+                    widget.getDisplayName(),
+                    'pane = nuke.getPaneFor("Properties.1");'
+                    'panel = nukescripts.restorePanel("{identifier}");'
+                    'panel.addToPane(pane)'.format(
+                        identifier=widget.getIdentifier()
+                    )
+                )
 
         ftrackMenu.addSeparator()
 
@@ -125,7 +135,11 @@ class Delegate(delegate.Delegate):
 
         # Add new entries in the ftrack menu.
         ftrackMenu.addSeparator()
-        # ftrackMenu.addCommand('Publish gizmo', GizmoPublisherDialog)
+
+        # disable for nuke 11
+        # TODO: RE ENABLE ONCE THE WEBKIT IS AVAILABLE
+        if current_nuke_major_version < 11:
+            ftrackMenu.addCommand('Publish gizmo', GizmoPublisherDialog)
 
         # Add ftrack publish node
         toolbar = nuke.toolbar("Nodes")
