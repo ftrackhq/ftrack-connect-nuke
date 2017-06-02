@@ -337,7 +337,7 @@ class GizmoAsset(GenericAsset):
 
     def importAsset(self, iAObj=None):
         if iAObj.filePath.endswith('gizmo'):
-            resultingNode = nuke.createNode(iAObj.filePath.replace("\\", "/"))
+            resultingNode = nuke.createNode(iAObj.filePath.replace('\\', '/'))
             resultingNode['name'].setValue(iAObj.assetName)
             self.addFTab(resultingNode)
             self.setFTab(resultingNode, iAObj)
@@ -346,7 +346,7 @@ class GizmoAsset(GenericAsset):
     def changeVersion(self, iAObj=None, applicationObject=None):
 
         old_gizmo = nuke.toNode(applicationObject)
-        file_path = iAObj.filePath.replace("\\", "/")
+        file_path = iAObj.filePath.replace('\\', '/')
         gizmo_path = os.path.dirname(file_path)
         nuke.pluginAddPath(gizmo_path)
 
