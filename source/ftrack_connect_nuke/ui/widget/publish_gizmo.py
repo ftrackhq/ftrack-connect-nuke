@@ -5,6 +5,8 @@ from QtExt import QtGui, QtCore, QtWidgets
 import os
 import re
 import ftrack
+import ftrack_api
+
 from FnAssetAPI import logging
 
 from script_editor_widget import ScriptEditorWidget
@@ -22,7 +24,7 @@ class GizmoPublisherDialog(BaseDialog):
         )
         applyTheme(self, 'integration')
         self.setupUI()
-
+        self.session = ftrack_api.Session()
         try:
             ftrack.AssetType('nuke_gizmo')
         except ftrack.FTrackError as error:
@@ -147,41 +149,57 @@ class GizmoPublisherDialog(BaseDialog):
             self._validate_gizmo()
 
     def _publish(self):
-        task = self.current_task
         asset_name = self.asset_name
         comment = self.comment
         file_path = self.gizmo_path
 
-        task = self.current_task
-        parent = task.getParent()
+        # new api
+        task = self.session.get('Task', self.current_task.getId())
+        parent_task = task['parent']
 
-        try:
-            asset_id = parent.createAsset(
-                name=asset_name,
-                assetType='nuke_gizmo'
-            ).getId()
-        except ftrack.FTrackError as error:
-            if 'Asset type is not valid' in error.message:
-                self.header.setMessage(
-                    'No Asset type with short name "nuke_gizmo" found. Contact '
-                    'your supervisor or system administrator to add it.',
-                    'error'
-                )
-                return
-            # If gizmo is not the issue re-raise.
-            raise
+        asset_type = self.session.query(
+            'AssetType where short is "nuke_gizmo"'
+        ).one()
 
-        asset = ftrack.Asset(asset_id)
-        version = asset.createVersion(comment=comment, taskid=task.getId())
-        version.createComponent(
-            name='gizmo',
-            path=file_path
+        asset = self.session.query(
+            u'select parent, name , type.short from'
+            u' Asset where parent.id is "{0}"'
+            u' and name is "{1}"'
+            u' and type.short is "{2}"'.format(
+                parent_task['id'],
+                asset_name,
+                asset_type['short']
+            )
+        ).first()
+
+        if not asset:
+            asset = self.session.create('Asset', {
+                'parent': parent_task,
+                'name': asset_name,
+                'type': asset_type
+            })
+
+        version = self.session.create('AssetVersion', {
+            'comment': comment,
+            'asset': asset,
+            'task': task
+        })
+
+        # Commit version so component can be added.
+        self.session.commit()
+
+        location = self.session.pick_location()
+
+        version.create_component(
+            file_path,
+            {'name': 'gizmo'},
+            location=location
         )
 
-        result = version.publish()
-        if result:
-            message = 'Asset %s correctly published' % asset.getName()
-            self.header.setMessage(message, 'info')
+        self.session.commit()
+
+        message = u'Asset {0} correctly published'.format(asset['name'])
+        self.header.setMessage(message, 'info')
 
     def _browse_gizmo(self):
         import nuke
@@ -212,18 +230,18 @@ class GizmoPublisherDialog(BaseDialog):
             return
 
         elif not os.path.isfile(file_path):
-            error = "%s is not a file..." % file_path
+            error = u"%s is not a file..." % file_path
             self.header.setMessage(error, 'warning')
             return
 
         elif not os.access(file_path, os.R_OK):
-            error = "Impossible to open the file %s" % file_path
+            error = u"Impossible to open the file %s" % file_path
             self.header.setMessage(error, 'error')
             return
 
         file_name = os.path.basename(file_path)
         if not file_name.endswith(".gizmo"):
-            error = "This file '%s' is not a gizmo. It should have the extension '.gizmo'" % file_name
+            error = u"This file '%s' is not a gizmo. It should have the extension '.gizmo'" % file_name
             self.header.setMessage(error, 'error')
             return
 
@@ -234,7 +252,7 @@ class GizmoPublisherDialog(BaseDialog):
             self._asset_name.setText(asset_name)
 
         except Exception as err:
-            error = "Impossible to read the file %s [%s]" % (file_name, str(err))
+            error = u"Impossible to read the file %s [%s]" % (file_name, str(err))
             self.header.setMessage(error, 'error')
             return
 
@@ -256,14 +274,21 @@ class GizmoPublisherDialog(BaseDialog):
         pattern_BadChar = re.compile("[^a-zA-Z0-9\._-]")
         asset_name = re.sub(pattern_BadChar, "", self._asset_name.text())
         self._asset_name.setText(asset_name)
-        asset = self.current_task.getAssets(assetTypes=['nuke_gizmo'])
+
+        versions = self.session.query(
+            u'select asset, asset.name , asset.type.short'
+            u' from AssetVersion where task.id is "{0}"'
+            u' and asset.type.short is "nuke_gizmo"'
+            u' and asset.name is "{1}"'.format(
+                self.current_task.getId(),
+                asset_name
+            )
+        ).all()
+
         gizmo_version = 0
-        errors = []
-        if asset:
-            asset = asset[0]
-            version = asset.getVersions()
-            if version:
-                gizmo_version = version[-1].get('version')
+
+        if versions:
+            gizmo_version = int(versions[-1]['version'])
 
         self._asset_version.setText("%03d" % gizmo_version)
         self._asset_name.blockSignals(False)
@@ -305,7 +330,7 @@ class GizmoPublisherDialog(BaseDialog):
 
         for stack_pushed in sorted(stacks_pushed):
             if stack_pushed not in stacks_set:
-                error = "The gizmo is incorrect, one variable pushed havn't \
+                error = u"The gizmo is incorrect, one variable pushed havn't \
 been set [%s]" % stack_pushed
                 errors.append(error)
 
@@ -330,7 +355,7 @@ been set [%s]" % stack_pushed
             errors.append(error)
 
         if len(layers) != 0:
-            warning = "<strong>This gizmo add %d layer(s) to your script.</strong><br/>\
+            warning = u"<strong>This gizmo add %d layer(s) to your script.</strong><br/>\
 This can interact with the layers already set in your script (The built-in layers \
 or those set by certain inputs such as the EXR files). Please check carefully the \
 validity of these layers before publishing the gizmos" % len(layers)

@@ -10,6 +10,16 @@ Release notes
 
 .. release:: Upcoming
 
+  .. change:: fixed
+      :tags: Gizmo, Assets
+
+      Import may fail for Windows paths with backslashes.
+
+    .. changed:: changed
+        :tags: Internal
+
+        Gizmo publisher is not using new api.
+
     .. change:: fixed
         :tags: API
 
@@ -80,7 +90,7 @@ Release notes
 
         Nuke raise an error while trying to reload a previously published
         script.
-    
+
     .. change:: fixed
         :tags: Publish
 
@@ -93,7 +103,7 @@ Release notes
         :tags: Ui
 
         The load script / publish menu entries script are broken.
-    
+
     .. change:: fixed
         :tags: Ui
 
