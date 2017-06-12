@@ -9,8 +9,13 @@ Release notes
 *************
 
 .. release:: Upcoming
+    
+    .. change:: fixed
+        :tags: API
 
-  .. change:: fixed
+        Nuke 11 not supported.
+
+    .. change:: fixed
       :tags: Gizmo, Assets
 
       Import may fail for Windows paths with backslashes.
