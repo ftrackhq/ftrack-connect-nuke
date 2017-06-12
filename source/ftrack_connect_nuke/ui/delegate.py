@@ -24,8 +24,6 @@ class Delegate(delegate.Delegate):
 
         current_nuke_major_version = nuke.env.get('NukeVersionMajor')
 
-        from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
-
         Connector.registerAssets()
 
         # wrappers for initializing the widgets with
@@ -87,7 +85,6 @@ class Delegate(delegate.Delegate):
 
             from ftrack_connect_foundry.ui.info_view import InfoView as _InfoView
 
-
             ftrackMenu.addCommand(
                 _InfoView.getDisplayName(),
                 'pane = nuke.getPaneFor("Properties.1");'
@@ -98,6 +95,7 @@ class Delegate(delegate.Delegate):
             )
 
         ftrackMenu.addSeparator()
+
         if current_nuke_major_version < 11:
 
             from ftrack_connect_foundry.ui.info_view import WorkingTaskInfoView as _WorkingTaskInfoView
@@ -139,6 +137,7 @@ class Delegate(delegate.Delegate):
         # disable for nuke 11
         # TODO: RE ENABLE ONCE THE WEBKIT IS AVAILABLE
         if current_nuke_major_version < 11:
+            from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
             ftrackMenu.addCommand('Publish gizmo', GizmoPublisherDialog)
 
         # Add ftrack publish node
