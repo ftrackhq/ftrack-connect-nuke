@@ -164,14 +164,22 @@ class GizmoPublisherDialog(BaseDialog):
             ).one()
 
         except ftrack_api.exception.NoResultFoundError:
-            # Not sure if this is really how we want to address this,
-            # should we add a option to select the asset type instead?
-            asset_type = t = self.session.create(
-                'AssetType', {
-                    'name': 'Gizmo','short': 'nuke_gizmo'}
+
+            message_box = QtGui.QMessageBox()
+
+            message_box.setText(
+                'Missing required Asset Type "Gizmo" with short name "nuke_gizmo"'
             )
 
-            self.session.commit()
+            message_box.setDetailedText(
+                'In order to publish gizmos the Asset Type "Gizmo" with the short '
+                'name "nuke_gizmo" must be created from the ftrack system settings.'
+            )
+            message_box.setIcon(
+                QtGui.QMessageBox.Critical
+            )
+
+            return message_box.exec_()
 
         asset = self.session.query(
             u'select parent, name , type.short from'
