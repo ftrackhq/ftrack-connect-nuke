@@ -157,9 +157,21 @@ class GizmoPublisherDialog(BaseDialog):
         task = self.session.get('Task', self.current_task.getId())
         parent_task = task['parent']
 
-        asset_type = self.session.query(
-            'AssetType where short is "nuke_gizmo"'
-        ).one()
+        try:
+
+            asset_type = self.session.query(
+                'AssetType where short is "nuke_gizmo"'
+            ).one()
+
+        except ftrack_api.exception.NoResultFoundError:
+            # Not sure if this is really how we want to address this,
+            # should we add a option to select the asset type instead?
+            asset_type = t = self.session.create(
+                'AssetType', {
+                    'name': 'Gizmo','short': 'nuke_gizmo'}
+            )
+
+            self.session.commit()
 
         asset = self.session.query(
             u'select parent, name , type.short from'
