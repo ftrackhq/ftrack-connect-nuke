@@ -1,15 +1,17 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from QtExt import QtGui, QtCore, QtWidgets
 import os
+
+from FnAssetAPI import logging
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
+
+from ftrack_connect.ui import resource
+from ftrack_connect.ui.theme import applyTheme
+
 from base_dialog import BaseDialog
 from task_widgets import TaskWidget
 import scene_widgets
-
-from FnAssetAPI import logging
-from ftrack_connect.ui import resource
-from ftrack_connect.ui.theme import applyTheme
 
 
 class ScriptOpenerDialog(BaseDialog):

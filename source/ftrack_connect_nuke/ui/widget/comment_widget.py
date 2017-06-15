@@ -1,8 +1,9 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from PySide import QtGui, QtCore, QtWidgets
 import re
+
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 
 
 class CommentWidget(QtWidgets.QFrame):

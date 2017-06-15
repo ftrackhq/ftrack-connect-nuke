@@ -2,14 +2,16 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import os
-from QtExt import QtGui, QtCore, QtOpenGL
-from ftrack_connect.ui import resource
 import tempfile
 
-class SnapshotsWidget(QtGui.QWidget):
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets, QtOpenGL
+from ftrack_connect.ui import resource
+
+
+class SnapshotsWidget(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        super(SnapshotsWidget).__init__(parent=parent)
 
         self._view_size = QtCore.QSize(600, 400)
         self._widget_size = QtCore.QSize(self._view_size.width() + 4,
@@ -23,16 +25,16 @@ class SnapshotsWidget(QtGui.QWidget):
     def setupUI(self):
         self.setMinimumSize(self._widget_size)
         self.setMaximumSize(self._widget_size)
-        layout = QtGui.QVBoxLayout(self)
+        layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        self._snapshot_frame = QtGui.QFrame(self)
+        self._snapshot_frame = QtWidgets.QFrame(self)
         self._snapshot_frame.setMinimumSize(self._widget_size)
         self._snapshot_frame.setMaximumSize(self._widget_size)
-        self._stackLayout = QtGui.QStackedLayout()
+        self._stackLayout = QtWidgets.QStackedLayout()
         self._stackLayout.setContentsMargins(0, 0, 0, 0)
-        layout_images = QtGui.QHBoxLayout(self._snapshot_frame)
+        layout_images = QtWidgets.QHBoxLayout(self._snapshot_frame)
         layout_images.setContentsMargins(0, 0, 0, 0)
         layout_images.addLayout(self._stackLayout)
 
@@ -42,11 +44,11 @@ class SnapshotsWidget(QtGui.QWidget):
         self._dag_view = SnapshotsView("DAG", self._snapshot_frame)
         self._stackLayout.addWidget(self._dag_view)
 
-        self._no_snapshot = QtGui.QFrame(self._snapshot_frame)
+        self._no_snapshot = QtWidgets.QFrame(self._snapshot_frame)
         self._no_snapshot.setStyleSheet(
             "QFrame{/*background: #000;*/ border:0px;}")
-        layout_no_snapshot = QtGui.QHBoxLayout(self._no_snapshot)
-        label_no_snapshot = QtGui.QLabel(
+        layout_no_snapshot = QtWidgets.QHBoxLayout(self._no_snapshot)
+        label_no_snapshot = QtWidgets.QLabel(
             "No snapshot available...", self._no_snapshot)
         label_no_snapshot.setStyleSheet("color:#855")
         label_no_snapshot.setAlignment(
@@ -64,13 +66,13 @@ class SnapshotsWidget(QtGui.QWidget):
         self._edit_buttons.eraser_toggled.connect(self.erase_drawing)
         self._edit_buttons.color_modified.connect(self.set_pen_color)
 
-        self.target_button_container = QtGui.QWidget(self)
-        self.target_button_container_layout = QtGui.QHBoxLayout()
+        self.target_button_container = QtWidgets.QWidget(self)
+        self.target_button_container_layout = QtWidgets.QHBoxLayout()
         self.target_button_container.setLayout(self.target_button_container_layout)
-        self._viewer_btn = QtGui.QPushButton("Use Active Viewer", self)
+        self._viewer_btn = QtWidgets.QPushButton("Use Active Viewer", self)
         self._viewer_btn.setObjectName("Viewer_btn")
         self._viewer_btn.clicked.connect(self.chooseSource)
-        self._dag_btn = QtGui.QPushButton("Use Node Graph", self)
+        self._dag_btn = QtWidgets.QPushButton("Use Node Graph", self)
         self._dag_btn.setObjectName("DAG_btn")
         self._dag_btn.clicked.connect(self.chooseSource)
         self.target_button_container_layout.addWidget(self._viewer_btn)
@@ -98,9 +100,9 @@ class SnapshotsWidget(QtGui.QWidget):
         widget = self._current_view()
         if widget != None:
             if bool_value:
-                widget.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
+                widget.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
             else:
-                widget.setDragMode(QtGui.QGraphicsView.NoDrag)
+                widget.setDragMode(QtWidgets.QGraphicsView.NoDrag)
 
     def set_drawing_mode(self, bool_value):
         widget = self._current_view()
@@ -191,7 +193,7 @@ class SnapshotsWidget(QtGui.QWidget):
         # to work fine with PyQt4 though...
         # (http://forums.thefoundry.co.uk/phpBB2/viewtopic.php?t=9156)
 
-        main_window = QtGui.QApplication.activeWindow()
+        main_window = QtWidgets.QApplication.activeWindow()
         if main_window.parent() != None:
             main_window = main_window.parent()
 
@@ -200,7 +202,7 @@ class SnapshotsWidget(QtGui.QWidget):
         while len(widgets) != 0 and None in pixmaps.values():
             new_widgets = []
             for widget in widgets:
-                if isinstance(widget, QtGui.QAction):
+                if isinstance(widget, QtWidgets.QAction):
                     continue
                 elif widget.objectName() in ["DAG.1", "Viewer.1"]:
                     name = widget.objectName().split(".", 1)[0]
@@ -208,7 +210,7 @@ class SnapshotsWidget(QtGui.QWidget):
                         if isinstance(child, QtOpenGL.QGLWidget) and child.isVisible():
                             visible_rect = child.visibleRegion().boundingRect()
                             qimage = child.grabFrameBuffer()
-                            pixmaps[name] = QtGui.QPixmap.fromImage(
+                            pixmaps[name] = QtWidgets.QPixmap.fromImage(
                                 qimage).copy(visible_rect)
                             break
                     continue
@@ -379,7 +381,7 @@ class SnapshotsEditButtons(QtGui.QWidget):
         self.setupUI(parent)
 
     def setupUI(self, parent):
-        self._refresh = QtGui.QToolButton(parent)
+        self._refresh = QtWidgets.QToolButton(parent)
         self._refresh.setMaximumSize(QtCore.QSize(45, 15))
         button_css_refresh = """
           QToolButton{background:transparent; border:none; color: rgba(255,255,255,80);}
@@ -404,37 +406,37 @@ class SnapshotsEditButtons(QtGui.QWidget):
 
         left_gap = 10
         top_padding = 80
-        self._color_white = QtGui.QToolButton(parent)
+        self._color_white = QtWidgets.QToolButton(parent)
         self._color_white.setMaximumSize(QtCore.QSize(20, 20))
         self._color_white.move(left_gap, parent.height() - top_padding)
         self._color_white.clicked.connect(self._toggle_color)
         left_gap += self._color_white.width() + 10
 
-        self._color_black = QtGui.QToolButton(parent)
+        self._color_black = QtWidgets.QToolButton(parent)
         self._color_black.setMaximumSize(QtCore.QSize(20, 20))
         self._color_black.move(left_gap, parent.height() - top_padding)
         self._color_black.clicked.connect(self._toggle_color)
         left_gap += self._color_black.width() + 10
 
-        self._color_red = QtGui.QToolButton(parent)
+        self._color_red = QtWidgets.QToolButton(parent)
         self._color_red.setMaximumSize(QtCore.QSize(20, 20))
         self._color_red.move(left_gap, parent.height() - top_padding)
         self._color_red.clicked.connect(self._toggle_color)
         left_gap += self._color_red.width() + 10
 
-        self._color_green = QtGui.QToolButton(parent)
+        self._color_green = QtWidgets.QToolButton(parent)
         self._color_green.setMaximumSize(QtCore.QSize(20, 20))
         self._color_green.move(left_gap, parent.height() - top_padding)
         self._color_green.clicked.connect(self._toggle_color)
         left_gap += self._color_green.width() + 10
 
-        self._color_blue = QtGui.QToolButton(parent)
+        self._color_blue = QtWidgets.QToolButton(parent)
         self._color_blue.setMaximumSize(QtCore.QSize(20, 20))
         self._color_blue.move(left_gap, parent.height() - top_padding)
         self._color_blue.clicked.connect(self._toggle_color)
         left_gap += self._color_blue.width() + 10
 
-        self._color_yellow = QtGui.QToolButton(parent)
+        self._color_yellow = QtWidgets.QToolButton(parent)
         self._color_yellow.setMaximumSize(QtCore.QSize(20, 20))
         self._color_yellow.move(left_gap, parent.height() - top_padding)
         self._color_yellow.clicked.connect(self._toggle_color)
@@ -449,7 +451,7 @@ class SnapshotsEditButtons(QtGui.QWidget):
         # Edit buttons
 
         left_gap = 10
-        self._fit_screen = QtGui.QToolButton(parent)
+        self._fit_screen = QtWidgets.QToolButton(parent)
         self._fit_screen.setMaximumSize(QtCore.QSize(20, 20))
         self._fit_screen.setStyleSheet(button_css)
         self._fit_screen.move(left_gap, 5)
@@ -458,7 +460,7 @@ class SnapshotsEditButtons(QtGui.QWidget):
         self.activate_button(self._fit_screen, "fitscreen")
         left_gap += self._fit_screen.width() + 10
 
-        self._zoom_out = QtGui.QToolButton(parent)
+        self._zoom_out = QtWidgets.QToolButton(parent)
         self._zoom_out.setMaximumSize(QtCore.QSize(20, 20))
         self._zoom_out.setStyleSheet(button_css)
         self._zoom_out.move(left_gap, 5)
@@ -466,7 +468,7 @@ class SnapshotsEditButtons(QtGui.QWidget):
         self._zoom_out.clicked.connect(self.zoom_out)
         left_gap += self._zoom_out.width() + 10
 
-        self._zoom_in = QtGui.QToolButton(parent)
+        self._zoom_in = QtWidgets.QToolButton(parent)
         self._zoom_in.setMaximumSize(QtCore.QSize(20, 20))
         self._zoom_in.setStyleSheet(button_css)
         self._zoom_in.move(left_gap, 5)
@@ -474,7 +476,7 @@ class SnapshotsEditButtons(QtGui.QWidget):
         self._zoom_in.clicked.connect(self.zoom_in)
         left_gap += self._zoom_in.width() + 10
 
-        self._drag = QtGui.QToolButton(parent)
+        self._drag = QtWidgets.QToolButton(parent)
         self._drag.setMaximumSize(QtCore.QSize(20, 20))
         self._drag.move(left_gap, 5)
         self._drag.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
@@ -482,7 +484,7 @@ class SnapshotsEditButtons(QtGui.QWidget):
         self.set_handscroll_mode(self._handscroll_mode)
         left_gap += self._drag.width() + 10
 
-        self._pencil = QtGui.QToolButton(parent)
+        self._pencil = QtWidgets.QToolButton(parent)
         self._pencil.setMaximumSize(QtCore.QSize(20, 20))
         self._pencil.move(left_gap, 5)
         self._pencil.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
@@ -490,7 +492,7 @@ class SnapshotsEditButtons(QtGui.QWidget):
         self.set_drawing_mode(self._drawing_mode)
         left_gap += self._pencil.width() + 10
 
-        self._eraser = QtGui.QToolButton(parent)
+        self._eraser = QtWidgets.QToolButton(parent)
         self._eraser.setMaximumSize(QtCore.QSize(20, 20))
         self._eraser.move(left_gap, 5)
         self._eraser.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)

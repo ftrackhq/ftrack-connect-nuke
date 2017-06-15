@@ -1,13 +1,13 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from QtExt import QtGui, QtCore, QtWidgets
 import os
 import re
 import ftrack
 import ftrack_api
 
 from FnAssetAPI import logging
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 
 from script_editor_widget import ScriptEditorWidget
 from comment_widget import CommentWidget

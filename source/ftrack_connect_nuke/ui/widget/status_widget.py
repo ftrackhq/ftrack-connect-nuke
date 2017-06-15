@@ -1,9 +1,9 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from QtExt import QtGui, QtCore
+
 from FnAssetAPI import logging
-import os
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 
 
 class StatusWidget(QtGui.QWidget):

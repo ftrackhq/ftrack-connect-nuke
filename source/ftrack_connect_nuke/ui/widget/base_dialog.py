@@ -5,7 +5,7 @@ import os
 import getpass
 
 import ftrack
-from QtExt import QtGui, QtCore, QtWidgets
+
 from ftrack_connect.ui.widget import header
 from ftrack_connect_nuke.ui.controller import Controller
 from ftrack_connect.ui.widget import overlay as _overlay
@@ -14,6 +14,7 @@ from ftrack_connect.connector import HelpFunctions
 import FnAssetAPI
 from FnAssetAPI import specifications
 from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 
 
 class FtrackPublishLocale(specifications.LocaleSpecification):

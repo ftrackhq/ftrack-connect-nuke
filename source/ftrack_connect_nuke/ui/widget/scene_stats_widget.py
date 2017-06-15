@@ -5,8 +5,8 @@ import json
 import time
 import os
 
-from QtExt import QtGui, QtCore
 from FnAssetAPI import logging
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 
 
 class StatisticWidget(QtGui.QWidget):

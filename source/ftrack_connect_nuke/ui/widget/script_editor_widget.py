@@ -1,11 +1,11 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from QtExt import QtGui, QtCore, QtWebKit
 import re
 import os
 
 from FnAssetAPI import logging
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 
 
 class ScriptEditorWidget(QtGui.QWidget):

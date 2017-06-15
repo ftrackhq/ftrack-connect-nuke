@@ -7,12 +7,15 @@ import getpass
 import collections
 import pprint
 
-from QtExt import QtGui, QtWidgets
-
-from FnAssetAPI import logging
-import nuke
 import ftrack_api
 import ftrack
+
+import nuke
+
+from FnAssetAPI import logging
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
+
+
 from ftrack_connect.ui.widget import notification_list as _notification_list
 from ftrack_connect.ui.widget import crew as _crew
 import ftrack_connect.ui.theme

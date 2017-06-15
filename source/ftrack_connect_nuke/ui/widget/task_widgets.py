@@ -2,18 +2,18 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import ftrack
-from QtExt import QtGui, QtCore, QtWidgets
 
-from assets_tree import AssetsTree
+from FnAssetAPI import logging
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
+
 from ftrack_connect_nuke.connector.nukeassets import NukeSceneAsset
-
-from status_widget import StatusWidget
 
 from ftrack_connect_nuke.ui.controller import Controller
 from ftrack_connect_nuke.ui.widget.base_dialog import LoadingOverlay
 from ftrack_connect.worker import Worker
 
-from FnAssetAPI import logging
+from status_widget import StatusWidget
+from assets_tree import AssetsTree
 
 
 class TaskWidget(QtWidgets.QFrame):

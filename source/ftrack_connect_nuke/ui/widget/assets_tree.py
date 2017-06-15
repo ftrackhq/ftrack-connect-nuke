@@ -7,15 +7,13 @@ import datetime
 import urllib
 import sys
 import traceback
-
-from QtExt import QtGui, QtCore, QtWidgets
-from ftrack_connect_nuke.ui.controller import Controller
-
 import ftrack
 
-from ftrack_connect.ui import resource
 from FnAssetAPI import logging
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 
+from ftrack_connect.ui import resource
+from ftrack_connect_nuke.ui.controller import Controller
 
 
 class TreeDelegateStyle(QtGui.QStyledItemDelegate):
