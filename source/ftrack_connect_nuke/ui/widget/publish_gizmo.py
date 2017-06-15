@@ -157,9 +157,29 @@ class GizmoPublisherDialog(BaseDialog):
         task = self.session.get('Task', self.current_task.getId())
         parent_task = task['parent']
 
-        asset_type = self.session.query(
-            'AssetType where short is "nuke_gizmo"'
-        ).one()
+        try:
+
+            asset_type = self.session.query(
+                'AssetType where short is "nuke_gizmo"'
+            ).one()
+
+        except ftrack_api.exception.NoResultFoundError:
+
+            message_box = QtGui.QMessageBox()
+
+            message_box.setText(
+                'Missing required Asset Type "Gizmo" with short name "nuke_gizmo"'
+            )
+
+            message_box.setDetailedText(
+                'In order to publish gizmos the Asset Type "Gizmo" with the short '
+                'name "nuke_gizmo" must be created from the ftrack system settings.'
+            )
+            message_box.setIcon(
+                QtGui.QMessageBox.Critical
+            )
+
+            return message_box.exec_()
 
         asset = self.session.query(
             u'select parent, name , type.short from'
