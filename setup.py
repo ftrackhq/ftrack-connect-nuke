@@ -117,7 +117,7 @@ setup(
     ],
     install_requires=[
         'ftrack-python-api >= 1, < 2',
-        'ftrack-connect >= 0.1.32, < 1',
+        'ftrack-connect >= 1.0.0, < 2',
         'ftrack-connect-foundry >= 0.1.0, < 2'
     ],
     tests_require=[
