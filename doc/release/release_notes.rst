@@ -8,24 +8,25 @@
 Release notes
 *************
 
-.. release:: Upcoming
+.. release:: 1.0.0
+  :date: 2017-07-07
 
   .. change:: fixed
       :tags: Gizmo, Assets
 
       Import may fail for Windows paths with backslashes.
 
-    .. changed:: changed
+  .. change:: changed
         :tags: Internal
 
         Gizmo publisher is not using new api.
 
-    .. change:: fixed
+  .. change:: fixed
         :tags: API
 
         Connector does not get initialized correctly.
 
-    .. change:: fixed
+  .. change:: fixed
         :tags: API
 
         NukeX does not get properly discovered under OSx.
