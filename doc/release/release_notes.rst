@@ -11,26 +11,34 @@ Release notes
 .. release:: Upcoming
     
     .. change:: fixed
-        :tags: API
+        :tags: Nuke
 
-        Nuke 11 not supported.
+        Nuke 11 is not supported.
+
+.. release:: 1.0.1
+  :date: 2017-07-11
+
+  .. change:: fixed
+        :tags: Actions
+
+        Nuke is discovered under NukeStudio in Connect.
 
     .. change:: fixed
-      :tags: Gizmo, Assets
+        :tags: Gizmo, Assets
 
-      Import may fail for Windows paths with backslashes.
+        Import may fail for Windows paths with backslashes.
 
-    .. changed:: changed
+  .. change:: changed
         :tags: Internal
 
         Gizmo publisher is not using new api.
 
-    .. change:: fixed
+  .. change:: fixed
         :tags: API
 
         Connector does not get initialized correctly.
 
-    .. change:: fixed
+  .. change:: fixed
         :tags: API
 
         NukeX does not get properly discovered under OSx.
