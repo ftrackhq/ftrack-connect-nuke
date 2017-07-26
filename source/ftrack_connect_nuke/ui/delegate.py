@@ -22,7 +22,9 @@ class Delegate(delegate.Delegate):
         from ftrack_connect_nuke.ui.widget.crew import NukeCrew
         from ftrack_connect_nuke.connector import Connector
 
-        current_nuke_major_version = nuke.env.get('NukeVersionMajor')
+        # Check if QtWebKit or QWebEngine is avaliable.
+        from ftrack_connect.ui.widget import is_webwidget_supported
+        has_webwidgets = is_webwidget_supported()
 
         Connector.registerAssets()
 
@@ -79,9 +81,7 @@ class Delegate(delegate.Delegate):
             'panel.addToPane(pane)'
         )
 
-        # disable for nuke 11
-        # TODO: RE ENABLE ONCE THE WEBKIT IS AVAILABLE
-        if current_nuke_major_version < 11:
+        if has_webwidgets:
 
             from ftrack_connect_foundry.ui.info_view import InfoView as _InfoView
 
@@ -96,7 +96,7 @@ class Delegate(delegate.Delegate):
 
         ftrackMenu.addSeparator()
 
-        if current_nuke_major_version < 11:
+        if has_webwidgets:
 
             from ftrack_connect_foundry.ui.info_view import WorkingTaskInfoView as _WorkingTaskInfoView
             from ftrack_connect_foundry.ui.tasks_view import TasksView as _TasksView
@@ -104,7 +104,7 @@ class Delegate(delegate.Delegate):
             # Add Web Views located in the ftrack_connect_foundry package to the
             # menu for easier access.
             for widget in [
-                _TasksView, 
+                _TasksView,
                 _WorkingTaskInfoView
             ]:
                 ftrackMenu.addCommand(
@@ -134,9 +134,7 @@ class Delegate(delegate.Delegate):
         # Add new entries in the ftrack menu.
         ftrackMenu.addSeparator()
 
-        # disable for nuke 11
-        # TODO: RE ENABLE ONCE THE WEBKIT IS AVAILABLE
-        if current_nuke_major_version < 11:
+        if has_webwidgets:
             from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
             ftrackMenu.addCommand('Publish gizmo', GizmoPublisherDialog)
 
