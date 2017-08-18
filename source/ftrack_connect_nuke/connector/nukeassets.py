@@ -118,10 +118,11 @@ class ImageSequenceAsset(GenericAsset):
             return
         else:
             resultingNode = nuke.createNode('Read', inpanel=False)
-            resultingNode['name'].setValue(
+            name = (
                 HelpFunctions.safeString(iAObj.assetName) + '_' +
                 HelpFunctions.safeString(iAObj.componentName)
             )
+            resultingNode['name'].setValue(Connector.getUniqueSceneName(name))
 
         self.addFTab(resultingNode)
 
