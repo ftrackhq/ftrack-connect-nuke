@@ -23,7 +23,7 @@ class Delegate(delegate.Delegate):
         from ftrack_connect_nuke.connector import Connector
 
         # Check if QtWebKit or QWebEngine is avaliable.
-        from ftrack_connect.ui.widget import is_webwidget_supported
+        from FnAssetAPI.ui.toolkit import is_webwidget_supported
         has_webwidgets = is_webwidget_supported()
 
         Connector.registerAssets()
