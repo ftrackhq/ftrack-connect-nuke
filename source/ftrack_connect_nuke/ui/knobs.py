@@ -8,7 +8,7 @@ import getpass
 import functools
 
 import FnAssetAPI
-from FnAssetAPI.ui.toolkit import QtGui, QtCore
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 from FnAssetAPI import specifications
 
 import ftrack_connect_nuke
@@ -22,7 +22,7 @@ from ftrack_connect.ui import resource
 
 class TableKnob():
     def makeUI(self):
-        self.tableWidget = QtGui.QTableWidget()
+        self.tableWidget = QtWidgets.QTableWidget()
         self.tableWidget.setColumnCount(7)
         self.tableWidget.setHorizontalHeaderLabels(['', 'Filename', 'Component', 'NodeName', '', '', ''])
         self.tableWidget.verticalHeader().setVisible(False)
@@ -33,12 +33,12 @@ class TableKnob():
         self.tableWidget.setColumnHidden(0, True)
         self.tableWidget.setColumnHidden(5, True)
         self.tableWidget.setColumnHidden(6, True)
-        self.tableWidget.horizontalHeader().setResizeMode(QtGui.QHeaderView.Fixed)
-        self.tableWidget.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)
+        self.tableWidget.horizontalHeader().setResizeMode(QtWidgets.QHeaderView.Fixed)
+        self.tableWidget.horizontalHeader().setResizeMode(1, QtWidgets.QHeaderView.Stretch)
         self.tableWidget.setTextElideMode(QtCore.Qt.ElideLeft)
         self.tableWidget.setMinimumHeight(200)
 
-        self.tableWidget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
 
         self.tableWidget.updateValue = self.updateValue
 
@@ -70,19 +70,19 @@ class BrowseKnob():
         self.spec.referenceHint = self.targetTask
 
     def makeUI(self):
-        self.mainWidget = QtGui.QWidget()
+        self.mainWidget = QtWidgets.QWidget()
         applyTheme(self.mainWidget, 'integration')
 
         self.mainWidget.setContentsMargins(0, 0, 0, 0)
-        self.hlayout = QtGui.QHBoxLayout()
+        self.hlayout = QtWidgets.QHBoxLayout()
         self.hlayout.setContentsMargins(0, 0, 0, 0)
         self.mainWidget.setLayout(self.hlayout)
 
-        self._lineEdit = QtGui.QLineEdit()
+        self._lineEdit = QtWidgets.QLineEdit()
         self._lineEdit.setText(HelpFunctions.getPath(self.current_task, slash=True))
         self.hlayout.addWidget(self._lineEdit)
 
-        self._browse = QtGui.QPushButton("Browse")
+        self._browse = QtWidgets.QPushButton("Browse")
         self.hlayout.addWidget(self._browse)
 
         QtCore.QObject.connect(self._browse, QtCore.SIGNAL('clicked()'), self.openBrowser)

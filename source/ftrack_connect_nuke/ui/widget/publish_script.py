@@ -1,22 +1,26 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from PySide import QtGui, QtCore
-from FnAssetAPI import logging
+
 import re
 import json
 
-from ftrack_connect_nuke.connector.nukeassets import NukeSceneAsset
 import nuke
 import ftrack
+
+from FnAssetAPI import logging
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
+
+from ftrack_connect.ui import resource
+from ftrack_connect.ui.theme import applyTheme
+
+from ftrack_connect_nuke.connector.nukeassets import NukeSceneAsset
+from ftrack_connect_nuke.ui.legacy import get_dependencies
 
 from comment_widget import CommentWidget
 from task_widgets import TaskWidget
 from snapshots_widget import SnapshotsWidget
 from base_dialog import BaseDialog
-from ftrack_connect.ui.theme import applyTheme
-from ftrack_connect_nuke.ui.legacy import get_dependencies
-from ftrack_connect.ui import resource
 
 
 class ScriptPublisherDialog(BaseDialog):
@@ -35,7 +39,6 @@ class ScriptPublisherDialog(BaseDialog):
         self.setupUI()
         self.initiate_tasks()
         self.exec_()
-
 
     def setupUI(self):
         super(ScriptPublisherDialog, self).setupUI()

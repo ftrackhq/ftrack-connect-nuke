@@ -2,21 +2,21 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 import ftrack
-from PySide import QtGui, QtCore
 
-from assets_tree import AssetsTree
+from FnAssetAPI import logging
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
+
 from ftrack_connect_nuke.connector.nukeassets import NukeSceneAsset
-
-from status_widget import StatusWidget
 
 from ftrack_connect_nuke.ui.controller import Controller
 from ftrack_connect_nuke.ui.widget.base_dialog import LoadingOverlay
 from ftrack_connect.worker import Worker
 
-from FnAssetAPI import logging
+from status_widget import StatusWidget
+from assets_tree import AssetsTree
 
 
-class TaskWidget(QtGui.QFrame):
+class TaskWidget(QtWidgets.QFrame):
     asset_version_selected = QtCore.Signal(object)
     no_asset_version = QtCore.Signal()
 
@@ -42,12 +42,12 @@ class TaskWidget(QtGui.QFrame):
         ''')
 
     def setupUI(self):
-        main_layout = QtGui.QVBoxLayout(self)
+        main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
 
         empty_task = SingleTaskWidget(parent=self)
-        self._stackLayout = QtGui.QStackedLayout()
+        self._stackLayout = QtWidgets.QStackedLayout()
         self._stackLayout.addWidget(empty_task)
         main_layout.addLayout(self._stackLayout)
 
@@ -115,7 +115,7 @@ class TaskWidget(QtGui.QFrame):
         self.asset_version_selected.emit(asset_version)
 
 
-class SingleTaskWidget(QtGui.QFrame):
+class SingleTaskWidget(QtWidgets.QFrame):
 
     def __init__(self, task=None, current_scene=None, parent=None):
         super(SingleTaskWidget, self).__init__(parent)
@@ -159,82 +159,82 @@ class SingleTaskWidget(QtGui.QFrame):
 
         self.setStyleSheet(css_task_global)
 
-        task_frame_layout = QtGui.QVBoxLayout(self)
+        task_frame_layout = QtWidgets.QVBoxLayout(self)
         task_frame_layout.setContentsMargins(0, 0, 0, 0)
         task_frame_layout.setSpacing(15)
 
         # Display Task infos
 
-        task_info_layout = QtGui.QFormLayout()
+        task_info_layout = QtWidgets.QFormLayout()
         task_info_layout.setContentsMargins(10, 10, 10, 10)
         task_info_layout.setSpacing(10)
 
-        task_name_lbl = QtGui.QLabel("Task", self)
+        task_name_lbl = QtWidgets.QLabel("Task", self)
         task_name_lbl.setStyleSheet(css_task_name_lbl)
-        self._task_name = QtGui.QLabel(self._t_name, self)
+        self._task_name = QtWidgets.QLabel(self._t_name, self)
         self._task_name.setStyleSheet(css_task_name)
 
-        project_lbl = QtGui.QLabel("Project", self)
-        self._project_name = QtGui.QLabel(self._t_project_name, self)
+        project_lbl = QtWidgets.QLabel("Project", self)
+        self._project_name = QtWidgets.QLabel(self._t_project_name, self)
 
-        shot_lbl = QtGui.QLabel("Shot", self)
-        shot_layout = QtGui.QHBoxLayout()
+        shot_lbl = QtWidgets.QLabel("Shot", self)
+        shot_layout = QtWidgets.QHBoxLayout()
         shot_layout.setSpacing(6)
-        self._shot_name = QtGui.QLabel(self)
-        self._separator_shot = QtGui.QLabel("/", self)
+        self._shot_name = QtWidgets.QLabel(self)
+        self._separator_shot = QtWidgets.QLabel("/", self)
         self._separator_shot.setVisible(False)
-        self._sequence_name = QtGui.QLabel(self)
-        spacer_shot = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Expanding,
-                                        QtGui.QSizePolicy.Minimum)
+        self._sequence_name = QtWidgets.QLabel(self)
+        spacer_shot = QtWidgets.QSpacerItem(0, 0, QtWidgets.QSizePolicy.Expanding,
+                                        QtWidgets.QSizePolicy.Minimum)
         shot_layout.addWidget(self._sequence_name)
         shot_layout.addWidget(self._separator_shot)
         shot_layout.addWidget(self._shot_name)
         shot_layout.addItem(spacer_shot)
 
-        shot_status_lbl = QtGui.QLabel("Shot status", self)
+        shot_status_lbl = QtWidgets.QLabel("Shot status", self)
         shot_status = ftrack.getShotStatuses()
         self._shot_status = StatusWidget(shot_status, self)
 
-        task_status_lbl = QtGui.QLabel("Task status", self)
+        task_status_lbl = QtWidgets.QLabel("Task status", self)
         task_status = ftrack.getTaskStatuses()
         self._task_status = StatusWidget(task_status, self)
 
-        due_date_lbl = QtGui.QLabel("Due date", self)
-        self._due_date = QtGui.QLabel(self)
+        due_date_lbl = QtWidgets.QLabel("Due date", self)
+        self._due_date = QtWidgets.QLabel(self)
 
         task_info_layout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, task_name_lbl)
+            0, QtWidgets.QFormLayout.LabelRole, task_name_lbl)
         task_info_layout.setWidget(
-            0, QtGui.QFormLayout.FieldRole, self._task_name)
-        task_info_layout.setWidget(1, QtGui.QFormLayout.LabelRole, project_lbl)
+            0, QtWidgets.QFormLayout.FieldRole, self._task_name)
+        task_info_layout.setWidget(1, QtWidgets.QFormLayout.LabelRole, project_lbl)
         task_info_layout.setWidget(
-            1, QtGui.QFormLayout.FieldRole, self._project_name)
-        task_info_layout.setWidget(2, QtGui.QFormLayout.LabelRole, shot_lbl)
-        task_info_layout.setItem(2, QtGui.QFormLayout.FieldRole, shot_layout)
+            1, QtWidgets.QFormLayout.FieldRole, self._project_name)
+        task_info_layout.setWidget(2, QtWidgets.QFormLayout.LabelRole, shot_lbl)
+        task_info_layout.setItem(2, QtWidgets.QFormLayout.FieldRole, shot_layout)
         task_info_layout.setWidget(
-            3, QtGui.QFormLayout.LabelRole, shot_status_lbl)
+            3, QtWidgets.QFormLayout.LabelRole, shot_status_lbl)
         task_info_layout.setWidget(
-            3, QtGui.QFormLayout.FieldRole, self._shot_status)
+            3, QtWidgets.QFormLayout.FieldRole, self._shot_status)
         task_info_layout.setWidget(
-            4, QtGui.QFormLayout.LabelRole, task_status_lbl)
+            4, QtWidgets.QFormLayout.LabelRole, task_status_lbl)
         task_info_layout.setWidget(
-            4, QtGui.QFormLayout.FieldRole, self._task_status)
+            4, QtWidgets.QFormLayout.FieldRole, self._task_status)
         task_info_layout.setWidget(
-            5, QtGui.QFormLayout.LabelRole, due_date_lbl)
+            5, QtWidgets.QFormLayout.LabelRole, due_date_lbl)
         task_info_layout.setWidget(
-            5, QtGui.QFormLayout.FieldRole, self._due_date)
+            5, QtWidgets.QFormLayout.FieldRole, self._due_date)
         task_frame_layout.addItem(task_info_layout)
 
-        self._tab_widget = QtGui.QTabWidget(self)
+        self._tab_widget = QtWidgets.QTabWidget(self)
 
         # Display Nuke Assets from this task
 
-        self.tab_asset_tree = QtGui.QWidget()
+        self.tab_asset_tree = QtWidgets.QWidget()
 
         self.tab_asset_tree.busy_overlay = LoadingOverlay(self.tab_asset_tree)
         self.tab_asset_tree.busy_overlay.hide()
 
-        tab_asset_tree_layout = QtGui.QVBoxLayout(self.tab_asset_tree)
+        tab_asset_tree_layout = QtWidgets.QVBoxLayout(self.tab_asset_tree)
         tab_asset_tree_layout.setContentsMargins(0, 8, 0, 0)
         self.assets_widget = SceneAssetsWidget(self)
 
@@ -311,7 +311,7 @@ class SingleTaskWidget(QtGui.QFrame):
         self.assets_widget.set_selection_mode(bool_value)
 
 
-class SceneAssetsWidget(QtGui.QWidget):
+class SceneAssetsWidget(QtWidgets.QWidget):
     worker_started = QtCore.Signal()
     worker_stopped = QtCore.Signal()
 
@@ -337,32 +337,32 @@ class SceneAssetsWidget(QtGui.QWidget):
         """
         self.setStyleSheet(css_settings_global)
 
-        main_layout = QtGui.QVBoxLayout(self)
+        main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(5)
 
-        settings_frame = QtGui.QFrame(self)
-        layout_settings = QtGui.QHBoxLayout(settings_frame)
+        settings_frame = QtWidgets.QFrame(self)
+        layout_settings = QtWidgets.QHBoxLayout(settings_frame)
         layout_settings.setContentsMargins(0, 0, 0, 0)
         layout_settings.setSpacing(6)
 
         asset_types = ["All Asset Types"] + ['comp']
 
-        self._asset_connectors_cbbox = QtGui.QComboBox(self)
+        self._asset_connectors_cbbox = QtWidgets.QComboBox(self)
         self._asset_connectors_cbbox.addItems(asset_types)
         self._asset_connectors_cbbox.currentIndexChanged.connect(
             self._update_tree)
         self._asset_connectors_cbbox.setMaximumHeight(23)
         self._asset_connectors_cbbox.setMinimumWidth(100)
         self._asset_connectors_cbbox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToContents)
+            QtWidgets.QComboBox.AdjustToContents)
 
-        self._refresh_btn = QtGui.QPushButton(self)
+        self._refresh_btn = QtWidgets.QPushButton(self)
         self._refresh_btn.setText("refresh")
         self._refresh_btn.clicked.connect(self.initiate_assets_tree)
 
-        spacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Minimum)
+        spacer = QtWidgets.QSpacerItem(0, 0, QtWidgets.QSizePolicy.Expanding,
+                                   QtWidgets.QSizePolicy.Minimum)
 
         layout_settings.addWidget(self._asset_connectors_cbbox)
         layout_settings.addItem(spacer)

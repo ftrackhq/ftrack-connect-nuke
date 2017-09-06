@@ -8,21 +8,28 @@
 Release notes
 *************
 
+.. release:: Upcoming
+    
+    .. change:: fixed
+        :tags: Nuke
+
+        Nuke 11 is not supported.
+
 .. release:: 1.0.1
   :date: 2017-07-11
 
   .. change:: fixed
-      :tags: Actions
+        :tags: Actions
 
-      Nuke is discovered under NukeStudio in Connect.
+        Nuke is discovered under NukeStudio in Connect.
 
 .. release:: 1.0.0
   :date: 2017-07-07
 
-  .. change:: fixed
-      :tags: Gizmo, Assets
+    .. change:: fixed
+        :tags: Gizmo, Assets
 
-      Import may fail for Windows paths with backslashes.
+        Import may fail for Windows paths with backslashes.
 
   .. change:: changed
         :tags: Internal

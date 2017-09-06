@@ -1,13 +1,13 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from PySide import QtGui, QtCore
 import os
 import re
 import ftrack
 import ftrack_api
 
 from FnAssetAPI import logging
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 
 from script_editor_widget import ScriptEditorWidget
 from comment_widget import CommentWidget
@@ -39,8 +39,8 @@ class GizmoPublisherDialog(BaseDialog):
         super(GizmoPublisherDialog, self).setupUI()
         self.resize(980, 640)
 
-        gizmo_widget = QtGui.QWidget()
-        gizmo_layout = QtGui.QVBoxLayout(gizmo_widget)
+        gizmo_widget = QtWidgets.QWidget()
+        gizmo_layout = QtWidgets.QVBoxLayout(gizmo_widget)
         gizmo_layout.setContentsMargins(5, 0, 0, 0)
 
         css_asset_global = """
@@ -54,19 +54,19 @@ class GizmoPublisherDialog(BaseDialog):
             """
         css_asset_version = "color: #de8888; font-weight: bold;"
 
-        asset_main_frame = QtGui.QFrame(self)
+        asset_main_frame = QtWidgets.QFrame(self)
         asset_main_frame.setMinimumWidth(600)
         # comment this line to remove the black background on asset.
         asset_main_frame.setStyleSheet(css_asset_global)
-        asset_main_frame_layout = QtGui.QHBoxLayout(asset_main_frame)
+        asset_main_frame_layout = QtWidgets.QHBoxLayout(asset_main_frame)
         asset_main_frame_layout.setSpacing(10)
-        asset_name_lbl = QtGui.QLabel("Asset", asset_main_frame)
-        self._asset_name = QtGui.QLineEdit(asset_main_frame)
+        asset_name_lbl = QtWidgets.QLabel("Asset", asset_main_frame)
+        self._asset_name = QtWidgets.QLineEdit(asset_main_frame)
         self._asset_name.setText("Gizmo")
         self._asset_name.textChanged.connect(self._validate_asset_name)
         self._asset_name.setStyleSheet(css_asset_name)
-        asset_version_lbl = QtGui.QLabel("Version", asset_main_frame)
-        self._asset_version = QtGui.QLabel("...", asset_main_frame)
+        asset_version_lbl = QtWidgets.QLabel("Version", asset_main_frame)
+        self._asset_version = QtWidgets.QLabel("...", asset_main_frame)
         self._asset_version.setStyleSheet(css_asset_version)
         asset_main_frame_layout.addWidget(asset_name_lbl)
         asset_main_frame_layout.addWidget(self._asset_name)
@@ -74,30 +74,30 @@ class GizmoPublisherDialog(BaseDialog):
         asset_main_frame_layout.addWidget(self._asset_version)
         gizmo_layout.addWidget(asset_main_frame)
 
-        file_layout = QtGui.QVBoxLayout()
+        file_layout = QtWidgets.QVBoxLayout()
         file_layout.setContentsMargins(0, 0, 0, 0)
         file_layout.setSpacing(8)
-        browser_layout = QtGui.QHBoxLayout()
+        browser_layout = QtWidgets.QHBoxLayout()
         browser_layout.setContentsMargins(0, 0, 0, 0)
         browser_layout.setSpacing(8)
 
-        browser_label = QtGui.QLabel("Gizmo file", gizmo_widget)
+        browser_label = QtWidgets.QLabel("Gizmo file", gizmo_widget)
         browser_edit_css = """
             QLineEdit { border: 1px solid #666;
                         background: #555; color: #000; }
         """
-        self._browser_edit = QtGui.QLineEdit(gizmo_widget)
+        self._browser_edit = QtWidgets.QLineEdit(gizmo_widget)
         self._browser_edit.setStyleSheet(browser_edit_css)
         self._browser_edit.textChanged.connect(self.set_gizmo_file)
-        completer = QtGui.QCompleter(gizmo_widget)
+        completer = QtWidgets.QCompleter(gizmo_widget)
         completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
-        completer.setCompletionMode(QtGui.QCompleter.InlineCompletion)
-        dir = QtGui.QDirModel(completer)
+        completer.setCompletionMode(QtWidgets.QCompleter.InlineCompletion)
+        dir = QtWidgets.QDirModel(completer)
         dir.setFilter(
             QtCore.QDir.Dirs | QtCore.QDir.NoDot | QtCore.QDir.NoDotDot)
         completer.setModel(dir)
         self._browser_edit.setCompleter(completer)
-        self._browser_btn = QtGui.QToolButton(gizmo_widget)
+        self._browser_btn = QtWidgets.QToolButton(gizmo_widget)
         self._browser_btn.setText("...")
         self._browser_btn.clicked.connect(self._browse_gizmo)
         browser_layout.addWidget(browser_label)

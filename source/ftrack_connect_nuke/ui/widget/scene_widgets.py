@@ -1,15 +1,17 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from PySide import QtGui, QtCore
-import ftrack
-from scene_stats_widget import StatisticWidget
-from status_widget import StatusWidget
+import os
 import urllib
+import ftrack
 
 from FnAssetAPI import logging
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
+
 from ftrack_connect_nuke.ui.controller import Controller
-import os
+
+from scene_stats_widget import StatisticWidget
+from status_widget import StatusWidget
 
 
 class SceneVersionWidget(QtGui.QWidget):

@@ -91,7 +91,7 @@ connect_dependency_link = (
 )
 
 connect_foundry_dependency_link = (
-    'https://bitbucket.org/ftrack/ftrack-connect-foundry/get/master.zip'
+    'https://bitbucket.org/ftrack/ftrack-connect-foundry/get/nuke-11.zip'
     '#egg=ftrack-connect-foundry-0.1.0'
 )
 

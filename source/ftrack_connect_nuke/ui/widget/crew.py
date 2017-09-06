@@ -7,12 +7,15 @@ import getpass
 import collections
 import pprint
 
-from PySide import QtGui
-
-from FnAssetAPI import logging
-import nuke
 import ftrack_api
 import ftrack
+
+import nuke
+
+from FnAssetAPI import logging
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
+
+
 from ftrack_connect.ui.widget import notification_list as _notification_list
 from ftrack_connect.ui.widget import crew as _crew
 import ftrack_connect.ui.theme
@@ -101,7 +104,7 @@ class UserClassifier(object):
             return 'others'
 
 
-class NukeCrew(QtGui.QDialog):
+class NukeCrew(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         '''Initialise widget with *parent*.'''
@@ -111,13 +114,13 @@ class NukeCrew(QtGui.QDialog):
 
         self.setMinimumWidth(400)
         self.setSizePolicy(
-            QtGui.QSizePolicy(
-                QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding
+            QtWidgets.QSizePolicy(
+                QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding
             )
         )
 
-        self.vertical_layout = QtGui.QVBoxLayout(self)
-        self.horizontal_layout = QtGui.QHBoxLayout()
+        self.vertical_layout = QtWidgets.QVBoxLayout(self)
+        self.horizontal_layout = QtWidgets.QHBoxLayout()
 
         self.header = Header(username=getpass.getuser(), parent=self)
 
@@ -156,7 +159,7 @@ class NukeCrew(QtGui.QDialog):
 
                 added_user_ids.append(_user['id'])
 
-        self.tab_panel = QtGui.QTabWidget(parent=self)
+        self.tab_panel = QtWidgets.QTabWidget(parent=self)
         self.tab_panel.addTab(self.chat, 'Chat')
         self.tab_panel.addTab(self.notification_list, 'Notifications')
 

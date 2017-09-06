@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PySide import QtCore
 
+import FnAssetAPI
 from FnAssetAPI import logging
-
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 
 class WorkerSignal(QtCore.QObject):
     finished = QtCore.Signal(bool, str)
