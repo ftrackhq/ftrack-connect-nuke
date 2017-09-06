@@ -82,7 +82,6 @@ class Delegate(delegate.Delegate):
         )
 
         if has_webwidgets:
-
             from ftrack_connect_foundry.ui.info_view import InfoView as _InfoView
 
             ftrackMenu.addCommand(
@@ -97,7 +96,6 @@ class Delegate(delegate.Delegate):
         ftrackMenu.addSeparator()
 
         if has_webwidgets:
-
             from ftrack_connect_foundry.ui.info_view import WorkingTaskInfoView as _WorkingTaskInfoView
             from ftrack_connect_foundry.ui.tasks_view import TasksView as _TasksView
 
