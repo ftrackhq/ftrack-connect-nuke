@@ -1,11 +1,12 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
 
-from PySide import QtGui, QtCore
 import re
 
+from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 
-class CommentWidget(QtGui.QFrame):
+
+class CommentWidget(QtWidgets.QFrame):
     changed = QtCore.Signal()
 
     def __init__(self, parent=None):
@@ -25,15 +26,15 @@ class CommentWidget(QtGui.QFrame):
         # self.setMaximumHeight(100)
         self.setStyleSheet(css_comment_frame)
 
-        layout = QtGui.QFormLayout(self)
+        layout = QtWidgets.QFormLayout(self)
         layout.setSpacing(10)
         layout.setContentsMargins(0, 0, 0, 0)
-        label = QtGui.QLabel("Comment", self)
-        self._edit_field = QtGui.QTextEdit(self)
+        label = QtWidgets.QLabel("Comment", self)
+        self._edit_field = QtWidgets.QTextEdit(self)
         self._edit_field.setObjectName('ftrack-edit-field')
         self._edit_field.textChanged.connect(self._validate_comment)
-        layout.setWidget(0, QtGui.QFormLayout.LabelRole, label)
-        layout.setWidget(0, QtGui.QFormLayout.FieldRole, self._edit_field)
+        layout.setWidget(0, QtWidgets.QFormLayout.LabelRole, label)
+        layout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self._edit_field)
 
     @property
     def text(self):

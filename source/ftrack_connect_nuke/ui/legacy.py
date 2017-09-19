@@ -9,7 +9,7 @@ import tempfile
 import uuid
 import urlparse
 
-from FnAssetAPI.ui.toolkit import QtGui
+from FnAssetAPI.ui.toolkit import QtGui, QtWidgets
 
 import FnAssetAPI
 
@@ -34,12 +34,12 @@ current_module = ".".join(__name__.split(".")[:-1])+'.legacy'
 
 
 
-class ProgressDialog(QtGui.QDialog):
+class ProgressDialog(QtWidgets.QDialog):
     def __init__(self):
         super(ProgressDialog, self).__init__()
         applyTheme(self, 'integration')
-        self.hbox = QtGui.QHBoxLayout()
-        self.progressBar = QtGui.QProgressBar(self)
+        self.hbox = QtWidgets.QHBoxLayout()
+        self.progressBar = QtWidgets.QProgressBar(self)
         self.hbox.addWidget(self.progressBar)
         self.setLayout(self.hbox)
 
@@ -520,15 +520,15 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
 
             rowCntr = 0
             for comp in components:
-                cb = QtGui.QCheckBox('')
+                cb = QtWidgets.QCheckBox('')
                 cb.setChecked(True)
                 tableWidget.setCellWidget(rowCntr, 0, cb)
 
-                componentItem = QtGui.QTableWidgetItem()
+                componentItem = QtWidgets.QTableWidgetItem()
                 componentItem.setText(comp[0])
                 componentItem.setToolTip(comp[0])
                 tableWidget.setItem(rowCntr, 1, componentItem)
-                componentItem = QtGui.QTableWidgetItem()
+                componentItem = QtWidgets.QTableWidgetItem()
                 componentItem.setText(comp[1])
                 componentItem.setToolTip(comp[1])
                 tableWidget.setItem(rowCntr, 2, componentItem)
@@ -543,7 +543,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                 else:
                     fileExist = 'F'
 
-                componentItem = QtGui.QTableWidgetItem()
+                componentItem = QtWidgets.QTableWidgetItem()
                 if fileExist == 'T':
                     componentItem.setBackground(QtGui.QColor(20, 161, 74))
                 else:
@@ -551,17 +551,17 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                 componentItem.setToolTip(fileExist)
                 tableWidget.setItem(rowCntr, 4, componentItem)
 
-                componentItem = QtGui.QTableWidgetItem()
+                componentItem = QtWidgets.QTableWidgetItem()
                 componentItem.setText(comp[2])
                 componentItem.setToolTip(comp[2])
                 tableWidget.setItem(rowCntr, 5, componentItem)
 
-                componentItem = QtGui.QTableWidgetItem()
+                componentItem = QtWidgets.QTableWidgetItem()
                 componentItem.setText(comp[3])
                 componentItem.setToolTip(comp[3])
                 tableWidget.setItem(rowCntr, 6, componentItem)
 
-                componentItem = QtGui.QTableWidgetItem()
+                componentItem = QtWidgets.QTableWidgetItem()
                 componentItem.setText(comp[4])
                 componentItem.setToolTip(comp[4])
                 tableWidget.setItem(rowCntr, 3, componentItem)
