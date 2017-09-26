@@ -15,11 +15,17 @@ class AssetInfoView(
 
     def __init__(self, bridge, parent=None):
         '''Initialise InvfoView.'''
-        node = nuke.selectedNodes()[0]
+        nodes = nuke.selectedNodes()
+
+        if not nodes:
+            return
+
+        node = nodes[0]
+
         if not node:
             return
 
-        has_knob = node.knob('componentId')
+        has_knob = node.knob('assetVersionId')
         if not has_knob:
             return
 
