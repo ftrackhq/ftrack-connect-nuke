@@ -1,7 +1,15 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2015 ftrack
+
+import os
+import traceback
+
 from ftrack_connect_foundry.ui.info_view import InfoView
 import nuke
+import FnAssetAPI.logging
+import FnAssetAPI.exceptions
+import FnAssetAPI.ui.widgets
+import ftrack
 
 from ftrack_connect.session import (
     get_shared_session
@@ -21,64 +29,65 @@ class AssetInfoView(
     def __init__(self, bridge, parent=None):
         '''Initialise InvfoView.'''
         node = nuke.selectedNodes()[0]
-        print node
-        asset_id = None
-        super(InfoView, self).__init__(bridge, parent, asset_id)
+        if not node:
+            return
 
+        has_knob = node.knob('assetId')
+        if not has_knob:
+            return
 
-    # def set_entity(self, entity):
-    #     '''Display information about specific *entity*.'''
-    #     if entity is None:
-    #         return
+        asset_id = has_knob.value()
+        super(InfoView, self).__init__(
+            bridge, parent=parent, entityReference=asset_id
+        )
 
-    #     if entity.entity_type is 'Component':
-    #         entity = entity.get('version')
+    def setEntityReference(self, entityReference):
+        '''Display information about entity referred to by *entityReference*.'''
+        entity = None
+        if entityReference is not None:
+            try:
+                entity = self._bridge.getEntityById(entityReference)
+                print 'ENTITY', entity
+            except FnAssetAPI.exceptions.InvalidEntityReference:
+                tb = traceback.format_exc()
+                FnAssetAPI.logging.debug(tb)
 
-    #     if not self.get_url():
-    #         url = session.get_widget_url(
-    #             'info', entity=entity, theme='tf'
-    #         )
+        self.setEntity(entity)
 
-    #         # Load initial page using url retrieved from entity.
-    #         self.set_url(
-    #             url
-    #         )
+    def setEntity(self, entity):
+        '''Display information about specific *entity*.'''
+        if entity is None:
+            # TODO: Display nothing to display message.
+            return
 
-    #     else:
-    #         # Send javascript to currently loaded page to update view.
-    #         entityId = entity.get('id')
+        if isinstance(entity, ftrack.Component):
+            entity = entity.getVersion()
 
-    #         entityType = ftrack_connect_nuke_studio.entity_reference.translate_to_legacy_entity_type(
-    #             entity.entity_type
-    #         )
+        if not self.getUrl():
+            # Load initial page using url retrieved from entity.
 
-    #         javascript = (
-    #             'FT.WebMediator.setEntity({{'
-    #             '   entityId: "{0}",'
-    #             '   entityType: "{1}"'
-    #             '}})'
-    #             .format(entityId, entityType)
-    #         )
-    #         self.evaluateJavaScript(javascript)
+            # TODO: Some types of entities don't have this yet, eg
+            # assetversions. Add some checking here if it's not going to be
+            # available from all entities.
+            if hasattr(entity, 'getWebWidgetUrl'):
+                url = entity.getWebWidgetUrl(name='info', theme='tf')
+                FnAssetAPI.logging.debug(url)
 
-    # def on_selection_changed(self, event):
-    #     '''Handle selection changed events.'''
-    #     selection = event.sender.selection()
+                self.setUrl(url)
 
-    #     selection = [
-    #         _item for _item in selection
-    #         if isinstance(_item, hiero.core.TrackItem)
-    #     ]
+        else:
+            # Send javascript to currently loaded page to update view.
+            entityId = entity.getId()
 
-    #     if len(selection) != 1:
-    #         return
+            # NOTE: get('entityType') not supported on assetversions so
+            # using private _type attribute.
+            entityType = entity._type
 
-    #     item = selection[0]
-    #     entity = ftrack_connect_nuke_studio.entity_reference.get(
-    #         item
-    #     )
-
-    #     if not entity:
-    #         return
-
-    #     self.set_entity(entity)
+            javascript = (
+                'FT.WebMediator.setEntity({{'
+                '   entityId: "{0}",'
+                '   entityType: "{1}"'
+                '}})'
+                .format(entityId, entityType)
+            )
+            self.evaluateJavaScript(javascript)
