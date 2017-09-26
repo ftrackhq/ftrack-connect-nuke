@@ -8,6 +8,14 @@
 Release notes
 *************
 
+
+.. release:: Upcoming
+    
+    .. change:: fixed
+        :tags: Nuke
+
+        Nuke does not correctly set frame range on startup.
+
 .. release:: 1.1.0
     :date: 2017-09-12
     
