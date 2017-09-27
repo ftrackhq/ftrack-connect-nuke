@@ -152,6 +152,25 @@ class Delegate(delegate.Delegate):
         ftrackNodesMenu.addCommand('ftrackPublish', lambda: legacy.createFtrackPublish())
 
         # Set calbacks
+
+        def assetInfoMenuSwitch():
+            # enable and disable asset info depending
+            # on whether an ftrack asset is selected.
+
+            thenode = nuke.thisNode()
+            is_ftrack = thenode.knob('assetVersionId')
+            m = nuke.menu('Nuke')
+            fm = m.findItem('&ftrack')
+            fmi = fm.findItem('Asset Info')
+
+            if is_ftrack:
+                fmi.setEnabled(True)
+            else:
+                fmi.setEnabled(False)
+
+        nuke.addKnobChanged(assetInfoMenuSwitch)
+
+        # other callbacks
         nuke.addOnScriptLoad(legacy.refAssetManager)
         nuke.addOnScriptLoad(legacy.scan_for_new_assets)
         nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='Write')
