@@ -8,6 +8,13 @@
 Release notes
 *************
 
+.. release:: Upcoming
+    
+    .. change:: fixed
+        :tags: Nuke
+
+        Asset Info does not display correct informations.
+
 .. release:: 1.1.0
     :date: 2017-09-12
     
