@@ -220,6 +220,17 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
                 icon='nukex'
             ))
 
+            # Add NukeAssist as a separate application
+            applications.extend(self._searchFilesystem(
+                expression=prefix + ['Nuke.*', 'Nuke\d.+.exe'],
+                versionExpression=nuke_version_expression,
+                launchArguments=['--nukeassist'],
+                label='NukeAssist',
+                variant='{version}',
+                applicationIdentifier='nukeassist_{version}',
+                icon='nuke'
+            ))
+
         elif sys.platform == 'linux2':
 
             applications.extend(self._searchFilesystem(
