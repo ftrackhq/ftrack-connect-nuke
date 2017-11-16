@@ -8,6 +8,15 @@
 Release notes
 *************
 
+.. release:: 1.1.1
+    :date: 2017-11-16
+
+   ..change:: new
+       :tags: Nuke Assist
+
+       Nuke Assist is now available as a lunchable
+       application.
+
 .. release:: 1.1.0
     :date: 2017-09-12
     
