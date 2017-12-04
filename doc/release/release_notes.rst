@@ -8,10 +8,17 @@
 Release notes
 *************
 
+.. release:: upcoming
+
+   .. change:: fixed
+
+      On import set the node color to signify if it is the
+      latest version or not.
+
 .. release:: 1.1.1
     :date: 2017-11-16
 
-   ..change:: new
+   .. change:: new
        :tags: Nuke Assist
 
        Nuke Assist is now available as a lunchable
