@@ -10,6 +10,11 @@ Release notes
 
 .. release:: upcoming
 
+    .. change:: new
+       :tags: Logging
+
+       Improved feedback gathering.
+
    .. change:: fixed
 
       On import set the node color to signify if it is the
