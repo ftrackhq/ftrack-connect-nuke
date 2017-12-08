@@ -1,3 +1,6 @@
+# :coding: utf-8
+# :copyright: Copyright (c) 2017 ftrack
+
 import nuke
 
 import ftrack_connect_nuke
