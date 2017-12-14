@@ -8,7 +8,7 @@
 Release notes
 *************
 
-.. release:: 1.1.1
+.. release:: 1.1.2
     :date: 2017-12-14
 
     .. change:: new
