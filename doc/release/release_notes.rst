@@ -8,6 +8,15 @@
 Release notes
 *************
 
+.. release:: 1.1.3
+    :date: 2018-01-09
+
+    .. change:: fix
+       :tags: Logging
+
+      Make sure usage module is imported in the main module
+      to avoid issues with cx-freeze imports.
+
 .. release:: 1.1.2
     :date: 2017-12-14
 
