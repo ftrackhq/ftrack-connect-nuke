@@ -9,15 +9,17 @@ Release notes
 *************
 
 .. release:: 1.1.3
+
     :date: 2018-01-09
 
     .. change:: fix
        :tags: Logging
 
-      Make sure usage module is imported in the main module
-      to avoid issues with cx-freeze imports.
+       Make sure usage module is imported in the main module
+       to avoid issues with cx-freeze imports.
 
 .. release:: 1.1.2
+
     :date: 2017-12-14
 
     .. change:: new
@@ -31,6 +33,7 @@ Release notes
       latest version or not.
 
 .. release:: 1.1.1
+
     :date: 2017-11-16
 
    .. change:: new
@@ -40,6 +43,7 @@ Release notes
        application.
 
 .. release:: 1.1.0
+
     :date: 2017-09-12
     
     .. change:: fixed
@@ -48,6 +52,7 @@ Release notes
         Nuke 11 is not supported.
 
 .. release:: 1.0.1
+
   :date: 2017-07-11
 
   .. change:: fixed
