@@ -1,7 +1,6 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2017 ftrack
 
-import nuke
 
 import ftrack_connect_nuke
 import ftrack_connect.usage
@@ -9,6 +8,8 @@ import ftrack_connect.usage
 
 def send_event(event_name, metadata=None):
     '''Send usage information to server.'''
+
+    import nuke
 
     if metadata is None:
         metadata = {
