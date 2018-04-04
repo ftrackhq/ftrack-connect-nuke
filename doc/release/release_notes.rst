@@ -8,6 +8,13 @@
 Release notes
 *************
 
+.. release:: Upcoming
+    
+    .. change:: fixed
+        :tags: Nuke
+
+        Nuke does not correctly set frame range on startup.
+
 .. release:: 1.1.3
 
     :date: 2018-01-09
@@ -43,7 +50,6 @@ Release notes
        application.
 
 .. release:: 1.1.0
-
     :date: 2017-09-12
     
     .. change:: fixed
@@ -52,7 +58,6 @@ Release notes
         Nuke 11 is not supported.
 
 .. release:: 1.0.1
-
   :date: 2017-07-11
 
   .. change:: fixed
