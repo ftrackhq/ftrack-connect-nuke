@@ -62,7 +62,11 @@ class GenericAsset(FTAssetType):
         btn = nuke.String_Knob('assetId')
         resultingNode.addKnob(btn)
 
-    def setFTab(self, resultingNode, iAObj):           
+        Connector.setNodeColor(
+            applicationObject=resultingNode.name(), latest=True
+        )
+
+    def setFTab(self, resultingNode, iAObj):
         componentId = ftrack.Component(iAObj.componentId).getEntityRef()
         assetVersionId = ftrack.AssetVersion(iAObj.assetVersionId).getEntityRef()
 

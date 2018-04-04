@@ -7,8 +7,17 @@
 Migration notes
 ***************
 
+
 Migrate to next
 ===============
+
+Start/End Frame from environments
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. _release/migration/next/start_end_frame_from_environments:
+
+Previous to this release it was not possible to have the start frame ($FS) and end frame ($FE)
+set from environments.
 
 .. _release/migration/next/new_render_asset_type:
 
