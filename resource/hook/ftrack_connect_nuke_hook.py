@@ -191,6 +191,14 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
                 icon='nukex'
             ))
 
+            applications.extend(self._searchFilesystem(
+                expression=prefix + ['Nuke.*', 'NukeAssist\d[\w.]+.app'],
+                label='NukeAssist',
+                variant='{version}',
+                applicationIdentifier='nukeassist_{version}',
+                icon='nuke'
+            ))
+
         elif sys.platform == 'win32':
             prefix = ['C:\\', 'Program Files.*']
 
@@ -220,6 +228,17 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
                 icon='nukex'
             ))
 
+            # Add NukeAssist as a separate application
+            applications.extend(self._searchFilesystem(
+                expression=prefix + ['Nuke.*', 'Nuke\d.+.exe'],
+                versionExpression=nuke_version_expression,
+                launchArguments=['--nukeassist'],
+                label='NukeAssist',
+                variant='{version}',
+                applicationIdentifier='nukeassist_{version}',
+                icon='nuke'
+            ))
+
         elif sys.platform == 'linux2':
 
             applications.extend(self._searchFilesystem(
@@ -239,6 +258,16 @@ class ApplicationStore(ftrack_connect.application.ApplicationStore):
                 applicationIdentifier='nukex_{version}',
                 icon='nukex',
                 launchArguments=['--nukex']
+            ))
+
+            applications.extend(self._searchFilesystem(
+                versionExpression=r'Nuke(?P<version>.*)\/.+$',
+                expression=['/', 'usr', 'local', 'Nuke.*', 'Nuke\d.+'],
+                label='NukeAssist',
+                variant='{version}',
+                applicationIdentifier='nukeassist_{version}',
+                icon='nuke',
+                launchArguments=['--nukeassist']
             ))
 
         self.logger.debug(
