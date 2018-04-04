@@ -151,8 +151,7 @@ class Delegate(delegate.Delegate):
         nuke.addKnobChanged(legacy.ftrackPublishKnobChanged, nodeClass="Group")
         nuke.addOnCreate(legacy.ftrackPublishHieroInit)
 
-
-        # set default values from environments:
+        # Set default values from environments.
         start_frame = os.environ.get('FS', 0)
         end_frame = os.environ.get('FE', 100)
 
