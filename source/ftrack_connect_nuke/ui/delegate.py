@@ -1,6 +1,7 @@
 # :coding: utf-8
 # :copyright: Copyright (c) 2014 ftrack
 
+import os
 import FnAssetAPI
 from ftrack_connect_foundry.ui import delegate
 import ftrack_connect.ui.theme
@@ -179,6 +180,15 @@ class Delegate(delegate.Delegate):
         nuke.addKnobChanged(legacy.ftrackPublishKnobChanged, nodeClass="Group")
         nuke.addOnCreate(legacy.ftrackPublishHieroInit)
 
+        # Set default values from environments.
+        start_frame = os.environ.get('FS', 0)
+        end_frame = os.environ.get('FE', 100)
+
+        FnAssetAPI.logging.debug('Setting start frame : {}'.format(start_frame))
+        nuke.knob('root.first_frame', str(start_frame))
+        FnAssetAPI.logging.debug('Setting end frame : {}'.format(end_frame))
+        nuke.knob('root.last_frame', str(end_frame))
+
     def populateUI(self, uiElement, specification, context):
         super(Delegate, self).populateUI(uiElement, specification, context)
 
@@ -190,3 +200,5 @@ class Delegate(delegate.Delegate):
             # Set font on QApplication once UI is created.
             # We do this once since it takes some time to apply the font.
             ftrack_connect.ui.theme.applyFont()
+
+

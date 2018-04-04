@@ -9,11 +9,50 @@ Release notes
 *************
 
 .. release:: Upcoming
-    
+        
     .. change:: fixed
         :tags: Nuke
 
         Asset Info does not display correct informations.
+
+    .. change:: fixed
+        :tags: Nuke
+
+        Nuke does not correctly set frame range on startup.
+
+.. release:: 1.1.3
+
+    :date: 2018-01-09
+
+    .. change:: fix
+       :tags: Logging
+
+       Make sure usage module is imported in the main module
+       to avoid issues with cx-freeze imports.
+
+.. release:: 1.1.2
+
+    :date: 2017-12-14
+
+    .. change:: new
+       :tags: Logging
+
+       Improved feedback gathering.
+
+   .. change:: fixed
+
+      On import set the node color to signify if it is the
+      latest version or not.
+
+.. release:: 1.1.1
+
+    :date: 2017-11-16
+
+   .. change:: new
+       :tags: Nuke Assist
+
+       Nuke Assist is now available as a lunchable
+       application.
 
 .. release:: 1.1.0
     :date: 2017-09-12
