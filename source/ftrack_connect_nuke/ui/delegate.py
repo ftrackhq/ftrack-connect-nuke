@@ -155,12 +155,10 @@ class Delegate(delegate.Delegate):
         start_frame = os.environ.get('FS', 0)
         end_frame = os.environ.get('FE', 100)
 
-        FnAssetAPI.logging.debug('Setting start frame : %s' % start_frame)
-        nuke.knob("root.first_frame", str(start_frame))
-
-        FnAssetAPI.logging.debug('Setting end frame : %s' % end_frame)
-        nuke.knob("root.last_frame", str(end_frame))
-
+        FnAssetAPI.logging.debug('Setting start frame : {}'.format(start_frame))
+        nuke.knob('root.first_frame', str(start_frame))
+        FnAssetAPI.logging.debug('Setting end frame : {}'.format(end_frame))
+        nuke.knob('root.last_frame', str(end_frame))
 
     def populateUI(self, uiElement, specification, context):
         super(Delegate, self).populateUI(uiElement, specification, context)
