@@ -154,22 +154,21 @@ class Delegate(delegate.Delegate):
 
         # Set calbacks
 
-        def assetInfoMenuSwitch():
-            # enable and disable asset info depending
-            # on whether an ftrack asset is selected.
+        def asset_info_menu_switch():
+            '''Enable and disable asset info depending on selection.'''
 
-            thenode = nuke.thisNode()
-            is_ftrack = thenode.knob('assetVersionId')
-            m = nuke.menu('Nuke')
-            fm = m.findItem('&ftrack')
-            fmi = fm.findItem('Asset Info')
+            this_node = nuke.thisNode()
+            is_ftrack = this_node.knob('assetVersionId')
+            nuke_menu = nuke.menu('Nuke')
+            menu_item = nuke_menu.findItem('&ftrack')
+            asset_info_menu = menu_item.findItem('Asset Info')
 
             if is_ftrack:
-                fmi.setEnabled(True)
+                asset_info_menu.setEnabled(True)
             else:
-                fmi.setEnabled(False)
+                asset_info_menu.setEnabled(False)
 
-        nuke.addKnobChanged(assetInfoMenuSwitch)
+        nuke.addKnobChanged(asset_info_menu_switch)
 
         # other callbacks
         nuke.addOnScriptLoad(legacy.refAssetManager)
