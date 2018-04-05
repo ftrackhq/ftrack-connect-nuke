@@ -122,10 +122,11 @@ class ImageSequenceAsset(GenericAsset):
             return
         else:
             resultingNode = nuke.createNode('Read', inpanel=False)
-            resultingNode['name'].setValue(
+            name = (
                 HelpFunctions.safeString(iAObj.assetName) + '_' +
                 HelpFunctions.safeString(iAObj.componentName)
             )
+            resultingNode['name'].setValue(Connector.getUniqueSceneName(name))
 
         self.addFTab(resultingNode)
 
@@ -439,10 +440,11 @@ class RenderAsset(GenericAsset):
     def importAsset(self, iAObj=None):
         '''Import asset as new node.'''
         resultingNode = nuke.createNode('Read', inpanel=False)
-        resultingNode['name'].setValue(
+        name = (
             HelpFunctions.safeString(iAObj.assetName) + '_' +
             HelpFunctions.safeString(iAObj.componentName)
         )
+        resultingNode['name'].setValue(Connector.getUniqueSceneName(name))
 
         resultingNode['file'].fromUserText(
             HelpFunctions.safeString(iAObj.filePath)

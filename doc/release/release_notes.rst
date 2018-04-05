@@ -16,6 +16,11 @@ Release notes
         Asset Info does not display correct informations.
 
     .. change:: fixed
+        :tags: Assets
+
+        Support for importing all assets multiple times.
+
+    .. change:: fixed
         :tags: Nuke
 
         Nuke does not correctly set frame range on startup.
