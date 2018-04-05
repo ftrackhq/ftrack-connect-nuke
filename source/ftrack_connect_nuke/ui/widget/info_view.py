@@ -6,9 +6,7 @@ from ftrack_connect_foundry.ui.info_view import InfoView
 import nuke
 
 
-class AssetInfoView(
-    InfoView
-):
+class AssetInfoView(InfoView):
     '''Display information about selected entity.'''
 
     _kIdentifier = 'com.ftrack.asset_information_panel'
