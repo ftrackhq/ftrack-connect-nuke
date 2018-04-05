@@ -9,11 +9,16 @@ Release notes
 *************
 
 .. release:: Upcoming
-    
+
     .. change:: fixed
         :tags: Nuke
 
         Nuke does not correctly set frame range on startup.
+
+    .. change:: fixed
+        :tags: Assets
+
+        Support for importing all assets multiple times.
 
 .. release:: 1.1.3
 
@@ -51,7 +56,7 @@ Release notes
 
 .. release:: 1.1.0
     :date: 2017-09-12
-    
+
     .. change:: fixed
         :tags: Nuke
 
