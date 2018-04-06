@@ -13,7 +13,8 @@ Release notes
     .. change:: changed
         :tags: Crew
 
-        Remove Crew widget chat and in-app notifications.
+        Remove Crew widget chat and notifications.
+
 
     .. change:: fixed
         :tags: Nuke
