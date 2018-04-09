@@ -8,7 +8,7 @@ from FnAssetAPI import logging
 from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 
 
-class ScriptEditorWidget(QtGui.QWidget):
+class ScriptEditorWidget(QtWidgets.QWidget):
     file_dropped = QtCore.Signal(str)
 
     def __init__(self, parent=None):
@@ -17,7 +17,7 @@ class ScriptEditorWidget(QtGui.QWidget):
         self.setupUI()
 
     def setupUI(self):
-        main_layout = QtGui.QVBoxLayout(self)
+        main_layout = QtWidgets.QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
         self._script_editor_tree = ScriptEditorTreeView(self)
@@ -30,8 +30,8 @@ class ScriptEditorWidget(QtGui.QWidget):
         self._script_editor_tree.file_dropped.connect(self._emit_dropped_file)
         main_layout.addWidget(self._script_editor_tree)
 
-        self._option_frame = QtGui.QFrame(self)
-        option_layout = QtGui.QHBoxLayout(self._option_frame)
+        self._option_frame = QtWidgets.QFrame(self)
+        option_layout = QtWidgets.QHBoxLayout(self._option_frame)
         option_layout.setContentsMargins(0, 8, 0, 8)
         option_layout.setSpacing(8)
         # filter_lbl = QtGui.QLabel("Filter", self._option_frame)
@@ -40,29 +40,30 @@ class ScriptEditorWidget(QtGui.QWidget):
                     background: #555; color: #000; }
         """
 
-        self._filter_edit = QtGui.QLineEdit(self._option_frame)
+        self._filter_edit = QtWidgets.QLineEdit(self._option_frame)
         self._filter_edit.setMaximumHeight(20)
         # self._filter_edit.setStyleSheet(css_filter)
         self._filter_edit.textChanged.connect(self._set_filter)
-        self._previous_occurence = QtGui.QPushButton('previous', self._option_frame)
+        self._previous_occurence = QtWidgets.QPushButton('previous', self._option_frame)
         # self._previous_occurence.setArrowType(QtCore.Qt.LeftArrow)
         # self._previous_occurence.setMaximumWidth(20)
         # self._previous_occurence.setMaximumHeight(20)
-        self._next_occurence = QtGui.QPushButton('next',self._option_frame)
+        self._next_occurence = QtWidgets.QPushButton('next',self._option_frame)
         # self._next_occurence.setArrowType(QtCore.Qt.RightArrow)
         # self._next_occurence.setMaximumWidth(20)
         # self._next_occurence.setMaximumHeight(20)
-        spacer = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Minimum
+        spacer = QtWidgets.QSpacerItem(40, 20,
+           QtWidgets.QSizePolicy.Expanding,
+           QtWidgets.QSizePolicy.Minimum
         )
-        self._collapse_all_btn = QtGui.QPushButton(
+        self._collapse_all_btn = QtWidgets.QPushButton(
             "Collapse All", self._option_frame)
         self._collapse_all_btn.setMaximumHeight(20)
         # self._collapse_all_btn.setStyleSheet(css_btn)
         self._collapse_all_btn.clicked.connect(
             self._script_editor_tree.collapseAll)
-        self._expand_all_btn = QtGui.QPushButton(
+
+        self._expand_all_btn = QtWidgets.QPushButton(
             "Expand All", self._option_frame)
         self._expand_all_btn.setMaximumHeight(20)
         # self._expand_all_btn.setStyleSheet(css_btn)
@@ -331,7 +332,7 @@ class ScriptEditorItem(QtGui.QStandardItem):
 ##############################################################################
 
 
-class ScriptEditorTreeView(QtGui.QTreeView):
+class ScriptEditorTreeView(QtWidgets.QTreeView):
     file_dropped = QtCore.Signal(str)
 
     def __init__(self, parent=None):
@@ -492,7 +493,7 @@ class ScriptEditorTreeView(QtGui.QTreeView):
         return super(ScriptEditorTreeView, self).viewportEvent(event)
 
 
-class ScriptEditorItemDelegate(QtGui.QStyledItemDelegate):
+class ScriptEditorItemDelegate(QtWidgets.QStyledItemDelegate):
 
     ''' Delegate object to repaint the tree widget items
     '''
