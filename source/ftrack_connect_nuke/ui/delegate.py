@@ -158,15 +158,19 @@ class Delegate(delegate.Delegate):
             '''Enable and disable asset info depending on selection.'''
 
             this_node = nuke.thisNode()
-            is_ftrack = this_node.knob('assetVersionId')
+            try:
+                is_ftrack = this_node.knob('assetVersionId')
+            except ValueError:
+                is_ftrack = False
             nuke_menu = nuke.menu('Nuke')
             menu_item = nuke_menu.findItem('&ftrack')
             asset_info_menu = menu_item.findItem('Asset Info')
 
-            if is_ftrack:
-                asset_info_menu.setEnabled(True)
-            else:
-                asset_info_menu.setEnabled(False)
+            if has_webwidgets and asset_info_menu:
+                if is_ftrack:
+                    asset_info_menu.setEnabled(True)
+                else:
+                    asset_info_menu.setEnabled(False)
 
         nuke.addKnobChanged(asset_info_menu_switch)
 
