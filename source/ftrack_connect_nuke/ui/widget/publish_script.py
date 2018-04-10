@@ -51,23 +51,23 @@ class ScriptPublisherDialog(BaseDialog):
 
         # HEADER
 
-        self.asset_conn_container = QtGui.QWidget(self.main_container)
-        self.asset_conn_container_layout = QtGui.QHBoxLayout()
+        self.asset_conn_container = QtWidgets.QWidget(self.main_container)
+        self.asset_conn_container_layout = QtWidgets.QHBoxLayout()
         self.asset_conn_container.setLayout(self.asset_conn_container_layout)
         # self.main_container_layout.addWidget(self.asset_conn_container)
 
-        self.asset_conn_label = QtGui.QLabel('Type', self.main_container)
+        self.asset_conn_label = QtWidgets.QLabel('Type', self.main_container)
         self.asset_conn_label.setMinimumWidth(60)
 
-        self.asset_conn_combo = QtGui.QComboBox(self.main_container)
+        self.asset_conn_combo = QtWidgets.QComboBox(self.main_container)
         self.asset_conn_combo.setMinimumHeight(23)
         self.asset_conn_combo.addItems(self._connectors_per_type.keys())
 
-        spacer_asset_type = QtGui.QSpacerItem(
+        spacer_asset_type = QtWidgets.QSpacerItem(
             0,
             0,
-            QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Minimum
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Minimum
         )
 
         self.asset_conn_container_layout.addWidget(self.asset_conn_label)
@@ -77,19 +77,19 @@ class ScriptPublisherDialog(BaseDialog):
         self.tasks_main_container_layout.addWidget(self.asset_conn_container)
 
         # Create "main content" for the publisher
-        self.publish_container = QtGui.QWidget(self.main_container)
+        self.publish_container = QtWidgets.QWidget(self.main_container)
         self.publish_container.setSizePolicy(
             QtGui.QSizePolicy.Expanding,
             QtGui.QSizePolicy.Expanding,
         )
-        self.publish_container_layout = QtGui.QHBoxLayout()
+        self.publish_container_layout = QtWidgets.QHBoxLayout()
         self.publish_container_layout.setContentsMargins(0, 0, 0, 0)
         self.publish_container.setLayout(self.publish_container_layout)
 
         self.main_container_layout.addWidget(self.publish_container)
 
         # Create "main content" splitter for the publisher
-        self.publish_splitter = QtGui.QSplitter(self.publish_container)
+        self.publish_splitter = QtWidgets.QSplitter(self.publish_container)
         self.publish_splitter.setContentsMargins(0, 0, 0, 0)
         self.publish_splitter.setChildrenCollapsible(False)
 
@@ -97,11 +97,11 @@ class ScriptPublisherDialog(BaseDialog):
         self.publish_container_layout.setContentsMargins(0, 0, 0, 0)
 
         # Create left and right containers for the splitter
-        self.publish_left_container = QtGui.QWidget(self.publish_splitter)
-        self.publish_right_container = QtGui.QWidget(self.publish_splitter)
+        self.publish_left_container = QtWidgets.QWidget(self.publish_splitter)
+        self.publish_right_container = QtWidgets.QWidget(self.publish_splitter)
 
-        self.publish_left_container_layout = QtGui.QVBoxLayout()
-        self.publish_right_container_layout = QtGui.QVBoxLayout()
+        self.publish_left_container_layout = QtWidgets.QVBoxLayout()
+        self.publish_right_container_layout = QtWidgets.QVBoxLayout()
         self.publish_right_container_layout.setContentsMargins(5, 0, 0, 0)
 
         self.publish_left_container.setLayout(
@@ -122,13 +122,13 @@ class ScriptPublisherDialog(BaseDialog):
         # Right Splitter Containers
         css_asset_version = "color: #de8888; font-weight: bold;"
 
-        self.right_top_container = QtGui.QFrame(self.publish_right_container)
-        self.right_mid_container = QtGui.QFrame(self.publish_right_container)
-        self.right_bot_container = QtGui.QFrame(self.publish_right_container)
+        self.right_top_container = QtWidgets.QFrame(self.publish_right_container)
+        self.right_mid_container = QtWidgets.QFrame(self.publish_right_container)
+        self.right_bot_container = QtWidgets.QFrame(self.publish_right_container)
 
-        self.right_top_container_layout = QtGui.QHBoxLayout()
-        self.right_mid_container_layout = QtGui.QHBoxLayout()
-        self.right_bot_container_layout = QtGui.QHBoxLayout()
+        self.right_top_container_layout = QtWidgets.QHBoxLayout()
+        self.right_mid_container_layout = QtWidgets.QHBoxLayout()
+        self.right_bot_container_layout = QtWidgets.QHBoxLayout()
 
         self.right_top_container.setLayout(self.right_top_container_layout)
         self.right_mid_container.setLayout(self.right_mid_container_layout)
@@ -139,16 +139,16 @@ class ScriptPublisherDialog(BaseDialog):
         self.publish_right_container_layout.addWidget(self.right_bot_container)
 
         # Right Splitter TOP Container
-        asset_title_label = QtGui.QLabel('Asset', self.right_top_container)
-        self._asset_name = QtGui.QLabel('Loading...', self.right_top_container)
-        asset_spacer = QtGui.QSpacerItem(
+        asset_title_label = QtWidgets.QLabel('Asset', self.right_top_container)
+        self._asset_name = QtWidgets.QLabel('Loading...', self.right_top_container)
+        asset_spacer = QtWidgets.QSpacerItem(
             0,
             0,
-            QtGui.QSizePolicy.Expanding,
-            QtGui.QSizePolicy.Minimum
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Minimum
         )
-        version_title_label = QtGui.QLabel('Version', self.right_top_container)
-        self._asset_version = QtGui.QLabel(
+        version_title_label = QtWidgets.QLabel('Version', self.right_top_container)
+        self._asset_version = QtWidgets.QLabel(
             'Loading...',
             self.right_top_container
         )

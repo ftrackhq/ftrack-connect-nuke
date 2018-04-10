@@ -14,7 +14,7 @@ from scene_stats_widget import StatisticWidget
 from status_widget import StatusWidget
 
 
-class SceneVersionWidget(QtGui.QWidget):
+class SceneVersionWidget(QtWidgets.QWidget):
     notify = QtCore.Signal((str, str))
 
     def __init__(self, parent=None):
@@ -29,7 +29,7 @@ class SceneVersionWidget(QtGui.QWidget):
         main_layout.setSpacing(0)
 
         self._empty_asset_version = NoSceneVersionWidget(self)
-        self._stackLayout = QtGui.QStackedLayout()
+        self._stackLayout = QtWidgets.QStackedLayout()
         self._stackLayout.addWidget(self._empty_asset_version)
         main_layout.addLayout(self._stackLayout)
         # self.setStyleSheet()
@@ -67,7 +67,7 @@ class SceneVersionWidget(QtGui.QWidget):
         return widget.locked
 
 
-class NoSceneVersionWidget(QtGui.QWidget):
+class NoSceneVersionWidget(QtWidgets.QWidget):
     notify = QtCore.Signal((str, str))
 
     def __init__(self, parent=None):
@@ -82,20 +82,20 @@ class NoSceneVersionWidget(QtGui.QWidget):
         css_image = """
         background: url(':ftrack/image/integration/no-asset') no-repeat center center;
         """
-        main_layout = QtGui.QHBoxLayout(self)
+        main_layout = QtWidgets.QHBoxLayout(self)
 
-        frame = QtGui.QFrame(self)
+        frame = QtWidgets.QFrame(self)
         frame.setMaximumSize(QtCore.QSize(350, 400))
         frame.setStyleSheet(css_loading)
         frame.setFrameShape(QtGui.QFrame.StyledPanel)
         frame.setFrameShadow(QtGui.QFrame.Raised)
-        frame_layout = QtGui.QVBoxLayout(frame)
+        frame_layout = QtWidgets.QVBoxLayout(frame)
 
-        movie_screen = QtGui.QFrame(frame)
+        movie_screen = QtWidgets.QFrame(frame)
         movie_screen.setMinimumSize(QtCore.QSize(300, 300))
         movie_screen.setStyleSheet(css_image)
 
-        warning = QtGui.QLabel(frame)
+        warning = QtWidgets.QLabel(frame)
         warning.setText("No scene asset found for the selected task")
         warning.setWordWrap(True)
         warning.setAlignment(QtCore.Qt.AlignCenter)
@@ -106,7 +106,7 @@ class NoSceneVersionWidget(QtGui.QWidget):
         main_layout.addWidget(frame)
 
 
-class ThumbnailWidget(QtGui.QLabel):
+class ThumbnailWidget(QtWidgets.QLabel):
 
     def __init__(self, parent=None, image=None):
         super(ThumbnailWidget, self).__init__(parent)
@@ -131,7 +131,7 @@ class ThumbnailWidget(QtGui.QLabel):
         self.setPixmap(pixmap_scaled)
 
 
-class SingleSceneVersionWidget(QtGui.QWidget):
+class SingleSceneVersionWidget(QtWidgets.QWidget):
     notify = QtCore.Signal((str, str))
 
     def __init__(self, scene_version=None, parent=None):
@@ -160,13 +160,13 @@ class SingleSceneVersionWidget(QtGui.QWidget):
 
         self.setMinimumWidth(700)
 
-        asset_frame_layout = QtGui.QVBoxLayout(self)
+        asset_frame_layout = QtWidgets.QVBoxLayout(self)
         asset_frame_layout.setContentsMargins(0, 0, 0, 0)
         asset_frame_layout.setSpacing(10)
 
-        asset_main_frame = QtGui.QFrame(self)
+        asset_main_frame = QtWidgets.QFrame(self)
         asset_main_frame.setStyleSheet(css_asset_global)
-        asset_main_frame_layout = QtGui.QHBoxLayout(asset_main_frame)
+        asset_main_frame_layout = QtWidgets.QHBoxLayout(asset_main_frame)
         asset_main_frame_layout.setSpacing(10)
         asset_name_lbl = QtGui.QLabel("Asset", asset_main_frame)
         self._asset_name = QtGui.QLabel("...", asset_main_frame)
@@ -174,8 +174,8 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         spacer_asset = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Expanding,
                                          QtGui.QSizePolicy.Minimum)
 
-        asset_version_lbl = QtGui.QLabel("Version", asset_main_frame)
-        self._asset_version = QtGui.QLabel("...", asset_main_frame)
+        asset_version_lbl = QtWidgets.QLabel("Version", asset_main_frame)
+        self._asset_version = QtWidgets.QLabel("...", asset_main_frame)
         self._asset_version.setStyleSheet(css_asset_version)
         asset_main_frame_layout.addWidget(asset_name_lbl)
         asset_main_frame_layout.addWidget(self._asset_name)
@@ -184,7 +184,7 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         asset_main_frame_layout.addWidget(self._asset_version)
         asset_frame_layout.addWidget(asset_main_frame)
 
-        overview_layout = QtGui.QHBoxLayout()
+        overview_layout = QtWidgets.QHBoxLayout()
         overview_layout.setContentsMargins(0, 0, 0, 0)
         overview_layout.setSpacing(10)
 
@@ -195,62 +195,62 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         self._infos_layout.setContentsMargins(0, 0, 0, 0)
         self._infos_layout.setSpacing(10)
 
-        asset_type_lbl = QtGui.QLabel("Asset type", self)
+        asset_type_lbl = QtWidgets.QLabel("Asset type", self)
         asset_type_lbl.setStyleSheet(self._css_lbl)
-        self._asset_type = QtGui.QLabel(self)
+        self._asset_type = QtWidgets.QLabel(self)
         self.set_asset_type("...")
-        status_lbl = QtGui.QLabel("Status", self)
+        status_lbl = QtWidgets.QLabel("Status", self)
         status_lbl.setStyleSheet(self._css_lbl)
         self._status = StatusWidget(ftrack.getTaskStatuses(), self)
         self._status.set_read_only(True)
 
-        publish_lbl = QtGui.QLabel("Published by", self)
+        publish_lbl = QtWidgets.QLabel("Published by", self)
         publish_lbl.setStyleSheet(self._css_lbl)
-        self._owner = QtGui.QLabel("...", self)
+        self._owner = QtWidgets.QLabel("...", self)
         self._owner.setTextFormat(QtCore.Qt.RichText)
         self._owner.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
         self._owner.setOpenExternalLinks(True)
-        date_lbl = QtGui.QLabel("on", self)
+        date_lbl = QtWidgets.QLabel("on", self)
         date_lbl.setStyleSheet(self._css_lbl)
-        self._date = QtGui.QLabel(self)
+        self._date = QtWidgets.QLabel(self)
         self._date.setStyleSheet(self._css_value)
 
         self._editor = None
         self._date_edit = None
 
-        availability_lbl = QtGui.QLabel("Availability", self)
+        availability_lbl = QtWidgets.QLabel("Availability", self)
         availability_lbl.setStyleSheet(self._css_lbl)
-        self._availability = QtGui.QLabel(self)
+        self._availability = QtWidgets.QLabel(self)
         self._availability.setStyleSheet(self._css_value)
-        comment_lbl = QtGui.QLabel("Comment", self)
+        comment_lbl = QtWidgets.QLabel("Comment", self)
         comment_lbl.setStyleSheet(self._css_lbl)
-        self._comment = QtGui.QLabel("...", self)
+        self._comment = QtWidgets.QLabel("...", self)
         self._comment.setWordWrap(True)
         self._comment.setStyleSheet(css_comment)
 
         self._infos_layout.setWidget(
-            0, QtGui.QFormLayout.LabelRole, asset_type_lbl)
+            0, QtWidgets.QFormLayout.LabelRole, asset_type_lbl)
         self._infos_layout.setWidget(
-            0, QtGui.QFormLayout.FieldRole, self._asset_type)
+            0, QtWidgets.QFormLayout.FieldRole, self._asset_type)
         self._infos_layout.setWidget(
-            1, QtGui.QFormLayout.LabelRole, status_lbl)
+            1, QtWidgets.QFormLayout.LabelRole, status_lbl)
         self._infos_layout.setWidget(
-            1, QtGui.QFormLayout.FieldRole, self._status)
+            1, QtWidgets.QFormLayout.FieldRole, self._status)
         self._infos_layout.setWidget(
-            2, QtGui.QFormLayout.LabelRole, publish_lbl)
+            2, QtWidgets.QFormLayout.LabelRole, publish_lbl)
         self._infos_layout.setWidget(
-            2, QtGui.QFormLayout.FieldRole, self._owner)
+            2, QtWidgets.QFormLayout.FieldRole, self._owner)
         self._infos_layout.setWidget(3, QtGui.QFormLayout.LabelRole, date_lbl)
         self._infos_layout.setWidget(
-            3, QtGui.QFormLayout.FieldRole, self._date)
+            3, QtWidgets.QFormLayout.FieldRole, self._date)
         self._infos_layout.setWidget(
-            4, QtGui.QFormLayout.LabelRole, availability_lbl)
+            4, QtWidgets.QFormLayout.LabelRole, availability_lbl)
         self._infos_layout.setWidget(
-            4, QtGui.QFormLayout.FieldRole, self._availability)
+            4, QtWidgets.QFormLayout.FieldRole, self._availability)
         self._infos_layout.setWidget(
-            5, QtGui.QFormLayout.LabelRole, comment_lbl)
+            5, QtWidgets.QFormLayout.LabelRole, comment_lbl)
         self._infos_layout.setWidget(
-            5, QtGui.QFormLayout.FieldRole, self._comment)
+            5, QtWidgets.QFormLayout.FieldRole, self._comment)
         overview_layout.addItem(self._infos_layout)
 
         spacer_overview = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Expanding,
@@ -258,7 +258,7 @@ class SingleSceneVersionWidget(QtGui.QWidget):
         overview_layout.addItem(spacer_overview)
         asset_frame_layout.addItem(overview_layout)
 
-        self._tab_widget = QtGui.QTabWidget(self)
+        self._tab_widget = QtWidgets.QTabWidget(self)
         css_tab = """
         /*
         QTabWidget::pane { border-top: 2px solid #151515; top: -2px;
@@ -281,8 +281,8 @@ class SingleSceneVersionWidget(QtGui.QWidget):
 
         # Display asset history
 
-        tab_asset_history = QtGui.QWidget()
-        tab_asset_history_layout = QtGui.QVBoxLayout(tab_asset_history)
+        tab_asset_history = QtWidgets.QWidget()
+        tab_asset_history_layout = QtWidgets.QVBoxLayout(tab_asset_history)
         tab_asset_history_layout.setContentsMargins(0, 8, 0, 0)
         self._graph_widget = StatisticWidget(self.scene_version, self)
         tab_asset_history_layout.addWidget(self._graph_widget)
@@ -290,8 +290,8 @@ class SingleSceneVersionWidget(QtGui.QWidget):
 
         asset_frame_layout.addWidget(self._tab_widget)
 
-        spacer_global = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum,
-                                          QtGui.QSizePolicy.Expanding)
+        spacer_global = QtWidgets.QSpacerItem(0, 0, QtWidgets.QSizePolicy.Minimum,
+                                          QtWidgets.QSizePolicy.Expanding)
         asset_frame_layout.addItem(spacer_global)
 
     def _load_image(self, image):

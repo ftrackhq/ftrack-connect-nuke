@@ -9,7 +9,7 @@ from FnAssetAPI import logging
 from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 
 
-class StatisticWidget(QtGui.QWidget):
+class StatisticWidget(QtWidgets.QWidget):
 
     def __init__(self, scene_version, parent=None):
         super(StatisticWidget, self).__init__(parent)
@@ -79,11 +79,11 @@ class StatisticWidget(QtGui.QWidget):
 
     def setupUI(self):
         self.setMinimumHeight(350)
-        layout = QtGui.QVBoxLayout(self)
+        layout = QtWidgets.QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        self._stats_cbbox = QtGui.QComboBox(self)
+        self._stats_cbbox = QtWidgets.QComboBox(self)
         self._stats_cbbox.setObjectName('stat-combo')
         self._stats_cbbox.addItems(self._tracked_elts)
         self._stats_cbbox.setMinimumHeight(25)
@@ -109,7 +109,7 @@ class StatisticWidget(QtGui.QWidget):
 
         layout.addWidget(self._stats_cbbox)
 
-        self._stackLayout = QtGui.QStackedLayout()
+        self._stackLayout = QtWidgets.QStackedLayout()
         layout.addLayout(self._stackLayout)
 
     def set_graph(self):
