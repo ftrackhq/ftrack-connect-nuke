@@ -16,7 +16,7 @@ from ftrack_connect.ui import resource
 from ftrack_connect_nuke.ui.controller import Controller
 
 
-class TreeDelegateStyle(QtGui.QStyledItemDelegate):
+class TreeDelegateStyle(QtWidgets.QStyledItemDelegate):
 
     def __init__(self, parent, minimum_width=200, show_thumbnail=True):
         super(TreeDelegateStyle, self).__init__(parent)
@@ -698,7 +698,7 @@ class AssetSortFilter(QtGui.QSortFilterProxyModel):
         return self.filterRegExp().indexIn(regexp_filter_source) != -1
 
 
-class AssetsTree(QtGui.QTreeView):
+class AssetsTree(QtWidgets.QTreeView):
     asset_version_selected = QtCore.Signal(object)
     resized = QtCore.Signal()
     create_asset = QtCore.Signal(object)
