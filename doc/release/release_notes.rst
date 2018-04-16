@@ -10,6 +10,12 @@ Release notes
 
 .. release:: Upcoming
 
+    .. change:: changed
+        :tags: Crew
+
+        Remove Crew widget chat and notifications.
+
+
     .. change:: fixed
         :tags: Nuke
 
