@@ -10,11 +10,15 @@ Release notes
 
 .. release:: Upcoming
 
+    .. change:: fixed
+        :tags: API
+
+        Not all the code has been ported to PySide2.
+
     .. change:: changed
         :tags: Crew
 
         Remove Crew widget chat and notifications.
-
 
     .. change:: fixed
         :tags: Nuke
