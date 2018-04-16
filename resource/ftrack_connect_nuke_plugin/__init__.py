@@ -21,13 +21,6 @@ logger.addHandler(handler)
 # Setup ftrack API.
 ftrack.setup()
 
-# Import crew hub to instantiate a global crew hub.
-import ftrack_connect_nuke.crew_hub
-
-# Start thread to handle events from ftrack.
-eventHubThread = ftrack_connect.event_hub_thread.EventHubThread()
-eventHubThread.start()
-
 # Assign to name that Foundry API will search for in order to register plugin.
 plugin = ftrack_connect_nuke.plugin.Plugin
 
