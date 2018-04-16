@@ -22,7 +22,7 @@ class ScriptEditorWidget(QtWidgets.QWidget):
         main_layout.setSpacing(0)
         self._script_editor_tree = ScriptEditorTreeView(self)
         self._script_editor_tree.setSelectionMode(
-            QtGui.QAbstractItemView.NoSelection)
+            QtWidgets.QAbstractItemView.NoSelection)
         self._script_editor_tree.setIndentation(20)
         self._script_editor_tree.setAnimated(True)
         self._script_editor_tree.setHeaderHidden(True)
@@ -363,7 +363,7 @@ class ScriptEditorTreeView(QtWidgets.QTreeView):
         self.setStyleSheet(css_tree)
 
         self.setAcceptDrops(True)
-        self.setDragDropMode(QtGui.QAbstractItemView.DropOnly)
+        self.setDragDropMode(QtWidgets.QAbstractItemView.DropOnly)
         self.setDropIndicatorShown(True)
 
         self._drag_over = False
