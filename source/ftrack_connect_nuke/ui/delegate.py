@@ -4,14 +4,13 @@
 import os
 import FnAssetAPI
 from ftrack_connect_foundry.ui import delegate
-
 import ftrack_connect.ui.theme
 
 
 class Delegate(delegate.Delegate):
     def __init__(self, bridge):
         super(Delegate, self).__init__(bridge)
-
+        self._bridge = bridge
         self.moduleName =  ".".join(__name__.split(".")[:-1])
 
     def populate_ftrack(self):
@@ -82,15 +81,26 @@ class Delegate(delegate.Delegate):
         )
 
         if has_webwidgets:
-            from ftrack_connect_foundry.ui.info_view import InfoView as _InfoView
+
+            def wrapAssetInfoDialog(*args, **kwargs):
+                from ftrack_connect_nuke.ui.widget.info_view import AssetInfoView
+                return AssetInfoView(bridge=self._bridge)
+
+            globals()['ftrackAssetInfoDialogClass'] = wrapAssetInfoDialog
+
+            # Create the crew dialog entry in the menu
+            panels.registerWidgetAsPanel(
+                '{0}.{1}'.format(__name__, 'ftrackAssetInfoDialogClass'),
+                'ftrackAssetInfo',
+                'ftrackDialogs.ftrackAssetInfoDialog'
+
+            )
 
             ftrackMenu.addCommand(
-                _InfoView.getDisplayName(),
+                'Asset Info',
                 'pane = nuke.getPaneFor("Properties.1");'
-                'panel = nukescripts.restorePanel("{identifier}");'
-                'panel.addToPane(pane)'.format(
-                    identifier=_InfoView.getIdentifier()
-                )
+                'panel = nukescripts.restorePanel("ftrackDialogs.ftrackAssetInfoDialog");'
+                'panel.addToPane(pane)'
             )
 
         ftrackMenu.addSeparator()
@@ -129,6 +139,28 @@ class Delegate(delegate.Delegate):
         ftrackNodesMenu.addCommand('ftrackPublish', lambda: legacy.createFtrackPublish())
 
         # Set calbacks
+
+        def asset_info_menu_switch():
+            '''Enable and disable asset info depending on selection.'''
+
+            this_node = nuke.thisNode()
+            try:
+                is_ftrack = this_node.knob('assetVersionId')
+            except ValueError:
+                is_ftrack = False
+            nuke_menu = nuke.menu('Nuke')
+            menu_item = nuke_menu.findItem('&ftrack')
+            asset_info_menu = menu_item.findItem('Asset Info')
+
+            if has_webwidgets and asset_info_menu:
+                if is_ftrack:
+                    asset_info_menu.setEnabled(True)
+                else:
+                    asset_info_menu.setEnabled(False)
+
+        nuke.addKnobChanged(asset_info_menu_switch)
+
+        # other callbacks
         nuke.addOnScriptLoad(legacy.refAssetManager)
         nuke.addOnScriptLoad(legacy.scan_for_new_assets)
         nuke.addOnUserCreate(legacy.addFtrackComponentField, nodeClass='Write')

@@ -12,6 +12,11 @@ Release notes
     :date: 2018-04-27
 
     .. change:: fixed
+        :tags: Nuke
+
+        Asset Info does not display correct informations.
+
+    .. change:: fixed
         :tags: API
 
         Not all the code has been ported to PySide2.
