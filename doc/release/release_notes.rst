@@ -8,22 +8,33 @@
 Release notes
 *************
 
-.. release:: Upcoming
-        
+.. release:: 1.1.4
+    :date: 2018-04-27
+
     .. change:: fixed
         :tags: Nuke
 
         Asset Info does not display correct informations.
 
     .. change:: fixed
-        :tags: Assets
+        :tags: API
 
-        Support for importing all assets multiple times.
+        Not all the code has been ported to PySide2.
+
+    .. change:: changed
+        :tags: Crew
+
+        Remove Crew widget chat and notifications.
 
     .. change:: fixed
         :tags: Nuke
 
         Nuke does not correctly set frame range on startup.
+
+    .. change:: fixed
+        :tags: Assets
+
+        Support for importing all assets multiple times.
 
 .. release:: 1.1.3
 
@@ -61,7 +72,7 @@ Release notes
 
 .. release:: 1.1.0
     :date: 2017-09-12
-    
+
     .. change:: fixed
         :tags: Nuke
 

@@ -19,7 +19,6 @@ class Delegate(delegate.Delegate):
         import legacy
         from nukescripts import panels
 
-        from ftrack_connect_nuke.ui.widget.crew import NukeCrew
         from ftrack_connect_nuke.connector import Connector
 
         # Check if QtWebKit or QWebEngine is avaliable.
@@ -126,19 +125,6 @@ class Delegate(delegate.Delegate):
                 )
 
         ftrackMenu.addSeparator()
-
-        # Create the crew dialog entry in the menu
-        panels.registerWidgetAsPanel(
-            'ftrack_connect_nuke.ui.widget.crew.NukeCrew',
-            'Crew',
-            'widget.Crew'
-        )
-        ftrackMenu.addCommand(
-            'Crew',
-            'pane = nuke.getPaneFor("Properties.1");'
-            'panel = nukescripts.restorePanel("widget.Crew");'
-            'panel.addToPane(pane)'
-        )
 
         # Add new entries in the ftrack menu.
         ftrackMenu.addSeparator()

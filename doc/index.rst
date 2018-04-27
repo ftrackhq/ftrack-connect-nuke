@@ -15,6 +15,5 @@ Foundry`'s :term:`Nuke`.
     nuke_scripts
     assets
     panes
-    crew
     glossary
     release/index
