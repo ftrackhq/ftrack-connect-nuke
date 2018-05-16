@@ -146,8 +146,10 @@ class Delegate(delegate.Delegate):
             this_node = nuke.thisNode()
             try:
                 is_ftrack = this_node.knob('assetVersionId')
-            except ValueError:
+            except (AttributeError, ValueError):
+                # catch either missing .knob or .knob('assetVersionId')
                 is_ftrack = False
+
             nuke_menu = nuke.menu('Nuke')
             menu_item = nuke_menu.findItem('&ftrack')
             asset_info_menu = menu_item.findItem('Asset Info')
