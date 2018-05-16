@@ -15,7 +15,6 @@ Release notes
 
         Asset Info breaks on non nodes selection.
 
-
 .. release:: 1.1.4
     :date: 2018-04-27
 
