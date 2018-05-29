@@ -13,7 +13,7 @@ Release notes
     .. change:: fixed
         :tags: Nuke
 
-        Asset Info breaks on non nodes selection.
+        Asset Info occassionaly breaks on selection items that are not nodes.
 
 .. release:: 1.1.4
     :date: 2018-04-27
