@@ -144,10 +144,16 @@ class Delegate(delegate.Delegate):
             '''Enable and disable asset info depending on selection.'''
 
             this_node = nuke.thisNode()
+
+            # Do not continue if selection is not node.
+            if not isinstance(this_node, nuke.Node):
+                return
+
             try:
                 is_ftrack = this_node.knob('assetVersionId')
             except ValueError:
                 is_ftrack = False
+
             nuke_menu = nuke.menu('Nuke')
             menu_item = nuke_menu.findItem('&ftrack')
             asset_info_menu = menu_item.findItem('Asset Info')

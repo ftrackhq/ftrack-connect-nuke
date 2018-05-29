@@ -8,6 +8,13 @@
 Release notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: fixed
+        :tags: Nuke
+
+        Asset Info occassionaly breaks on selection items that are not nodes.
+
 .. release:: 1.1.4
     :date: 2018-04-27
 
