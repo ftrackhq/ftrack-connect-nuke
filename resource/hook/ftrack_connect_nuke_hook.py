@@ -10,7 +10,11 @@ import os
 
 import ftrack_api
 import ftrack_connect.application
+from ftrack_connect.session import get_shared_session
 import ftrack_connect_nuke
+
+
+session = get_shared_session()
 
 
 class LaunchApplicationAction(object):
@@ -38,23 +42,28 @@ class LaunchApplicationAction(object):
         self.launcher = launcher
         self.session = session
 
+
     def is_valid_selection(self, selection):
         '''Return true if the selection is valid.'''
         if (
             len(selection) != 1 or
-            selection[0]['entityType'] != 'task'
+            selection[0]['entityType'] not in ['task', 'Component']
         ):
             return False
 
+
+        ftrack_entity = None
         entity = selection[0]
 
-        task = self.session.get(
-            'Task', entity['entityId']
-        )
+        if entity['entityType'] == 'task':
+            ftrack_entity = session.get('Task', entity['entityId'])
 
+        elif entity['entityType'] == 'Component':
+            ftrack_entity = session.get('Component', entity['entityId'])
 
-        if task is None:
+        if ftrack_entity and ftrack_entity.entity_type not in ['Task', 'FileComponent']:
             return False
+
 
         return True
 
@@ -301,33 +310,34 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
         )._getApplicationEnvironment(application, context)
 
         entity = context['selection'][0]
+        if entity['entityType'] != 'Component':
 
-        task = self.session.get(
-            'Task', entity['entityId']
-        )
-
-        taskParent = task.get(
-            'parent'
-        )
-
-        try:
-            environment['FS'] = str(
-                int(taskParent['custom_attributes'].get('fstart'))
+            task = session.get(
+                'Task', entity['entityId']
             )
 
+        else:
+            component = session.get(
+                'Component', entity['entityId']
+            )
+            self.logger.info(component['version'].items())
+            task = component['version']['asset']['parent']
+
+        task_parent = task['parent']
+        task_parent_attributes = task_parent['custom_attributes']
+
+        try:
+            environment['FS'] = str(int(task_parent_attributes['sframe']))
         except Exception:
             environment['FS'] = '1'
 
         try:
-            environment['FE'] = str(
-                int(taskParent['custom_attributes'].get('fend'))
-            )
-
+            environment['FE'] = str(int(task_parent_attributes['eframe']))
         except Exception:
             environment['FE'] = '1'
 
-        environment['FTRACK_TASKID'] = task.get('id')
-        environment['FTRACK_SHOTID'] = task.get('parent_id')
+        environment['FTRACK_TASKID'] = task['id']
+        environment['FTRACK_SHOTID'] = task_parent['id']
 
         nuke_plugin_path = os.path.abspath(
             os.path.join(
