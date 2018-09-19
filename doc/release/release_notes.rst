@@ -15,6 +15,11 @@ Release notes
 
         Asset Info occassionaly breaks on selection items that are not nodes.
 
+    .. change:: changed
+        :tags: launcher
+
+        Nuke is discovered on components as well as tasks.
+
 .. release:: 1.1.4
     :date: 2018-04-27
 
