@@ -10,11 +10,8 @@ import os
 
 import ftrack_api
 import ftrack_connect.application
-from ftrack_connect.session import get_shared_session
 import ftrack_connect_nuke
 
-
-session = get_shared_session()
 
 
 class LaunchApplicationAction(object):
@@ -40,7 +37,7 @@ class LaunchApplicationAction(object):
 
         self.application_store = application_store
         self.launcher = launcher
-        self.session = session
+        self.session = launcher.session
 
 
     def is_valid_selection(self, selection):
@@ -56,10 +53,10 @@ class LaunchApplicationAction(object):
         entity = selection[0]
 
         if entity['entityType'] == 'task':
-            ftrack_entity = session.get('Task', entity['entityId'])
+            ftrack_entity = self.session.get('Task', entity['entityId'])
 
         elif entity['entityType'] == 'Component':
-            ftrack_entity = session.get('Component', entity['entityId'])
+            ftrack_entity = self.session.get('Component', entity['entityId'])
 
         if ftrack_entity and ftrack_entity.entity_type not in [
             'Task', 'FileComponent', 'SequenceComponent', 'ContainerComponent'
@@ -314,12 +311,12 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
         entity = context['selection'][0]
         if entity['entityType'] != 'Component':
 
-            task = session.get(
+            task = self.session.get(
                 'Task', entity['entityId']
             )
 
         else:
-            component = session.get(
+            component = self.session.get(
                 'Component', entity['entityId']
             )
             self.logger.info(component['version'].items())
