@@ -10,6 +10,11 @@ Release notes
 
 .. release:: Upcoming
 
+    .. change:: changed
+        :tags: Ui
+
+        Update Icon.
+
     .. change:: fixed
         :tags: Nuke
 
