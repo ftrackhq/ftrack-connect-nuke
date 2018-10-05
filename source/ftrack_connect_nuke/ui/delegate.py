@@ -5,6 +5,7 @@ import os
 import FnAssetAPI
 from ftrack_connect_foundry.ui import delegate
 import ftrack_connect.ui.theme
+from ftrack_connect.ui import resource
 
 
 class Delegate(delegate.Delegate):
@@ -135,7 +136,7 @@ class Delegate(delegate.Delegate):
 
         # Add ftrack publish node
         toolbar = nuke.toolbar("Nodes")
-        ftrackNodesMenu = toolbar.addMenu("ftrack", icon="logobox.png")
+        ftrackNodesMenu = toolbar.addMenu("ftrack", icon="ftrack_logo.png")
         ftrackNodesMenu.addCommand('ftrackPublish', lambda: legacy.createFtrackPublish())
 
         # Set calbacks
