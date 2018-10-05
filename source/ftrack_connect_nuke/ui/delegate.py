@@ -3,7 +3,6 @@
 
 import os
 import FnAssetAPI
-from QtExt import QtGui
 from ftrack_connect_foundry.ui import delegate
 import ftrack_connect.ui.theme
 from ftrack_connect.ui import resource
