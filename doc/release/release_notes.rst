@@ -8,7 +8,8 @@
 Release notes
 *************
 
-.. release:: Upcoming
+.. release:: 1.1.5
+    :date: 2018-10-11
 
     .. change:: changed
         :tags: Ui
