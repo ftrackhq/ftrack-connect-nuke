@@ -11,6 +11,7 @@ Foundry`'s :term:`Nuke`.
 .. toctree::
     :maxdepth: 1
 
+    installing
     getting_started
     nuke_scripts
     assets
