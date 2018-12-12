@@ -3,25 +3,37 @@
 
 import os
 import re
-import glob
+import shutil
 
-from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
+from setuptools import setup, find_packages, Command
 
+from pip._internal import main as pip_main
+
+# Define paths
+
+PLUGIN_NAME = 'ftrack-connect-nuke-{0}'
 
 ROOT_PATH = os.path.dirname(
     os.path.realpath(__file__)
 )
 
-SOURCE_PATH = os.path.join(
-    ROOT_PATH, 'source'
-)
+ROOT_PATH = os.path.dirname(os.path.realpath(__file__))
 
-RESOURCE_PATH = os.path.join(
-    ROOT_PATH, 'resource'
-)
+RESOURCE_PATH = os.path.join(ROOT_PATH, 'resource')
+
+SOURCE_PATH = os.path.join(ROOT_PATH, 'source')
 
 README_PATH = os.path.join(ROOT_PATH, 'README.rst')
+
+BUILD_PATH = os.path.join(ROOT_PATH, 'build')
+
+STAGING_PATH = os.path.join(BUILD_PATH, PLUGIN_NAME)
+
+NUKE_PLUGIN_PATH = os.path.join(RESOURCE_PATH, 'nuke_path')
+
+HOOK_PATH = os.path.join(RESOURCE_PATH, 'hook')
+
 
 with open(os.path.join(
     SOURCE_PATH, 'ftrack_connect_nuke', '_version.py')
@@ -29,6 +41,9 @@ with open(os.path.join(
     VERSION = re.match(
         r'.*__version__ = \'(.*?)\'', _version_file.read(), re.DOTALL
     ).group(1)
+
+# Update staging path with the plugin version
+STAGING_PATH = STAGING_PATH.format(VERSION)
 
 
 # Custom commands.
@@ -47,53 +62,57 @@ class PyTest(TestCommand):
         raise SystemExit(errno)
 
 
-def get_files_from_folder(folder):
-    '''Get all files in a folder in resource folder.'''
-    plugin_directory = os.path.join(RESOURCE_PATH, folder)
-    plugin_data_files = []
 
-    for root, directories, files in os.walk(plugin_directory):
-        files_list = []
-        if files:
-            for filename in files:
-                files_list.append(
-                    os.path.join(root, filename)
-                )
+class BuildPlugin(Command):
+    '''Build plugin.'''
 
-        if files_list:
-            destination_folder = root.replace(
-                RESOURCE_PATH, 'ftrack_connect_nuke/ftrack_connect_nuke'
-            )
-            plugin_data_files.append(
-                (destination_folder, files_list)
-            )
+    description = 'Download dependencies and build plugin .'
 
-    return plugin_data_files
+    user_options = []
 
-data_files = []
+    def initialize_options(self):
+        pass
 
-for child in os.listdir(
-    RESOURCE_PATH
-):
-    if os.path.isdir(os.path.join(RESOURCE_PATH, child)) and child != 'hook':
-        data_files += get_files_from_folder(child)
+    def finalize_options(self):
+        pass
 
-data_files.append(
-    (
-        'ftrack_connect_nuke/hook',
-        glob.glob(os.path.join(RESOURCE_PATH, 'hook', '*.py'))
-    )
-)
+    def run(self):
+        '''Run the build step.'''
+        # Clean staging path
+        shutil.rmtree(STAGING_PATH, ignore_errors=True)
 
-connect_dependency_link = (
-    'https://bitbucket.org/ftrack/ftrack-connect/get/1.1.4.zip'
-    '#egg=ftrack-connect-1.1.4'
-)
+        # Copy plugin files
+        shutil.copytree(
+            NUKE_PLUGIN_PATH,
+            os.path.join(STAGING_PATH, 'resource', 'nuke_path')
+        )
 
-connect_foundry_dependency_link = (
-    'https://bitbucket.org/ftrack/ftrack-connect-foundry/get/1.1.1.zip'
-    '#egg=ftrack-connect-foundry-1.1.1'
-)
+        # Copy hook files
+        shutil.copytree(
+            HOOK_PATH,
+            os.path.join(STAGING_PATH, 'hook')
+        )
+
+        # Install local dependencies
+        pip_main(
+            [
+                'install',
+                '.',
+                '--target',
+                os.path.join(STAGING_PATH, 'dependencies'),
+                '--process-dependency-links'
+            ]
+        )
+
+        # Generate plugin zip
+        shutil.make_archive(
+            os.path.join(
+                BUILD_PATH,
+                PLUGIN_NAME.format(VERSION)
+            ),
+            'zip',
+            STAGING_PATH
+        )
 
 # Configuration.
 setup(
@@ -101,7 +120,7 @@ setup(
     version=VERSION,
     description='Repository for ftrack connect nuke.',
     long_description=open(README_PATH).read(),
-    keywords='',
+    keywords='ftrack, connect, connector, nuke, foundry',
     url='https://bitbucket.org/ftrack/ftrack-connect-nuke',
     author='ftrack',
     author_email='support@ftrack.com',
@@ -115,22 +134,18 @@ setup(
         'sphinx_rtd_theme >= 0.1.6, < 2',
         'lowdown >= 0.1.0, < 1'
     ],
-    install_requires=[
-        'ftrack-python-api >= 1, < 2',
-        'ftrack-connect >= 1.0.0, < 2',
-        'ftrack-connect-foundry >= 0.1.0, < 2'
-    ],
     tests_require=[
         'pytest >= 2.3.5, < 3'
     ],
+    install_requires = [
+       'ftrack-connect-foundry >= 1.1.1'
+    ],
     cmdclass={
-        'test': PyTest
+        'test': PyTest,
+        'build_plugin': BuildPlugin,
     },
     dependency_links=[
-        ('https://bitbucket.org/ftrack/lowdown/get/0.1.0.zip'
-         '#egg=lowdown-0.1.0'),
-        connect_dependency_link,
-        connect_foundry_dependency_link
+        'https://bitbucket.org/ftrack/ftrack-connect-foundry/get/1.2.0.zip'
+        '#egg=ftrack-connect-foundry-1.2.0'
     ],
-    data_files=data_files
 )

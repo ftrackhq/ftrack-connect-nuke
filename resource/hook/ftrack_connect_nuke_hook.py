@@ -10,6 +10,15 @@ import os
 
 import ftrack_api
 import ftrack_connect.application
+
+cwd = os.path.dirname(__file__)
+sources = os.path.abspath(os.path.join(cwd, '..', 'dependencies'))
+ftrack_connect_nuke_resource_path = os.path.abspath(os.path.join(
+    cwd, '..',  'resource')
+)
+sys.path.append(sources)
+
+
 import ftrack_connect_nuke
 
 
@@ -127,9 +136,6 @@ class LaunchApplicationAction(object):
         ):
             return
 
-        application_identifier = (
-            event['data']['applicationIdentifier']
-        )
 
         context = event['data'].copy()
         context['source'] = event['source']
@@ -334,23 +340,19 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
                 self.plugin_path, 'nuke_path'
             )
         )
+
         environment = ftrack_connect.application.appendPath(
             nuke_plugin_path, 'NUKE_PATH', environment
         )
 
-        nuke_plugin_path = os.path.abspath(
-            os.path.join(
-                self.plugin_path, 'ftrack_connect_nuke'
-            )
-        )
         environment = ftrack_connect.application.appendPath(
             self.plugin_path, 'FOUNDRY_ASSET_PLUGIN_PATH', environment
         )
 
         environment = ftrack_connect.application.appendPath(
-            os.path.join(
-                self.plugin_path, '..', 'ftrack_python_api'
-            ), 'FTRACK_PYTHON_API_PLUGIN_PATH', environment
+                sources,
+               'PYTHONPATH',
+                environment
         )
 
         environment['NUKE_USE_FNASSETAPI'] = '1'
@@ -380,11 +382,7 @@ def register(session, **kw):
     launcher = ApplicationLauncher(
         application_store, plugin_path=os.environ.get(
             'FTRACK_CONNECT_NUKE_PLUGINS_PATH',
-            os.path.abspath(
-                os.path.join(
-                    os.path.dirname(__file__), '..', 'ftrack_connect_nuke'
-                )
-            )
+            ftrack_connect_nuke_resource_path
         ),
         session=session
     )
