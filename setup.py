@@ -147,15 +147,15 @@ setup(
     tests_require=[
         'pytest >= 2.3.5, < 3'
     ],
-    install_requires = [
-       'ftrack-connect-foundry >= 1.1.1',
+    install_requires=[
+        'ftrack-connect-foundry >= 1.2.0'
     ],
     cmdclass={
         'test': PyTest,
         'build_plugin': BuildPlugin,
     },
     dependency_links=[
-        'https://bitbucket.org/ftrack/ftrack-connect-foundry/get/backlog/convert-to-plugin.zip'  #TODO : THIS HAS TO BE UPDATED TO THE REAL VERSION BEFORE RELEASE.
-        '#egg=ftrack-connect-foundry-1.1.1'
+        'https://bitbucket.org/ftrack/ftrack-connect-foundry/get/1.2.0.zip'
+        '#egg=ftrack-connect-foundry-1.2.0'
     ],
 )
