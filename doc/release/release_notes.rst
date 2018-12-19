@@ -8,7 +8,8 @@
 Release notes
 *************
 
-.. release:: Upcoming
+.. release:: 1.2.0
+    :date: 2018-12-19
 
     .. change:: changed
         :tags: Internal
