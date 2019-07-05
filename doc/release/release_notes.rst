@@ -8,6 +8,13 @@
 Release notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: fix
+
+        Fix QStringListModel compatibility for PySide2 5.9+.
+
+
 .. release:: 1.2.0
     :date: 2018-12-19
 

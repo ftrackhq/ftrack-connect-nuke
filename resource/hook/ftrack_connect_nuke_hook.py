@@ -349,7 +349,7 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
             self.plugin_path, 'FOUNDRY_ASSET_PLUGIN_PATH', environment
         )
 
-        environment = ftrack_connect.application.appendPath(
+        environment = ftrack_connect.application.prependPath(
                 sources,
                'PYTHONPATH',
                 environment
