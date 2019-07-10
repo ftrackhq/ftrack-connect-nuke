@@ -148,14 +148,21 @@ setup(
         'pytest >= 2.3.5, < 3'
     ],
     install_requires=[
-        'ftrack-connect-foundry >= 1.2.0'
+        'ftrack-connect-foundry >= 1.2.0',
+        'qtext'
     ],
     cmdclass={
         'test': PyTest,
         'build_plugin': BuildPlugin,
     },
     dependency_links=[
-        'https://bitbucket.org/ftrack/ftrack-connect-foundry/get/1.2.0.zip'
-        '#egg=ftrack-connect-foundry-1.2.0'
+        (
+            'https://bitbucket.org/ftrack/ftrack-connect-foundry/get/1.2.0.zip'
+            '#egg=ftrack-connect-foundry-1.2.0'
+        ),
+        (
+            'git+https://bitbucket.org/ftrack/qtext/get/0.2.2.zip'
+            '#egg=QtExt-0.2.2'
+        )
     ],
 )
