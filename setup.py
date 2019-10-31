@@ -4,6 +4,10 @@
 import os
 import re
 import shutil
+import pip
+
+if not pip.__version__.split('.') >= ['19', '3', '0']:
+    raise ValueError('Pip should be version 19.3.0 or higher')
 
 from setuptools.command.test import test as TestCommand
 from setuptools import setup, find_packages, Command
@@ -104,13 +108,12 @@ class BuildPlugin(Command):
         )
 
         # Install local dependencies
-        pip_main(
+        pip_main.main(
             [
                 'install',
                 '.',
                 '--target',
-                os.path.join(STAGING_PATH, 'dependencies'),
-                '--process-dependency-links'
+                os.path.join(STAGING_PATH, 'dependencies')
             ]
         )
 
@@ -148,21 +151,11 @@ setup(
         'pytest >= 2.3.5, < 3'
     ],
     install_requires=[
-        'ftrack-connect-foundry >= 1.2.0',
-        'qtext'
+        'ftrack-connect-foundry @ https://bitbucket.org/ftrack/ftrack-connect-foundry/get/1.2.0.zip#egg=ftrack-connect-foundry-1.2.0',
+        'qtext @ git+https://bitbucket.org/ftrack/qtext/get/0.2.2.zip#egg=QtExt-0.2.2'
     ],
     cmdclass={
         'test': PyTest,
         'build_plugin': BuildPlugin,
-    },
-    dependency_links=[
-        (
-            'https://bitbucket.org/ftrack/ftrack-connect-foundry/get/1.2.0.zip'
-            '#egg=ftrack-connect-foundry-1.2.0'
-        ),
-        (
-            'git+https://bitbucket.org/ftrack/qtext/get/0.2.2.zip'
-            '#egg=QtExt-0.2.2'
-        )
-    ],
+    }
 )
