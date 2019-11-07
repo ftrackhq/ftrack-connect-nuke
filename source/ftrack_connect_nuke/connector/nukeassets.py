@@ -394,7 +394,7 @@ class NukeSceneAsset(GizmoAsset):
 
     def importAsset(self, iAObj=None):
         if iAObj.filePath.endswith('nk'):
-            resultingNode = nuke.createNode(iAObj.filePath)
+            resultingNode = nuke.createNode(iAObj.filePath.replace('\\', '/'))
             self.addFTab(resultingNode)
             self.setFTab(resultingNode, iAObj)
 
