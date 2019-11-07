@@ -10,6 +10,11 @@ Release notes
 
 .. release:: Upcoming
 
+    ..change:: fix
+        :tags: Browse
+
+        Error on string encoding while importing published scripts on windows.
+
     ..change:: changed
         :tags: Setup
 
