@@ -152,7 +152,7 @@ setup(
         'pytest >= 2.3.5, < 3'
     ],
     install_requires=[
-        'ftrack-connect-foundry @ https://bitbucket.org/ftrack/ftrack-connect-foundry/get/1.2.0.zip#egg=ftrack-connect-foundry-1.2.0',
+        'ftrack-connect-foundry @ https://bitbucket.org/ftrack/ftrack-connect-foundry/get/1.2.1.zip#egg=ftrack-connect-foundry-1.2.1',
         'qtext @ git+https://bitbucket.org/ftrack/qtext/get/0.2.2.zip#egg=QtExt-0.2.2'
     ],
     cmdclass={
