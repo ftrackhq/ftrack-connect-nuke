@@ -84,8 +84,7 @@ class BrowseKnob():
 
         self._browse = QtWidgets.QPushButton("Browse")
         self.hlayout.addWidget(self._browse)
-
-        QtCore.QObject.connect(self._browse, QtCore.SIGNAL('clicked()'), self.openBrowser)
+        self._browse.clicked.connect(self.openBrowser)
 
         return self.mainWidget
 
