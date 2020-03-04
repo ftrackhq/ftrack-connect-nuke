@@ -10,7 +10,12 @@ Release notes
 
 .. release:: Upcoming
 
-    .. change:: change
+    .. change:: Added
+        :tags: Logging
+
+        Provide ftrack-connect-nuke log file.
+
+    .. change:: changed
 
         Update pyside signal signature for pyside2 compatiblity.
 
