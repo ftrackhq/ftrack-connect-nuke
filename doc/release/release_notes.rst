@@ -13,7 +13,7 @@ Release notes
     .. change:: Added
         :tags: Logging
 
-        Provide ftrack-connect-nuke log file.
+        Provide output log file in default location.
 
     .. change:: changed
 
