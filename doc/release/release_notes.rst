@@ -10,6 +10,11 @@ Release notes
 
 .. release:: Upcoming
 
+    .. change:: added
+        :tags: Logging
+
+        Provide output log file in default location.
+
     .. change:: fix
         :tags: Import
 
