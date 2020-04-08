@@ -136,12 +136,14 @@ class ImageSequenceAsset(GenericAsset):
             HelpFunctions.safeString(iAObj.filePath)
         )
 
-        start, end = self.getStartEndFrames(iAObj)
-
-        resultingNode['first'].setValue(start)
-        resultingNode['origfirst'].setValue(start)
-        resultingNode['last'].setValue(end)
-        resultingNode['origlast'].setValue(end)
+        # mov files do not have any frame information.
+        component = ftrack.Component(iAObj.componentId)
+        if component.getSystemType() == 'sequence':
+            start, end = self.getStartEndFrames(iAObj)
+            resultingNode['first'].setValue(start)
+            resultingNode['origfirst'].setValue(start)
+            resultingNode['last'].setValue(end)
+            resultingNode['origlast'].setValue(end)
 
         proxyPath = ''
         assetVersion = ftrack.AssetVersion(iAObj.assetVersionId)

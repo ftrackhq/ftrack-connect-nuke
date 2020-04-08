@@ -10,7 +10,13 @@ Release notes
 
 .. release:: Upcoming
 
+    .. change:: fix
+        :tags: Import
+
+        Do not look up for frame informations when importing mov files.
+
     .. change:: change
+        :tags: Internal
 
         Update pyside signal signature for pyside2 compatiblity.
 
