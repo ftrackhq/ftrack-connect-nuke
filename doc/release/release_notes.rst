@@ -10,12 +10,18 @@ Release notes
 
 .. release:: Upcoming
 
-    .. change:: Added
+    .. change:: added
         :tags: Logging
 
         Provide output log file in default location.
 
-    .. change:: changed
+    .. change:: fix
+        :tags: Import
+
+        Do not look up for frame informations when importing mov files.
+
+    .. change:: change
+        :tags: Internal
 
         Update pyside signal signature for pyside2 compatiblity.
 
