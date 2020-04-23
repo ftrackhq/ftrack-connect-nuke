@@ -8,7 +8,8 @@
 Release notes
 *************
 
-.. release:: Upcoming
+.. release:: 1.2.3
+    :date: 2020-04-23
 
     .. change:: added
         :tags: Logging
