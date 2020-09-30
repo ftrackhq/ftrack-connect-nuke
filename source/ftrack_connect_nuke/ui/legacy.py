@@ -202,58 +202,59 @@ def createFtrackPublish():
     g['name'].setValue(nodeName)
     addPublishKnobsToGroupNode(g)
 
-
 def publishAssetKnob():
     n = nuke.thisNode()
     header = getHeaderKnob(n)
     ftrackPublishKnobChanged(g=n, forceRefresh=True)
     n.knob('pknob').setEnabled(False)
-    tableWidget = n['ftable'].getObject().tableWidget
-    content = []
-    for row in range(tableWidget.rowCount()):
-        filePath = tableWidget.item(row, 1).text()
-        compName = tableWidget.item(row, 2).text()
-        first = tableWidget.item(row, 5).text()
-        last = tableWidget.item(row, 6).text()
-        nodeName = tableWidget.item(row, 3).text()
-        meta = getMetaData(nodeName)
+    try:
+        tableWidget = n['ftable'].getObject().tableWidget
+        content = []
+        for row in range(tableWidget.rowCount()):
+            filePath = tableWidget.item(row, 1).text()
+            compName = tableWidget.item(row, 2).text()
+            first = tableWidget.item(row, 5).text()
+            last = tableWidget.item(row, 6).text()
+            nodeName = tableWidget.item(row, 3).text()
+            meta = getMetaData(nodeName)
 
 
-        if tableWidget.item(row, 4).toolTip() == 'T':
-            content.append((filePath, compName, first, last, nodeName, meta))
-        else:
-            header.setMessage('Can not find ' + filePath + ' on disk', 'error')
+            if tableWidget.item(row, 4).toolTip() == 'T':
+                content.append((filePath, compName, first, last, nodeName, meta))
+            else:
+                header.setMessage('Can not find ' + filePath + ' on disk', 'error')
+                return
+
+        if len(content) == 0:
+            header.setMessage('Nothing to publish', 'warning')
             return
 
-    if len(content) == 0:
-        header.setMessage('Nothing to publish', 'warning')
-        return
+        if 'New' == n['fassetnameexisting'].value() and n['ftrackassetname'].value() == '':
+            header.setMessage('Enter an assetname or select an existing', 'warning')
+            return
+        elif 'New' != n['fassetnameexisting'].value():
+            assetName = n['fassetnameexisting'].value()
+        else:
+            assetName = n['ftrackassetname'].value()
 
-    if 'New' == n['fassetnameexisting'].value() and n['ftrackassetname'].value() == '':
-        header.setMessage('Enter an assetname or select an existing', 'warning')
-        return
-    elif 'New' != n['fassetnameexisting'].value():
-        assetName = n['fassetnameexisting'].value()
-    else:
-        assetName = n['ftrackassetname'].value()
+        comment = n['fcomment'].value()
 
-    comment = n['fcomment'].value()
+        if os.getenv('FTRACK_MODE','') == 'Shot':
+            currentTask = None
+            shot = connector.Connector.objectById(os.environ['FTRACK_SHOTID'])
+            tasks = shot.getTasks()
+            selectedTask = n['ftask'].value()
+            for task in tasks:
+                if task.getName() == selectedTask:
+                    currentTask = task
+        else:
+            currentTask = connector.Connector.objectById(n.knob('fpubto').getObject().targetTask)
 
-    if os.getenv('FTRACK_MODE','') == 'Shot':
-        currentTask = None
-        shot = connector.Connector.objectById(os.environ['FTRACK_SHOTID'])
-        tasks = shot.getTasks()
-        selectedTask = n['ftask'].value()
-        for task in tasks:
-            if task.getName() == selectedTask:
-                currentTask = task
-    else:
-        currentTask = connector.Connector.objectById(n.knob('fpubto').getObject().targetTask)
+        shot = currentTask.getParent()
 
-    shot = currentTask.getParent()
-
-    publishAsset(n, assetName, content, comment, shot, currentTask)
-    n.knob('pknob').setEnabled(True)
+        publishAsset(n, assetName, content, comment, shot, currentTask)
+    finally:
+        n.knob('pknob').setEnabled(True)
 
 
 def get_dependencies():
@@ -303,7 +304,7 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
         assetVersion = asset.createVersion(comment=comment, taskid=currentTaskId)
 
         if assetType in ['img', 'cam', 'geo', 'render']:
-            if assetType == 'img':
+            if assetType in ['img','render']:
                 imgAsset = nukeassets.ImageSequenceAsset()
                 publishedComponents = imgAsset.publishContent(content, assetVersion, progressCallback=publishProgress.setProgress)
 
@@ -314,13 +315,6 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
             elif assetType == 'geo':
                 geoAsset = nukeassets.GeometryAsset()
                 publishedComponents = geoAsset.publishContent(content, assetVersion, progressCallback=publishProgress.setProgress)
-
-            elif assetType == 'render':
-                renderAsset = nukeassets.RenderAsset()
-                publishedComponents = renderAsset.publishContent(
-                    content, assetVersion,
-                    progressCallback=publishProgress.setProgress
-                )
 
             if n['fscript'].value():
                 if n['fcopy'].value():
@@ -450,7 +444,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                                     'Could not determine prefix, padding '
                                     'and extension from "".'.format(frames)
                                 )
-                                availableAssetTypes = ['render']
+                                last = first # Not a sequence
                             else:
                                 root = os.path.dirname(prefix)
                                 files = glob.glob('{0}/*.{1}'.format(
@@ -465,7 +459,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                                         last = str(indexes[-1])
                                         break
 
-                                availableAssetTypes = ['img']
+                            availableAssetTypes = ['img','render']
 
                         try:
                             compNameComp = inNode['fcompname'].value()

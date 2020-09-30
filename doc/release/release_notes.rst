@@ -8,6 +8,18 @@
 Release notes
 *************
 
+.. release:: FUTURE
+
+    .. change:: change
+        :tags: Publish
+
+        Image sequence write nodes can now be published as Render asset type.
+
+    .. change:: fix
+        :tags: Publish
+
+        Publish button is enabled again if publish failed, instead of staying greyed out.
+
 .. release:: 1.2.3
     :date: 2020-04-23
 
