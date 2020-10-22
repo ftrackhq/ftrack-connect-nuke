@@ -30,6 +30,12 @@ Release notes
 
         If a movie (.mov or .mp4) component is published, a reviewable is encoded with publish.
 
+    .. change:: added
+        :tags: Publish
+
+        Transcode a .mov (HD, ProRes 422HQ) from sequence and encode with publish as playable
+        in ftrack (user selectable).
+
 .. release:: 1.2.3
     :date: 2020-04-23
 

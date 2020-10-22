@@ -181,6 +181,13 @@ def addPublishKnobsToGroupNode(g):
     scriptKnob.setFlag(nuke.STARTLINE)
     g.addKnob(scriptKnob)
 
+    makeReviewableKnob = nuke.Boolean_Knob('fmakereviewable', 'Make reviewable', 1)
+    makeReviewableKnob.setFlag(nuke.STARTLINE)
+    makeReviewableKnob.setTooltip(
+        'Create a reviewable out of sequence if not a movie (.mov|.mp4) is included in publish'
+    )
+    g.addKnob(makeReviewableKnob)
+
     commentKnob = nuke.Multiline_Eval_String_Knob('fcomment', 'Comment:', '')
     g.addKnob(commentKnob)
 
@@ -278,6 +285,43 @@ def get_dependencies():
 
     return dependencies
 
+# Create a reviewable movie from the output of the nodeobject that is passed
+def createReviewable(nodeObject):
+    try:
+        reformatNode = nuke.nodes.Reformat()
+        reformatNode['type'].setValue("to box")
+        reformatNode['box_width'].setValue(1920)
+        reformatNode['box_height'].setValue(1080)
+        reformatNode['resize'].setValue("fit")
+        reformatNode['black_outside'].setValue(True)
+        reformatNode['pbb'].setValue(True)
+
+        reformatNode.setInput(0, nodeObject)
+
+        w2 = nuke.nodes.Write()
+        w2.setInput(0, reformatNode)
+        reviewableFilename = 'reviewable_' + HelpFunctions.getUniqueNumber() + '.mov'
+        reviewableDestination = os.path.join(tempfile.gettempdir(), reviewableFilename)
+        w2['file'].fromUserText(reviewableDestination.replace('\\', '/').replace('\\\\', '/'))
+        #w2['file_type'].setValue("mov")
+        try:
+            # Set to Prores 422 HQ on Nuke 10, otherwise it will default to 4444
+            w2['meta_codec'].setValue(2)
+        except:
+            pass
+        startFrame = int(nuke.root().knob("first_frame").value())
+        endFrame = int(nuke.root().knob("last_frame").value())
+        nuke.execute(w2, startFrame, endFrame)
+
+        nuke.delete(reformatNode)
+        nuke.delete(w2)
+
+        return reviewableDestination
+    except:
+        import traceback, sys
+        traceback.print_exc(file=sys.stdout)
+        nuke.tprint(traceback.format_exc())
+        return None
 
 def publishAsset(n, assetName, content, comment, shot, currentTask):
     header = getHeaderKnob(n)
@@ -356,16 +400,28 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
                 # Can we make a reviewable?
                 try:
                     reviewablePath = None
+                    sequenceNode = None
                     for c in content:
                         filename = c[0]
                         if filename.lower().split(".")[-1] in ["mov","mp4"]:
                             reviewablePath = filename
+                        else:
+                            # Is it a sequence?
+                            start = int(float(c[2]))
+                            end = int(float(c[3]))
+                            if not start - end == 0:
+                                sequenceNode = nuke.toNode(HelpFunctions.safeString(c[4]))
+                    if reviewablePath is None and sequenceNode:
+                        nuke.tprint('Transcoding preview of sequence write node {}.'.format(sequenceNode.name()))
+                        reviewablePath = createReviewable(sequenceNode)
                     if reviewablePath:
+                        nuke.tprint('Making ftrack reviewable out of {}.'.format(reviewablePath))
                         ftrack.Review.makeReviewable(assetVersion, reviewablePath)
                 except:
                     # Do not stop the show if an exception occurs during encode
                     import sys, traceback
                     traceback.print_exc(file=sys.stdout)
+                    nuke.tprint(traceback.format_exc())
         else:
             header.setMessage("Can't publish this assettype yet", 'info')
             return
