@@ -20,6 +20,16 @@ Release notes
 
         Publish button is enabled again if publish failed, instead of staying greyed out.
 
+    .. change:: fix
+        :tags: Publish
+
+        Protection against duplice component name, +1 added to names upon clash.
+
+    .. change:: added
+        :tags: Publish
+
+        If a movie (.mov or .mp4) component is published, a reviewable is encoded with publish.
+
 .. release:: 1.2.3
     :date: 2020-04-23
 

@@ -8,6 +8,7 @@ import glob
 import tempfile
 import uuid
 import urlparse
+import collections
 
 from FnAssetAPI.ui.toolkit import QtGui, QtWidgets
 
@@ -148,6 +149,10 @@ def addPublishKnobsToGroupNode(g):
     browseKnob.setFlag(nuke.STARTLINE)
     g.addKnob(browseKnob)
 
+    typeKnob = nuke.Enumeration_Knob('ftrackassettype', 'Asset type:', ['No inputs connected'])
+    typeKnob.setFlag(nuke.STARTLINE)
+    g.addKnob(typeKnob)
+
     existingAssetsKnob = nuke.Enumeration_Knob('fassetnameexisting', 'Existing assets:', ['New'])
     g.addKnob(existingAssetsKnob)
 
@@ -157,10 +162,6 @@ def addPublishKnobsToGroupNode(g):
     hrefKnob = nuke.String_Knob('componentId', 'componentId', '')
     hrefKnob.setVisible(False)
     g.addKnob(hrefKnob)
-
-    typeKnob = nuke.Enumeration_Knob('ftrackassettype', 'Asset type:', ['No inputs connected'])
-    typeKnob.setFlag(nuke.STARTLINE)
-    g.addKnob(typeKnob)
 
     tableKnob = nuke.PyCustom_Knob("ftable", "Components:", "ftrack_connect_nuke.ui.knobs.TableKnob()")
     tableKnob.setFlag(nuke.STARTLINE)
@@ -304,7 +305,7 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
         assetVersion = asset.createVersion(comment=comment, taskid=currentTaskId)
 
         if assetType in ['img', 'cam', 'geo', 'render']:
-            if assetType in ['img','render']:
+            if assetType in ['img']:
                 imgAsset = nukeassets.ImageSequenceAsset()
                 publishedComponents = imgAsset.publishContent(content, assetVersion, progressCallback=publishProgress.setProgress)
 
@@ -315,6 +316,13 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
             elif assetType == 'geo':
                 geoAsset = nukeassets.GeometryAsset()
                 publishedComponents = geoAsset.publishContent(content, assetVersion, progressCallback=publishProgress.setProgress)
+
+            elif assetType == 'render':
+                renderAsset = nukeassets.RenderAsset()
+                publishedComponents = renderAsset.publishContent(
+                    content, assetVersion,
+                    progressCallback=publishProgress.setProgress
+                )
 
             if n['fscript'].value():
                 if n['fcopy'].value():
@@ -345,6 +353,19 @@ def publishAsset(n, assetName, content, comment, shot, currentTask):
                     progressCallback=publishProgress.setProgress
                 )
 
+                # Can we make a reviewable?
+                try:
+                    reviewablePath = None
+                    for c in content:
+                        filename = c[0]
+                        if filename.lower().split(".")[-1] in ["mov","mp4"]:
+                            reviewablePath = filename
+                    if reviewablePath:
+                        ftrack.Review.makeReviewable(assetVersion, reviewablePath)
+                except:
+                    # Do not stop the show if an exception occurs during encode
+                    import sys, traceback
+                    traceback.print_exc(file=sys.stdout)
         else:
             header.setMessage("Can't publish this assettype yet", 'info')
             return
@@ -386,6 +407,14 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
             tableWidget = g['ftable'].getObject().tableWidget
             tableWidget.setRowCount(0)
             components = []
+
+            occupiedNameCounts = collections.defaultdict(lambda: 0)
+
+            def uniqueComponentName(ocn, compName):
+                ocn[compName] += 1
+                if 1 < ocn[compName]:
+                    return '{}{}'.format(compName, ocn[compName])
+                return compName
 
             for inputNode in range(g.inputs()):
                 inNode = g.input(inputNode)
@@ -450,9 +479,9 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                                 files = glob.glob('{0}/*.{1}'.format(
                                     root, extension
                                 ))
-                                collections = clique.assemble(files)
+                                sequence_collections = clique.assemble(files)
 
-                                for collection in collections[0]:
+                                for collection in sequence_collections[0]:
                                     if prefix in collection.head:
                                         indexes = list(collection.indexes)
                                         first = str(indexes[0])
@@ -469,7 +498,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                         if compNameComp == '':
                             compNameComp = nameComp
 
-                        components.append((fileComp, compNameComp, first, last, nameComp))
+                        components.append((fileComp, uniqueComponentName(occupiedNameCounts, compNameComp), first, last, nameComp))
                         if proxyComp != '':
                             components.append((proxyComp, compNameComp + '_proxy', first, last, nameComp))
 
@@ -492,7 +521,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
                             compNameComp = nameComp
 
                         components.append(
-                            (fileComp, compNameComp, first, last, nameComp)
+                            (fileComp, uniqueComponentName(occupiedNameCounts, compNameComp), first, last, nameComp)
                         )
 
                         availableAssetTypes = ['geo', 'cam']
