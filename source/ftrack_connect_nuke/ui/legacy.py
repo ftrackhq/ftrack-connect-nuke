@@ -500,7 +500,7 @@ def ftrackPublishKnobChanged(forceRefresh=False, g=None):
 
                         components.append((fileComp, uniqueComponentName(occupiedNameCounts, compNameComp), first, last, nameComp))
                         if proxyComp != '':
-                            components.append((proxyComp, compNameComp + '_proxy', first, last, nameComp))
+                            components.append((proxyComp, uniqueComponentName(occupiedNameCounts, compNameComp + '_proxy'), first, last, nameComp))
 
                     elif nodeAssetType == 'geo':
                         fileComp = str(inNode['file'].value())
