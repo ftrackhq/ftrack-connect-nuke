@@ -190,7 +190,7 @@ class ImageSequenceAsset(GenericAsset):
 
         return True
 
-    def publishContent(self, content, assetVersion, progressCallback=None, isRender=False):
+    def publishContent(self, content, assetVersion, progressCallback=None):
 
         publishedComponents = []
 
@@ -203,22 +203,21 @@ class ImageSequenceAsset(GenericAsset):
             start = int(float(c[2]))
             end = int(float(c[3]))
 
-            metaData = []
-
             if not start - end == 0:
                 sequence_format = u'{0} [{1}-{2}]'.format(
                     filename, start, end
                 )
-                if not '_proxy' in componentName:
-                    metaData.append(('img_main', 'True'))
             else:
-                if isRender:
-                    continue # Will be handled by RenderAsset
                 sequence_format = u'{0}'.format(
                     filename, start
                 )
 
             sequenceIdentifier = sequence_format
+
+            metaData = []
+
+            if not '_proxy' in componentName:
+                metaData.append(('img_main', 'True'))
 
             for meta in c[5]:
                 metaData.append((meta[0], meta[1]))
@@ -229,16 +228,15 @@ class ImageSequenceAsset(GenericAsset):
 
             publishedComponents.append(sequenceComponent)
 
-        if not isRender:
-            try:
-                node = nuke.toNode(HelpFunctions.safeString(content[0][4]))
-                thumbnail = Connector.createThumbNail(node)
-                if thumbnail:
-                    publishedComponents.append(FTComponent(componentname='thumbnail', path=thumbnail))
-            except:
-                print 'Failed to create thumbnail'
-                import sys
-                traceback.print_exc(file=sys.stdout)
+        try:
+            node = nuke.toNode(HelpFunctions.safeString(content[0][4]))
+            thumbnail = Connector.createThumbNail(node)
+            if thumbnail:
+                publishedComponents.append(FTComponent(componentname='thumbnail', path=thumbnail))
+        except:
+            print 'Failed to create thumbnail'
+            import sys
+            traceback.print_exc(file=sys.stdout)
 
         return publishedComponents
 
@@ -403,7 +401,7 @@ class NukeSceneAsset(GizmoAsset):
             self.setFTab(resultingNode, iAObj)
 
 
-class RenderAsset(ImageSequenceAsset):
+class RenderAsset(GenericAsset):
     '''Render asset.'''
 
     def changeVersion(self, iAObj=None, applicationObject=None):
@@ -416,38 +414,57 @@ class RenderAsset(ImageSequenceAsset):
         return True
 
     def publishContent(self, content, assetVersion, progressCallback=None):
-        '''Return components to publish.'''
-        components = super(self.__class__, self).publishContent(content, assetVersion, progressCallback=progressCallback, isRender=True)
 
+        publishedComponents = []
 
         thumbnail_index = 0
-        for index, c in enumerate(content):
+        metaData = []
 
+        for index, c in enumerate(content):
             filename = c[0]
             componentName = c[1]
+
+            sequenceComponent = FTComponent()
 
             start = int(float(c[2]))
             end = int(float(c[3]))
 
-            if start == end:
-                # Only consider non image sequence components
+            if not start - end == 0:
+                sequence_format = u'{0} [{1}-{2}]'.format(
+                    filename, start, end
+                )
 
-                components.append(
-                    FTComponent(componentname=componentName, path=filename)
+                if not '_proxy' in componentName:
+                    metaData.append(('img_main', 'True'))
+            else:
+                sequence_format = u'{0}'.format(
+                    filename, start
                 )
                 thumbnail_index = index # We prefer to create thumbnail from non-sequences
+
+            sequenceIdentifier = sequence_format
+
+            for meta in c[5]:
+                metaData.append((meta[0], meta[1]))
+
+            sequenceComponent.componentname = componentName
+            sequenceComponent.path = sequenceIdentifier
+            sequenceComponent.metadata = metaData
+
+            publishedComponents.append(sequenceComponent)
 
         try:
             node = nuke.toNode(HelpFunctions.safeString(content[thumbnail_index][4]))
             thumbnail = Connector.createThumbNail(node)
             if thumbnail:
-                components.append(FTComponent(componentname='thumbnail', path=thumbnail))
+                publishedComponents.append(FTComponent(componentname='thumbnail', path=thumbnail))
         except:
             print 'Failed to create thumbnail'
             import sys
             traceback.print_exc(file=sys.stdout)
 
-        return components
+        return publishedComponents
+
 
     def importAsset(self, iAObj=None):
         '''Import asset as new node.'''
