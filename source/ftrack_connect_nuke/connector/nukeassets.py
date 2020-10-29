@@ -194,7 +194,10 @@ class ImageSequenceAsset(GenericAsset):
 
         publishedComponents = []
 
-        for c in content:
+        thumbnail_index = 0
+        metaData = []
+
+        for index, c in enumerate(content):
             filename = c[0]
             componentName = c[1]
 
@@ -207,17 +210,17 @@ class ImageSequenceAsset(GenericAsset):
                 sequence_format = u'{0} [{1}-{2}]'.format(
                     filename, start, end
                 )
+
+                if not '_proxy' in componentName:
+                    metaData.append(('img_main', 'True'))
+
             else:
                 sequence_format = u'{0}'.format(
                     filename, start
                 )
+                thumbnail_index = index # We prefer to create thumbnail from non-sequences
 
             sequenceIdentifier = sequence_format
-
-            metaData = []
-
-            if not '_proxy' in componentName:
-                metaData.append(('img_main', 'True'))
 
             for meta in c[5]:
                 metaData.append((meta[0], meta[1]))
@@ -229,7 +232,7 @@ class ImageSequenceAsset(GenericAsset):
             publishedComponents.append(sequenceComponent)
 
         try:
-            node = nuke.toNode(HelpFunctions.safeString(content[0][4]))
+            node = nuke.toNode(HelpFunctions.safeString(content[thumbnail_index][4]))
             thumbnail = Connector.createThumbNail(node)
             if thumbnail:
                 publishedComponents.append(FTComponent(componentname='thumbnail', path=thumbnail))
@@ -401,86 +404,10 @@ class NukeSceneAsset(GizmoAsset):
             self.setFTab(resultingNode, iAObj)
 
 
-class RenderAsset(GenericAsset):
+class RenderAsset(ImageSequenceAsset):
     '''Render asset.'''
 
-    def changeVersion(self, iAObj=None, applicationObject=None):
-        '''Change current version of the give *iAObj* and *applicationObject*.'''
-        n = nuke.toNode(HelpFunctions.safeString(applicationObject))
-        n['file'].fromUserText(
-            HelpFunctions.safeString(iAObj.filePath)
-        )
-        self.setFTab(n, iAObj)
-        return True
-
-    def publishContent(self, content, assetVersion, progressCallback=None):
-
-        publishedComponents = []
-
-        thumbnail_index = 0
-        metaData = []
-
-        for index, c in enumerate(content):
-            filename = c[0]
-            componentName = c[1]
-
-            sequenceComponent = FTComponent()
-
-            start = int(float(c[2]))
-            end = int(float(c[3]))
-
-            if not start - end == 0:
-                sequence_format = u'{0} [{1}-{2}]'.format(
-                    filename, start, end
-                )
-
-                if not '_proxy' in componentName:
-                    metaData.append(('img_main', 'True'))
-            else:
-                sequence_format = u'{0}'.format(
-                    filename, start
-                )
-                thumbnail_index = index # We prefer to create thumbnail from non-sequences
-
-            sequenceIdentifier = sequence_format
-
-            for meta in c[5]:
-                metaData.append((meta[0], meta[1]))
-
-            sequenceComponent.componentname = componentName
-            sequenceComponent.path = sequenceIdentifier
-            sequenceComponent.metadata = metaData
-
-            publishedComponents.append(sequenceComponent)
-
-        try:
-            node = nuke.toNode(HelpFunctions.safeString(content[thumbnail_index][4]))
-            thumbnail = Connector.createThumbNail(node)
-            if thumbnail:
-                publishedComponents.append(FTComponent(componentname='thumbnail', path=thumbnail))
-        except:
-            print 'Failed to create thumbnail'
-            import sys
-            traceback.print_exc(file=sys.stdout)
-
-        return publishedComponents
-
-
-    def importAsset(self, iAObj=None):
-        '''Import asset as new node.'''
-        resultingNode = nuke.createNode('Read', inpanel=False)
-        name = (
-            HelpFunctions.safeString(iAObj.assetName) + '_' +
-            HelpFunctions.safeString(iAObj.componentName)
-        )
-        resultingNode['name'].setValue(Connector.getUniqueSceneName(name))
-
-        resultingNode['file'].fromUserText(
-            HelpFunctions.safeString(iAObj.filePath)
-        )
-
-        self.addFTab(resultingNode)
-        self.setFTab(resultingNode, iAObj)
+    pass
 
 
 def registerAssetTypes():
