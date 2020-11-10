@@ -6,10 +6,10 @@ import getpass
 
 import ftrack
 
-from ftrack_connect.ui.widget import header
-from ftrack_connect_nuke.ui.controller import Controller
-from ftrack_connect.ui.widget import overlay as _overlay
-from ftrack_connect.connector import HelpFunctions
+from ftrack_connector_legacy.ui.widget import header
+from ftrack_connector_legacy_nuke.ui.controller import Controller
+from ftrack_connector_legacy.ui.widget import overlay as _overlay
+from ftrack_connector_legacy.connector import HelpFunctions
 
 import FnAssetAPI
 from FnAssetAPI import specifications

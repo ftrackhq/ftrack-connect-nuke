@@ -3,9 +3,9 @@
 
 import os
 import FnAssetAPI
-from ftrack_connect_foundry.ui import delegate
-import ftrack_connect.ui.theme
-from ftrack_connect.ui import resource
+from ftrack_connector_legacy_foundry.ui import delegate
+import ftrack_connector_legacy.ui.theme
+from ftrack_connector_legacy.ui import resource
 
 
 class Delegate(delegate.Delegate):
@@ -20,7 +20,7 @@ class Delegate(delegate.Delegate):
         import legacy
         from nukescripts import panels
 
-        from ftrack_connect_nuke.connector import Connector
+        from ftrack_connector_legacy_nuke.connector import Connector
 
         # Check if QtWebKit or QWebEngine is avaliable.
         from FnAssetAPI.ui.toolkit import is_webwidget_supported
@@ -31,11 +31,11 @@ class Delegate(delegate.Delegate):
         # wrappers for initializing the widgets with
         # the correct connector object
         def wrapImportAssetDialog(*args, **kwargs):
-            from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
+            from ftrack_connector_legacy.ui.widget.import_asset import FtrackImportAssetDialog
             return FtrackImportAssetDialog(connector=Connector())
 
         def wrapAssetManagerDialog(*args, **kwargs):
-            from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
+            from ftrack_connector_legacy.ui.widget.asset_manager import FtrackAssetManagerDialog
             return FtrackAssetManagerDialog(connector=Connector())
 
         # Populate the ui
@@ -84,7 +84,7 @@ class Delegate(delegate.Delegate):
         if has_webwidgets:
 
             def wrapAssetInfoDialog(*args, **kwargs):
-                from ftrack_connect_nuke.ui.widget.info_view import AssetInfoView
+                from ftrack_connector_legacy_nuke.ui.widget.info_view import AssetInfoView
                 return AssetInfoView(bridge=self._bridge)
 
             globals()['ftrackAssetInfoDialogClass'] = wrapAssetInfoDialog
@@ -107,10 +107,10 @@ class Delegate(delegate.Delegate):
         ftrackMenu.addSeparator()
 
         if has_webwidgets:
-            from ftrack_connect_foundry.ui.info_view import WorkingTaskInfoView as _WorkingTaskInfoView
-            from ftrack_connect_foundry.ui.tasks_view import TasksView as _TasksView
+            from ftrack_connector_legacy_foundry.ui.info_view import WorkingTaskInfoView as _WorkingTaskInfoView
+            from ftrack_connector_legacy_foundry.ui.tasks_view import TasksView as _TasksView
 
-            # Add Web Views located in the ftrack_connect_foundry package to the
+            # Add Web Views located in the ftrack_connector_legacy_foundry package to the
             # menu for easier access.
             for widget in [
                 _TasksView,
@@ -131,7 +131,7 @@ class Delegate(delegate.Delegate):
         ftrackMenu.addSeparator()
 
         if has_webwidgets:
-            from ftrack_connect_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
+            from ftrack_connector_legacy_nuke.ui.widget.publish_gizmo import GizmoPublisherDialog
             ftrackMenu.addCommand('Publish gizmo', GizmoPublisherDialog)
 
         # Add ftrack publish node
@@ -195,6 +195,6 @@ class Delegate(delegate.Delegate):
 
             # Set font on QApplication once UI is created.
             # We do this once since it takes some time to apply the font.
-            ftrack_connect.ui.theme.applyFont()
+            ftrack_connector_legacy.ui.theme.applyFont()
 
 

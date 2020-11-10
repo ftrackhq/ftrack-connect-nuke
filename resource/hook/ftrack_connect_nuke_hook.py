@@ -357,7 +357,8 @@ class ApplicationLauncher(ftrack_connect.application.ApplicationLauncher):
 
         environment['NUKE_USE_FNASSETAPI'] = '1'
         environment['QT_PREFERRED_BINDING'] = os.pathsep.join(['PySide2', 'PySide'])
-
+        
+        self.logger.info('Environments {}'.format(environment))
         return environment
 
 

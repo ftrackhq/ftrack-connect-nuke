@@ -8,6 +8,14 @@
 Release notes
 *************
 
+.. release:: Upcoming
+
+    .. change:: change
+
+        :tags: Setup
+
+        Provide dependency to ftrack-connector-legacy module.
+
 .. release:: 1.2.3
     :date: 2020-04-23
 

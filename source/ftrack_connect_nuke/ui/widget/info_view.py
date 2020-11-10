@@ -2,7 +2,7 @@
 # :copyright: Copyright (c) 2015 ftrack
 
 from QtExt import QtGui, QtWidgets
-from ftrack_connect_foundry.ui.info_view import InfoView
+from ftrack_connector_legacy_foundry.ui.info_view import InfoView
 import nuke
 
 
