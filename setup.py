@@ -158,5 +158,6 @@ setup(
     cmdclass={
         'test': PyTest,
         'build_plugin': BuildPlugin,
-    }
+    },
+    python_requires=">=2.7.9, <3"
 )
