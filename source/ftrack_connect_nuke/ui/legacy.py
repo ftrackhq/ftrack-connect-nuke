@@ -22,9 +22,9 @@ from ftrack_connector_legacy.connector import (
 import ftrack_connector_legacy.util
 import ftrack_connector_legacy.asset_version_scanner
 
-import ftrack_connector_legacy_nuke
-from ftrack_connector_legacy_nuke import connector
-from ftrack_connector_legacy_nuke.connector import nukeassets
+import ftrack_connect_nuke
+from ftrack_connect_nuke import connector
+from ftrack_connect_nuke.connector import nukeassets
 
 
 from knobs import TableKnob, BrowseKnob, HeaderKnob
@@ -133,7 +133,7 @@ def addPublishKnobsToGroupNode(g):
     g.addKnob(tab)
 
     headerKnob = nuke.PyCustom_Knob(
-        'fheader', '', 'ftrack_connector_legacy_nuke.ui.knobs.HeaderKnob("{0}")'.format(
+        'fheader', '', 'ftrack_connect_nuke.ui.knobs.HeaderKnob("{0}")'.format(
             str(uuid.uuid1())
         )
     )
@@ -144,7 +144,7 @@ def addPublishKnobsToGroupNode(g):
     g.addKnob(whitespaceKnob)
 
 
-    browseKnob = nuke.PyCustom_Knob("fpubto", "Publish to:", "ftrack_connector_legacy_nuke.ui.knobs.BrowseKnob()")
+    browseKnob = nuke.PyCustom_Knob("fpubto", "Publish to:", "ftrack_connect_nuke.ui.knobs.BrowseKnob()")
     browseKnob.setFlag(nuke.STARTLINE)
     g.addKnob(browseKnob)
 
@@ -162,7 +162,7 @@ def addPublishKnobsToGroupNode(g):
     typeKnob.setFlag(nuke.STARTLINE)
     g.addKnob(typeKnob)
 
-    tableKnob = nuke.PyCustom_Knob("ftable", "Components:", "ftrack_connector_legacy_nuke.ui.knobs.TableKnob()")
+    tableKnob = nuke.PyCustom_Knob("ftable", "Components:", "ftrack_connect_nuke.ui.knobs.TableKnob()")
     tableKnob.setFlag(nuke.STARTLINE)
     g.addKnob(tableKnob)
 
@@ -183,11 +183,11 @@ def addPublishKnobsToGroupNode(g):
     commentKnob = nuke.Multiline_Eval_String_Knob('fcomment', 'Comment:', '')
     g.addKnob(commentKnob)
 
-    refreshKnob = nuke.PyScript_Knob('refreshknob', 'Refresh', 'ftrack_connector_legacy_nuke.ui.legacy.ftrackPublishKnobChanged(forceRefresh=True)')
+    refreshKnob = nuke.PyScript_Knob('refreshknob', 'Refresh', 'ftrack_connect_nuke.ui.legacy.ftrackPublishKnobChanged(forceRefresh=True)')
     refreshKnob.setFlag(nuke.STARTLINE)
     g.addKnob(refreshKnob)
 
-    publishKnob = nuke.PyScript_Knob('pknob', 'Publish', 'ftrack_connector_legacy_nuke.ui.legacy.publishAssetKnob()')
+    publishKnob = nuke.PyScript_Knob('pknob', 'Publish', 'ftrack_connect_nuke.ui.legacy.publishAssetKnob()')
     g.addKnob(publishKnob)
     publishKnob.setEnabled(False)
 

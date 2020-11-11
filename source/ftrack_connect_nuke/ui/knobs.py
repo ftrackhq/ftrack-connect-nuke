@@ -11,12 +11,12 @@ import FnAssetAPI
 from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 from FnAssetAPI import specifications
 
-import ftrack_connector_legacy_nuke
+import ftrack_connect_nuke
 from ftrack_connector_legacy.connector import HelpFunctions
 from ftrack_connector_legacy.ui.widget import header
 
 from FnAssetAPI.ui.dialogs import TabbedBrowserDialog
-from ftrack_connector_legacy_nuke import connector
+from ftrack_connect_nuke import connector
 from ftrack_connector_legacy.ui.theme import applyTheme
 from ftrack_connector_legacy.ui import resource
 
