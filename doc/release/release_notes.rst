@@ -11,6 +11,11 @@ Release notes
 .. release:: Upcoming
 
     .. change:: change
+        :tags: Hook
+
+        Update hook for application-launcher.
+
+    .. change:: change
 
         :tags: Setup
 
