@@ -13,17 +13,16 @@ import traceback
 import ftrack_api
 import ftrack_connect.application
 
-cwd = os.path.dirname(__file__)
-sources = os.path.abspath(os.path.join(cwd, '..', 'dependencies'))
-ftrack_connect_nuke_resource_path = os.path.abspath(os.path.join(
-    cwd, '..',  'resource')
-)
-sys.path.append(sources)
-
-from ftrack_connect_nuke import __version__ as integration_version
-
 
 def on_discover_nuke_integration(session, event):
+    cwd = os.path.dirname(__file__)
+    sources = os.path.abspath(os.path.join(cwd, '..', 'dependencies'))
+    ftrack_connect_nuke_resource_path = os.path.abspath(os.path.join(
+        cwd, '..',  'resource')
+    )
+    sys.path.append(sources)
+
+    from ftrack_connect_nuke import __version__ as integration_version
 
     entity = event['data']['context']['selection'][0]
 
@@ -66,6 +65,7 @@ def register(session):
         session
     )
     session.event_hub.subscribe(
-        'topic=ftrack.connect.application.launch',
+        'topic=ftrack.connect.application.launch'
+        ' and data.application.identifier=nuke*',
         handle_event
     )
