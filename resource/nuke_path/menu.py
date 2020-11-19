@@ -17,7 +17,6 @@ except:
 
 import nuke
 
-import ftrack_connect_nuke.usage
 import ftrack_connect_nuke.plugin
 import ftrack_connect_nuke.logging
 
