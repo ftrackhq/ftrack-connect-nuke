@@ -152,7 +152,7 @@ setup(
     install_requires=[
         'appdirs == 1.4.0',
         'ftrack-connect-foundry @ https://bitbucket.org/ftrack/ftrack-connect-foundry/get/2.0.0.zip#egg=ftrack-connect-foundry-2.0.0',
-        'ftrack-connector-legacy @ git+https://bitbucket.org/ftrack/ftrack-connector-legacy.git@backlog/connect-2/story#egg=ftrack-connector-legacy',
+        'ftrack-connector-legacy @ git+https://bitbucket.org/ftrack/ftrack-connector-legacy/get/1.0.0.zip#egg=ftrack-connector-legacy-1.0.0',
         'qtext @ git+https://bitbucket.org/ftrack/qtext/get/0.2.2.zip#egg=QtExt-0.2.2'
     ],
     cmdclass={
