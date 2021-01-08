@@ -4,8 +4,8 @@
 import os
 import FnAssetAPI
 from ftrack_connect_foundry.ui import delegate
-import ftrack_connect.ui.theme
-from ftrack_connect.ui import resource
+import ftrack_connector_legacy.ui.theme
+from ftrack_connector_legacy.ui import resource
 
 
 class Delegate(delegate.Delegate):
@@ -31,11 +31,11 @@ class Delegate(delegate.Delegate):
         # wrappers for initializing the widgets with
         # the correct connector object
         def wrapImportAssetDialog(*args, **kwargs):
-            from ftrack_connect.ui.widget.import_asset import FtrackImportAssetDialog
+            from ftrack_connector_legacy.ui.widget.import_asset import FtrackImportAssetDialog
             return FtrackImportAssetDialog(connector=Connector())
 
         def wrapAssetManagerDialog(*args, **kwargs):
-            from ftrack_connect.ui.widget.asset_manager import FtrackAssetManagerDialog
+            from ftrack_connector_legacy.ui.widget.asset_manager import FtrackAssetManagerDialog
             return FtrackAssetManagerDialog(connector=Connector())
 
         # Populate the ui
@@ -195,6 +195,6 @@ class Delegate(delegate.Delegate):
 
             # Set font on QApplication once UI is created.
             # We do this once since it takes some time to apply the font.
-            ftrack_connect.ui.theme.applyFont()
+            ftrack_connector_legacy.ui.theme.applyFont()
 
 

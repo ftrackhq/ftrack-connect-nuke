@@ -16,11 +16,11 @@ import FnAssetAPI
 import nuke
 import nukescripts
 
-from ftrack_connect.connector import (
+from ftrack_connector_legacy.connector import (
     FTComponent, FTAssetObject, HelpFunctions
 )
-import ftrack_connect.util
-import ftrack_connect.asset_version_scanner
+import ftrack_connector_legacy.util
+import ftrack_connector_legacy.asset_version_scanner
 
 import ftrack_connect_nuke
 from ftrack_connect_nuke import connector
@@ -28,7 +28,7 @@ from ftrack_connect_nuke.connector import nukeassets
 
 
 from knobs import TableKnob, BrowseKnob, HeaderKnob
-from ftrack_connect.ui.theme import applyTheme
+from ftrack_connector_legacy.ui.theme import applyTheme
 
 current_module = ".".join(__name__.split(".")[:-1])+'.legacy'
 
@@ -48,7 +48,7 @@ class ProgressDialog(QtWidgets.QDialog):
 
 def refAssetManager():
     # Inline to avoid Nuke crashing on startup without traceback.
-    from ftrack_connect.connector import PanelComInstance
+    from ftrack_connector_legacy.connector import PanelComInstance
     panelComInstance = PanelComInstance.instance()
     panelComInstance.refreshListeners()
 
@@ -114,10 +114,10 @@ def scan_for_new_assets():
             auto_connect_event_hub=False,
             plugin_paths=None
         )
-        scanner = ftrack_connect.asset_version_scanner.Scanner(
+        scanner = ftrack_connector_legacy.asset_version_scanner.Scanner(
             session=session,
             result_handler=(
-                lambda result: ftrack_connect.util.invoke_in_main_thread(
+                lambda result: ftrack_connector_legacy.util.invoke_in_main_thread(
                     handle_scan_result,
                     result,
                     scanned_ftrack_nodes
