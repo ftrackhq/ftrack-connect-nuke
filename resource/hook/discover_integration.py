@@ -18,9 +18,8 @@ def on_discover_nuke_integration(session, event):
     from ftrack_connect_nuke import __version__ as integration_version
 
     entity = event['data']['context']['selection'][0]
-
     task = session.get('Context', entity['entityId'])
-
+    
     nuke_connect_plugins = os.path.join(ftrack_connect_nuke_resource_path, 'nuke_path')
 
     data = {
@@ -31,12 +30,10 @@ def on_discover_nuke_integration(session, event):
                 'PYTHONPATH.prepend': sources,
                 'NUKE_PATH': nuke_connect_plugins,
                 'FOUNDRY_ASSET_PLUGIN_PATH': ftrack_connect_nuke_resource_path,
-                'QT_PREFERRED_BINDING':  os.pathsep.join(['PySide2', 'PySide']),
+                'QT_PREFERRED_BINDING.set':  os.pathsep.join(['PySide2', 'PySide']),
                 'NUKE_USE_FNASSETAPI': '1',
                 'FTRACK_TASKID.set': task['id'],
                 'FTRACK_SHOTID.set': task['parent']['id'],
-                'LOGNAME.set': session._api_user,
-                'FTRACK_APIKEY.set': session._api_key,
                 'FS.set': task['parent']['custom_attributes'].get('fstart', '1.0'),
                 'FE.set': task['parent']['custom_attributes'].get('fend', '100.0')
             }
@@ -57,6 +54,12 @@ def register(session):
 
     session.event_hub.subscribe(
         'topic=ftrack.connect.application.launch'
+        ' and data.application.identifier=nuke_*',
+        handle_event
+    )
+
+    session.event_hub.subscribe(
+        'topic=ftrack.connect.application.discover'
         ' and data.application.identifier=nuke_*',
         handle_event
     )
