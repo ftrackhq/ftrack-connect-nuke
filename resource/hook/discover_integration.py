@@ -60,3 +60,9 @@ def register(session):
         ' and data.application.identifier=nuke_*',
         handle_event
     )
+    
+    session.event_hub.subscribe(
+        'topic=ftrack.connect.application.discover'
+        ' and data.application.identifier=nuke_*',
+        handle_event
+    )
