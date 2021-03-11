@@ -8,7 +8,7 @@
 Release notes
 *************
 
-.. release:: Upcoming
+.. release:: 1.3.0-beta-1
 
     .. change:: change
         :tags: Hook
