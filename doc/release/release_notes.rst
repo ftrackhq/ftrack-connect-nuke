@@ -16,7 +16,6 @@ Release notes
         Update hook for application-launcher.
 
     .. change:: change
-
         :tags: Setup
 
         Provide dependency to ftrack-connector-legacy module.
