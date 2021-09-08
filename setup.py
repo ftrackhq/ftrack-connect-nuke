@@ -10,7 +10,6 @@ from setuptools import setup, find_packages, Command
 from pkg_resources import parse_version
 import pip
 
-
 import subprocess
 
 # Define paths
