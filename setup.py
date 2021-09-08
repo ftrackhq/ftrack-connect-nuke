@@ -11,7 +11,7 @@ from pkg_resources import parse_version
 import pip
 
 
-from pip.__main__ import _main as pip_main
+import subprocess
 
 # Define paths
 
@@ -107,13 +107,9 @@ class BuildPlugin(Command):
         )
 
         # Install local dependencies
-        pip_main(
-            [
-                'install',
-                '.',
-                '--target',
-                os.path.join(STAGING_PATH, 'dependencies')
-            ]
+        subprocess.check_call(
+            [sys.executable, '-m', 'pip', 'install','.','--target',
+            os.path.join(STAGING_PATH, 'dependencies')]
         )
 
         # Generate plugin zip
