@@ -4,6 +4,7 @@
 import os
 import re
 import shutil
+import sys
 
 from setuptools.command.test import test as TestCommand
 from setuptools import setup, find_packages, Command
