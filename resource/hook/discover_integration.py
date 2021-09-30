@@ -12,10 +12,10 @@ sources = os.path.abspath(os.path.join(cwd, '..', 'dependencies'))
 ftrack_connect_nuke_resource_path = os.path.join(
     cwd, '..',  'resource')
 
-sys.path.append(sources)
 
 
 def on_discover_nuke_integration(session, event):
+    sys.path.append(sources)
 
     from ftrack_connect_nuke import __version__ as integration_version
     data = {
