@@ -4,9 +4,10 @@
 import logging
 
 import ftrack
+import ftrack_connect_nuke.usage
 import ftrack_connect_nuke.plugin
 import ftrack_connect_nuke.logging
-
+import ftrack_connect.event_hub_thread
 
 # Configure Python logging for use with Foundry Asset API.
 # TODO: Standardise this in ftrack-connect-foundry.
@@ -22,3 +23,8 @@ ftrack.setup()
 
 # Assign to name that Foundry API will search for in order to register plugin.
 plugin = ftrack_connect_nuke.plugin.Plugin
+
+# Send usage event.
+ftrack_connect_nuke.usage.send_event(
+    'USED-FTRACK-CONNECT-NUKE'
+)

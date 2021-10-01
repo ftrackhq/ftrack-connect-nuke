@@ -12,7 +12,7 @@ from FnAssetAPI.ui.toolkit import QtGui, QtCore, QtWidgets
 from script_editor_widget import ScriptEditorWidget
 from comment_widget import CommentWidget
 from base_dialog import BaseDialog
-from ftrack_connector_legacy.ui.theme import applyTheme
+from ftrack_connect.ui.theme import applyTheme
 
 
 class GizmoPublisherDialog(BaseDialog):

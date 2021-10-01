@@ -12,9 +12,9 @@ import nukescripts
 import nuke
 
 
-from ftrack_connector_legacy.connector import base as maincon
-from ftrack_connector_legacy.connector import FTAssetHandlerInstance
-from ftrack_connector_legacy.connector import HelpFunctions
+from ftrack_connect.connector import base as maincon
+from ftrack_connect.connector import FTAssetHandlerInstance
+from ftrack_connect.connector import HelpFunctions
 
 
 def register_scheme(scheme):
