@@ -13,7 +13,7 @@ import os
 import traceback
 from nukecon import Connector
 
-from ftrack_connector_legacy.connector import (
+from ftrack_connect.connector import (
     FTAssetHandlerInstance,
     HelpFunctions,
     FTAssetType,
